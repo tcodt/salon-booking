@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "mainFont";
+  src: url("/fonts/IranSansX(Pro)/Farsi numerals/IRANSansXFaNum-Regular.ttf");
+}
+
+body,
+html {
+  font-family: "mainFont" !important;
+  background-color: #ffffff;
+}
+
+.Toastify__toast {
+  font-family: "mainFont" !important;
+}
