@@ -8,9 +8,16 @@
 body,
 html {
   font-family: "mainFont" !important;
-  background-color: #ffffff;
+  background-color: oklch(0.278 0.033 256.848);
 }
 
 .Toastify__toast {
   font-family: "mainFont" !important;
+}
+
+#shape {
+  background-image: url("/images/shape-1.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: bottom;
 }

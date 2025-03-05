@@ -55,14 +55,14 @@ const Auth: React.FC = () => {
         </ImageList>
       </div>
 
-      <section className="flex items-center justify-center min-h-screen z-50 relative">
-        <div className="flex flex-col gap-8 items-center max-w-[400px] bg-white rounded-xl shadow-lg shadow-black p-4 text-center">
+      <section className="flex items-center justify-center min-h-screen z-50 relative m-4 md:m-0">
+        <div className="flex flex-col gap-8 items-center max-w-[400px] bg-gray-800 rounded-xl shadow-lg shadow-black p-4 text-center">
           <img
             src="/logo.png"
             alt="Logo"
             className="w-[150px] h-[150px] object-contain"
           />
-          <p className="text-base font-medium text-gray-600">
+          <p className="text-base font-medium text-zinc-300">
             لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با
             استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در
             ستون و سطرآنچنان که لازم است.
@@ -70,13 +70,13 @@ const Auth: React.FC = () => {
 
           <div className="flex flex-col gap-4 w-full items-center">
             <button
-              className="border border-slate-500 text-slate-600 hover:bg-slate-800 hover:text-white transition text-base font-medium rounded-xl w-8/12 py-2 px-4 cursor-pointer"
+              className="border border-orange-500 text-orange-600 hover:bg-orange-600 hover:text-white transition text-base font-medium rounded-xl w-8/12 py-2 px-4 cursor-pointer"
               onClick={() => navigate("/login")}
             >
               ورود
             </button>
             <button
-              className="border border-slate-500 text-slate-600 hover:bg-slate-800 hover:text-white transition text-base font-medium rounded-xl w-8/12 py-2 px-4 cursor-pointer"
+              className="border border-orange-500 text-orange-600 hover:bg-orange-600 hover:text-white transition text-base font-medium rounded-xl w-8/12 py-2 px-4 cursor-pointer"
               onClick={() => navigate("/register")}
             >
               ثبت نام

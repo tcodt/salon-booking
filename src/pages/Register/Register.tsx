@@ -92,63 +92,66 @@ const Register: React.FC = () => {
   };
 
   return (
-    <section className="p-4">
+    <section className="p-4 h-screen" id="shape">
       <div className="flex items-center justify-between">
-        <span className="text-gray-700 font-medium text-2xl">ثبت نام</span>
+        <span className="text-orange-500 font-medium text-2xl">ثبت نام</span>
         <button
-          className="cursor-pointer text-gray-600"
+          className="cursor-pointer text-orange-500"
           onClick={getBackToPreviousPage}
         >
           <BsArrowLeft size={25} />
         </button>
       </div>
       <div className="mt-12 flex flex-col gap-12 items-center">
-        <div>
-          <form onSubmit={handleRegister} className="flex flex-col gap-6">
-            <label>
-              <span className="block mb-2 text-base font-medium text-gray-700">
+        <div className="md:w-2/4 w-full flex justify-center p-4 rounded-xl bg-transparent shadow-xl shadow-black backdrop-blur-xl border border-slate-700">
+          <form
+            onSubmit={handleRegister}
+            className="flex flex-col items-center justify-center gap-6 w-full"
+          >
+            <label className="md:w-2/4 w-full">
+              <span className="block mb-2 text-base font-medium text-zinc-200">
                 نام و نام خانوادگی
               </span>
               <input
                 type="text"
                 placeholder="نام و نام خانوادگی"
-                className="outline-none bg-slate-100 py-2 px-4 rounded-xl text-gray-800 font-medium text-base border border-slate-200"
+                className="outline-none bg-gray-800 py-2 px-4 rounded-xl text-zinc-300 font-medium text-base border-2 border-orange-500 w-full"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </label>
-            <label>
-              <span className="block mb-2 text-base font-medium text-gray-700">
+            <label className="md:w-2/4 w-full">
+              <span className="block mb-2 text-base font-medium text-zinc-200">
                 ایمیل
               </span>
               <input
                 type="email"
                 placeholder="example@example.com"
-                className="outline-none bg-slate-100 py-2 px-4 rounded-xl text-left text-gray-800 font-medium text-base border border-slate-200"
+                className="outline-none bg-gray-800 py-2 px-4 rounded-xl text-left text-zinc-300 font-medium text-base border-2 border-orange-500 w-full"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </label>
-            <label>
-              <span className="block mb-2 text-base font-medium text-gray-700">
+            <label className="md:w-2/4 w-full">
+              <span className="block mb-2 text-base font-medium text-zinc-200">
                 شماره تلفن
               </span>
               <input
                 type="text"
                 placeholder="09123456789"
-                className="outline-none bg-slate-100 py-2 px-4 rounded-xl text-left text-gray-800 font-medium text-base border border-slate-200"
+                className="outline-none bg-gray-800 py-2 px-4 rounded-xl text-left text-zinc-300 font-medium text-base border-2 border-orange-500 w-full"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
               />
             </label>
-            <label>
-              <span className="block mb-2 text-base font-medium text-gray-700">
+            <label className="md:w-2/4 w-full">
+              <span className="block mb-2 text-base font-medium text-zinc-200">
                 رمز عبور
               </span>
               <input
                 type="password"
                 placeholder="..............."
-                className="outline-none bg-slate-100 py-2 px-4 rounded-xl text-left text-gray-800 font-medium text-base border border-slate-200"
+                className="outline-none bg-gray-800 py-2 px-4 rounded-xl text-left text-zinc-300 font-medium text-base border-2 border-orange-500 w-full"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -156,15 +159,15 @@ const Register: React.FC = () => {
 
             <button
               type="submit"
-              className="w-full border border-slate-500 hover:bg-white hover:text-slate-600 bg-slate-800 text-white transition text-base font-medium rounded-xl py-2 px-4 cursor-pointer"
+              className="md:w-2/4 w-full h-11 hover:bg-orange-700 bg-orange-600 text-white transition text-base font-medium rounded-xl py-2 px-4 cursor-pointer"
             >
               ثبت نام
             </button>
-            <span className="text-lg font-medium text-gray-700 text-center">
+            <span className="text-lg font-medium text-zinc-200 text-center">
               ...
             </span>
             <div>
-              <span className="text-base text-gray-600 font-medium">
+              <span className="text-base text-zinc-200 font-medium">
                 حساب کاربری دارید؟{" "}
                 <Link to="/login" className="text-gray-800">
                   ورود
