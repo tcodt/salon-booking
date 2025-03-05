@@ -3,7 +3,6 @@ import { BsArrowLeft } from "react-icons/bs";
 import { Link, useNavigate } from "react-router";
 import { Bounce, toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
-import { Input } from "antd";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState<string>("");
