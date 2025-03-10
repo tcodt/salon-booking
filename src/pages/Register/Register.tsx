@@ -1,14 +1,19 @@
 import React, { FormEvent, useState } from "react";
 import { BsArrowLeft } from "react-icons/bs";
+import { FaPhoneAlt } from "react-icons/fa";
+import { IoIosLock } from "react-icons/io";
+import { IoEye } from "react-icons/io5";
 import { Link, useNavigate } from "react-router";
 import { Bounce, toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
+import Button from "../../components/Button/Button";
 
 const Register: React.FC = () => {
-  const [username, setUsername] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
+  // const [username, setUsername] = useState<string>("");
+  // const [email, setEmail] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isVisible, setIsVisible] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -22,37 +27,33 @@ const Register: React.FC = () => {
     return uuidv4();
   };
 
-  // const rand = () => {
-  //   return Math.random().toString(36).substr(2);
-  // };
-
-  // const token = () => {
-  //   return rand() + rand();
-  // };
+  const toggle = () => {
+    setIsVisible(!isVisible);
+  };
 
   const handleRegister = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Validate inputs
-    if (!username) {
-      toast("لطفا نام و نام خانوادگی را وارد کنید!", {
-        type: "error",
-        position: "bottom-right",
-        autoClose: 4000,
-        transition: Bounce,
-      });
-      return;
-    }
+    // if (!username) {
+    //   toast("لطفا نام و نام خانوادگی را وارد کنید!", {
+    //     type: "error",
+    //     position: "bottom-right",
+    //     autoClose: 4000,
+    //     transition: Bounce,
+    //   });
+    //   return;
+    // }
 
-    if (!email) {
-      toast("لطفا ایمیل را وارد کنید!", {
-        type: "error",
-        position: "bottom-right",
-        autoClose: 4000,
-        transition: Bounce,
-      });
-      return;
-    }
+    // if (!email) {
+    //   toast("لطفا ایمیل را وارد کنید!", {
+    //     type: "error",
+    //     position: "bottom-right",
+    //     autoClose: 4000,
+    //     transition: Bounce,
+    //   });
+    //   return;
+    // }
 
     if (phoneNumber.length !== 11) {
       toast("شماره تلفن باید ۱۱ رقم باشد!", {
@@ -75,8 +76,8 @@ const Register: React.FC = () => {
     }
 
     const userData = {
-      username,
-      email,
+      // username,
+      // email,
       phoneNumber,
       password,
       token: generateToken(),
@@ -88,7 +89,7 @@ const Register: React.FC = () => {
     // Store user data in localStorage
     localStorage.setItem("userData", JSON.stringify(userData));
 
-    navigate("/login");
+    navigate("/user-profile");
   };
 
   return (
@@ -103,73 +104,86 @@ const Register: React.FC = () => {
         </button>
       </div>
       <div className="mt-12 flex flex-col gap-12 items-center">
-        <div className="md:w-2/4 w-full flex justify-center p-4 rounded-xl bg-transparent shadow-xl shadow-black backdrop-blur-xl border border-slate-700">
+        <div className="md:w-2/4 w-full text-start">
+          <h3 className="text-3xl text-orange-500 font-semibold">
+            ایجاد حساب کاربری
+          </h3>
+        </div>
+        <div className="md:w-2/4 w-full flex justify-center p-4">
           <form
             onSubmit={handleRegister}
             className="flex flex-col items-center justify-center gap-6 w-full"
           >
-            <label className="md:w-2/4 w-full">
-              <span className="block mb-2 text-base font-medium text-zinc-200">
+            {/* <label className="md:w-2/4 w-full">
+              <span className="block mb-2 text-base font-medium text-gray-700">
                 نام و نام خانوادگی
               </span>
               <input
                 type="text"
                 placeholder="نام و نام خانوادگی"
-                className="outline-none bg-gray-800 py-2 px-4 rounded-xl text-zinc-300 font-medium text-base border-2 border-orange-500 w-full"
+                className="outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 px-4 rounded-xl text-gray-800 font-medium text-base h-12 w-full"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
-            </label>
-            <label className="md:w-2/4 w-full">
-              <span className="block mb-2 text-base font-medium text-zinc-200">
+            </label> */}
+            {/* <label className="md:w-2/4 w-full">
+              <span className="block mb-2 text-base font-medium text-gray-700">
                 ایمیل
               </span>
               <input
                 type="email"
                 placeholder="example@example.com"
-                className="outline-none bg-gray-800 py-2 px-4 rounded-xl text-left text-zinc-300 font-medium text-base border-2 border-orange-500 w-full"
+                className="outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 px-4 rounded-xl text-left text-gray-800 font-medium text-base h-12 w-full"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-            </label>
-            <label className="md:w-2/4 w-full">
-              <span className="block mb-2 text-base font-medium text-zinc-200">
+            </label> */}
+            <label className="md:w-2/4 w-full relative">
+              {/* <span className="block mb-2 text-base font-medium text-gray-700">
                 شماره تلفن
-              </span>
+              </span> */}
               <input
                 type="text"
-                placeholder="09123456789"
-                className="outline-none bg-gray-800 py-2 px-4 rounded-xl text-left text-zinc-300 font-medium text-base border-2 border-orange-500 w-full"
+                placeholder="شماره تلفن"
+                className="outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 ps-4 pe-8 rounded-xl text-left text-gray-800 font-medium text-base h-12 w-full"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
               />
+              <div className="absolute top-4 left-2 text-gray-500 text-lg">
+                <FaPhoneAlt />
+              </div>
             </label>
-            <label className="md:w-2/4 w-full">
-              <span className="block mb-2 text-base font-medium text-zinc-200">
+            <label className="md:w-2/4 w-full relative">
+              {/* <span className="block mb-2 text-base font-medium text-gray-700">
                 رمز عبور
+              </span> */}
+              <span
+                className="absolute top-4 right-2 text-gray-500 text-lg"
+                onClick={toggle}
+              >
+                <IoEye />
               </span>
               <input
-                type="password"
-                placeholder="..............."
-                className="outline-none bg-gray-800 py-2 px-4 rounded-xl text-left text-zinc-300 font-medium text-base border-2 border-orange-500 w-full"
+                type={!isVisible ? "password" : "text"}
+                placeholder="رمز عبور"
+                maxLength={12}
+                className="outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 px-8 rounded-xl text-left text-gray-800 font-medium text-base h-12 w-full"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <div className="absolute top-4 left-2 text-gray-500 text-lg">
+                <IoIosLock />
+              </div>
             </label>
 
-            <button
-              type="submit"
-              className="md:w-2/4 w-full h-11 hover:bg-orange-700 bg-orange-600 text-white transition text-base font-medium rounded-xl py-2 px-4 cursor-pointer"
-            >
-              ثبت نام
-            </button>
-            <span className="text-lg font-medium text-zinc-200 text-center">
+            <Button type="submit">ثبت نام</Button>
+            <span className="text-lg font-medium text-slate-700 text-center">
               ...
             </span>
             <div>
-              <span className="text-base text-zinc-200 font-medium">
+              <span className="text-base text-gray-600 font-medium">
                 حساب کاربری دارید؟{" "}
-                <Link to="/login" className="text-gray-800">
+                <Link to="/login" className="text-orange-500">
                   ورود
                 </Link>
               </span>
