@@ -34,7 +34,7 @@ const Login: React.FC = () => {
       try {
         const userData = JSON.parse(storedData);
 
-        if (phoneNumber === userData.email) {
+        if (phoneNumber === userData.phoneNumber) {
           login(userData.token);
           localStorage.setItem("authToken", userData.token); // Store token in localStorage
           navigate("/");
@@ -50,7 +50,7 @@ const Login: React.FC = () => {
         console.error("Error parsing userData:", err);
         toast("داده های کاربر معتبر نیستند!", {
           type: "error",
-          position: "bottom-right",
+          position: "top-right",
           autoClose: 4000,
           transition: Bounce,
         });
@@ -58,7 +58,7 @@ const Login: React.FC = () => {
     } else {
       toast("هیچ کاربری با این مشخصات پیدا نشد!", {
         type: "error",
-        position: "bottom-right",
+        position: "top-right",
         autoClose: 4000,
         transition: Bounce,
       });
@@ -66,7 +66,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <section className="p-4 h-screen" id="shape">
+    <section className="p-4 h-screen">
       <div className="flex items-center justify-between">
         <span className="text-orange-500 font-medium text-2xl">ورود</span>
         <button
@@ -100,12 +100,10 @@ const Login: React.FC = () => {
             className="flex flex-col items-center justify-center gap-6 w-full"
           >
             <label className="md:w-2/4 w-full relative">
-              {/* <span className="block mb-2 text-base font-medium text-gray-700">
-                            شماره تلفن
-                          </span> */}
               <input
                 type="text"
                 placeholder="شماره تلفن"
+                maxLength={11}
                 className="outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 ps-4 pe-8 rounded-xl text-left text-gray-800 font-medium text-base h-12 w-full"
                 value={phoneNumber}
                 onChange={handleCodeInputChange}
@@ -118,6 +116,13 @@ const Login: React.FC = () => {
             {phoneNumber.length >= 11 && isCodeInputAvailable && <CodeInput />}
 
             <Button type="submit">ورود</Button>
+            <button
+              type="button"
+              className="text-sm font-medium text-gray-600 cursor-pointer hover:text-orange-500 transition"
+              onClick={() => navigate("/forgot-password")}
+            >
+              رمز عبور خود را فراموش کرده اید؟
+            </button>
             <span className="text-lg font-medium text-gray-700 text-center">
               ...
             </span>

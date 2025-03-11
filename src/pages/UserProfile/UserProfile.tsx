@@ -22,6 +22,11 @@ const UserProfile: React.FC = () => {
     console.log("Selected Gender", value);
   };
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    navigate("/login");
+  };
+
   return (
     <section className="p-4">
       <div className="flex items-center justify-between">
@@ -38,7 +43,7 @@ const UserProfile: React.FC = () => {
         <ImageUploader />
       </div>
 
-      <form className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <label className="md:w-2/4 w-full">
           <input
             type="text"
@@ -58,7 +63,7 @@ const UserProfile: React.FC = () => {
           options={genderOptions}
           onChange={handleGenderChange}
         />
-        <Button>ادامه</Button>
+        <Button type="submit">ادامه</Button>
       </form>
     </section>
   );

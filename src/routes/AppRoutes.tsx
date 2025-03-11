@@ -8,6 +8,7 @@ import Auth from "../pages/Auth/Auth";
 import SplashScreen from "../components/SplashScreen/SplashScreen";
 import { useAuth } from "../context/AuthContext";
 import UserProfile from "../pages/UserProfile/UserProfile";
+import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -31,6 +32,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/user-profile" element={<UserProfile />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
     </Router>
   );
