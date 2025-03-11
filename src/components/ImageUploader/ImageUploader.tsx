@@ -3,24 +3,15 @@ import { FaUser } from "react-icons/fa";
 import { FaPencil } from "react-icons/fa6";
 
 const ImageUploader: React.FC = () => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Handle file selectiom
     const file = e.target.files?.[0];
     if (file) {
-      setSelectedFile(file);
       setPreviewUrl(URL.createObjectURL(file)); // Create a preview URL for the image
     }
   };
-
-  // Handle file upload
-  // const handleUpload = () => {
-  //   if (selectedFile) {
-  //     console.log("Uploading file:", selectedFile.name);
-  //   }
-  // };
 
   return (
     <div className="flex flex-col items-center justify-center p-6">
@@ -46,16 +37,6 @@ const ImageUploader: React.FC = () => {
           </div>
         </div>
       </label>
-
-      {/* Upload Button */}
-      {/* {selectedFile && (
-        <button
-          onClick={handleUpload}
-          className="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-        >
-          Upload
-        </button>
-      )} */}
     </div>
   );
 };
