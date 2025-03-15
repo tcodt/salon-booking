@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { AiFillMessage } from "react-icons/ai";
-import { BsArrowLeft } from "react-icons/bs";
 import { MdEmail } from "react-icons/md";
 import { useNavigate } from "react-router";
 import Button from "../../components/Button/Button";
+import PageBar from "../../components/PageBar/PageBar";
 
 const ForgotPassword: React.FC = () => {
   const navigate = useNavigate();
   const [userPhoneNumber, setUserPhoneNumber] = useState<string>("");
+  const [selectedBox, setSelectedBox] = useState<"phoneNumber" | "email">(
+    "phoneNumber"
+  );
 
   const getBackToPreviousPage = () => {
     navigate(-1);
@@ -20,19 +23,14 @@ const ForgotPassword: React.FC = () => {
     setUserPhoneNumber(phoneNumber);
   }, []);
 
+  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    navigate("/receive-code");
+  };
+
   return (
     <section className="p-4 h-screen">
-      <div className="flex items-center justify-between">
-        <span className="text-orange-500 font-medium text-2xl">
-          بازنشانی رمز عبور
-        </span>
-        <button
-          className="cursor-pointer text-orange-500"
-          onClick={getBackToPreviousPage}
-        >
-          <BsArrowLeft size={25} />
-        </button>
-      </div>
+      <PageBar title="بازنشانی رمز عبور" handleClick={getBackToPreviousPage} />
 
       <div className="flex flex-col gap-8 mt-12 pb-4">
         <img
@@ -44,7 +42,14 @@ const ForgotPassword: React.FC = () => {
           انتخاب کنید که چطور رمز عبور را بازنشانی کنیم
         </p>
         <div className="flex flex-col gap-4">
-          <div className="p-3 rounded-xl border-2 border-slate-200 hover:border-orange-500 transition flex items-center gap-4">
+          <div
+            className={`p-3 rounded-xl border-2 hover:border-orange-500 transition flex items-center gap-4 ${
+              selectedBox === "phoneNumber"
+                ? "border-orange-500"
+                : "border-slate-200"
+            }`}
+            onClick={() => setSelectedBox("phoneNumber")}
+          >
             <div className="p-4 bg-orange-100 text-orange-500 text-2xl rounded-full">
               <AiFillMessage />
             </div>
@@ -57,7 +62,12 @@ const ForgotPassword: React.FC = () => {
               </span>
             </div>
           </div>
-          <div className="p-3 rounded-xl border-2 border-slate-200 hover:border-orange-500 transition flex items-center gap-4">
+          <div
+            className={`p-3 rounded-xl border-2 hover:border-orange-500 transition flex items-center gap-4 ${
+              selectedBox === "email" ? "border-orange-500" : "border-slate-200"
+            }`}
+            onClick={() => setSelectedBox("email")}
+          >
             <div className="p-4 bg-orange-100 text-orange-500 text-2xl rounded-full">
               <MdEmail />
             </div>
@@ -71,7 +81,9 @@ const ForgotPassword: React.FC = () => {
             </div>
           </div>
         </div>
-        <Button type="button">ادامه</Button>
+        <Button type="submit" onClick={handleSubmit}>
+          ادامه
+        </Button>
       </div>
     </section>
   );

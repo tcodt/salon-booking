@@ -1,105 +1,172 @@
-import React, { FormEvent, useState } from "react";
-import { BsArrowLeft } from "react-icons/bs";
-import { FaPhoneAlt } from "react-icons/fa";
+import React, { useState } from "react";
+import { FaPhoneAlt, FaUser } from "react-icons/fa";
 import { IoIosLock } from "react-icons/io";
-import { IoEye } from "react-icons/io5";
+import { IoEye, IoEyeOff } from "react-icons/io5";
 import { Link, useNavigate } from "react-router";
-import { Bounce, toast } from "react-toastify";
-import { v4 as uuidv4 } from "uuid";
 import Button from "../../components/Button/Button";
+import PageBar from "../../components/PageBar/PageBar";
+import { MdEmail } from "react-icons/md";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useRegister } from "../../hooks/useAuth";
+import { UserRegisterType } from "../../types/types";
+import toast from "react-hot-toast";
+import Loading from "../../components/Loading/Loading";
+
+type FormData = {
+  name: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+  password: string;
+};
 
 const Register: React.FC = () => {
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
   const [isVisible, setIsVisible] = useState<boolean>(false);
-
   const navigate = useNavigate();
+  const registerMutation = useRegister();
 
   const getBackToPreviousPage = () => {
     navigate(-1);
-  };
-
-  // TEST: Generate random token
-
-  const generateToken = () => {
-    return uuidv4();
   };
 
   const toggle = () => {
     setIsVisible(!isVisible);
   };
 
-  const handleRegister = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (phoneNumber.length !== 11) {
-      toast("شماره تلفن باید ۱۱ رقم باشد!", {
-        type: "error",
-        position: "bottom-right",
-        autoClose: 4000,
-        transition: Bounce,
-      });
-      return;
-    }
-
-    if (password.length < 4) {
-      toast("رمز عبور باید حداقل ۴ کاراکتر باشد!", {
-        type: "error",
-        position: "bottom-right",
-        autoClose: 4000,
-        transition: Bounce,
-      });
-      return;
-    }
-
-    const userData = {
-      phoneNumber,
-      password,
-      token: generateToken(),
+  const handleRegister: SubmitHandler<FormData> = async (data) => {
+    const transformedData: UserRegisterType = {
+      first_name: data.name,
+      last_name: data.lastName,
+      phone_number: data.phoneNumber,
+      email: data.email,
+      password: data.password,
     };
 
-    // Store the token in localStorage
-    localStorage.setItem("authToken", userData.token);
+    registerMutation.mutate(transformedData, {
+      onSuccess: () => {
+        navigate("/login");
+      },
+    });
 
-    // Store user data in localStorage
-    localStorage.setItem("userData", JSON.stringify(userData));
-
-    navigate("/user-profile", { replace: true });
+    if (errors.phoneNumber) {
+      toast.error("شماره تلفن صحیح نیست!");
+    }
   };
 
   return (
     <section className="p-4 h-screen" id="shape">
-      <div className="flex items-center justify-between">
-        <span className="text-orange-500 font-medium text-2xl">ثبت نام</span>
-        <button
-          className="cursor-pointer text-orange-500"
-          onClick={getBackToPreviousPage}
-        >
-          <BsArrowLeft size={25} />
-        </button>
-      </div>
+      <PageBar title="ثبت نام" handleClick={getBackToPreviousPage} />
+
+      {registerMutation.isPending && <Loading />}
+
       <div className="mt-12 flex flex-col gap-12 items-center">
         <div className="md:w-2/4 w-full text-start">
           <h3 className="text-3xl text-orange-500 font-semibold">
             ایجاد حساب کاربری
           </h3>
         </div>
+
         <div className="md:w-2/4 w-full flex justify-center p-4">
           <form
-            onSubmit={handleRegister}
+            onSubmit={handleSubmit(handleRegister)}
             className="flex flex-col items-center justify-center gap-6 w-full"
           >
+            <div className="flex items-center gap-2">
+              <label className="md:w-2/4 w-full relative">
+                <input
+                  type="text"
+                  placeholder={errors?.name?.message || "نام"}
+                  className={`outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 px-4 rounded-xl text-gray-800 font-medium h-12 w-full ${
+                    errors?.name?.message
+                      ? "text-sm placeholder:text-red-500"
+                      : "text-base"
+                  }`}
+                  {...register("name", {
+                    required: "الزامی",
+                    minLength: {
+                      value: 2,
+                      message: "نام باید بیشتر از 2 کاراکتر باشد!",
+                    },
+                  })}
+                />
+
+                <div className="absolute top-4 left-2 text-gray-500 text-lg">
+                  <FaUser />
+                </div>
+              </label>
+              <label className="md:w-2/4 w-full relative">
+                <input
+                  type="text"
+                  placeholder={errors?.lastName?.message || "نام خانوادگی"}
+                  className={`outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 px-4 rounded-xl text-gray-800 font-medium h-12 w-full ${
+                    errors?.lastName?.message
+                      ? "text-sm placeholder:text-red-500"
+                      : "text-base"
+                  }`}
+                  {...register("lastName", {
+                    required: "الزامی",
+                    minLength: {
+                      value: 2,
+                      message: "نام خانوادگی باید بیشتر از 2 کاراکتر باشد!",
+                    },
+                  })}
+                />
+                <div className="absolute top-4 left-2 text-gray-500 text-lg">
+                  <FaUser />
+                </div>
+              </label>
+            </div>
             <label className="md:w-2/4 w-full relative">
               <input
                 type="text"
                 maxLength={11}
-                placeholder="شماره تلفن"
-                className="outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 ps-4 pe-8 rounded-xl text-left text-gray-800 font-medium text-base h-12 w-full"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder={errors?.phoneNumber?.message || "شماره تلفن"}
+                className={`outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 ps-4 pe-8 rounded-xl text-left text-gray-800 font-medium h-12 w-full ${
+                  errors?.phoneNumber?.message
+                    ? "text-sm placeholder:text-red-500"
+                    : "text-base"
+                }`}
+                {...register("phoneNumber", {
+                  required: "شماره تلفن اجباری است!",
+                  pattern: {
+                    value: /^09[0-9]{9}$/,
+                    message: "شماره تلفن باید 11 رقم باشد!",
+                  },
+                })}
+                onKeyPress={(e) => {
+                  if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                  }
+                }}
               />
               <div className="absolute top-4 left-2 text-gray-500 text-lg">
                 <FaPhoneAlt />
+              </div>
+            </label>
+            <label className="md:w-2/4 w-full relative">
+              <input
+                type="email"
+                placeholder={errors?.email?.message || "ایمیل"}
+                className={`outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 px-8 rounded-xl text-gray-800 font-medium h-12 w-full text-left ${
+                  errors?.email?.message
+                    ? "text-sm placeholder:text-red-500"
+                    : "text-base"
+                }`}
+                {...register("email", {
+                  required: "ایمیل اجباری است!",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "ایمیل نا معتبر است!",
+                  },
+                })}
+              />
+              <div className="absolute top-4 left-2 text-gray-500 text-lg">
+                <MdEmail />
               </div>
             </label>
             <label className="md:w-2/4 w-full relative">
@@ -107,15 +174,24 @@ const Register: React.FC = () => {
                 className="absolute top-4 right-2 text-gray-500 text-lg"
                 onClick={toggle}
               >
-                <IoEye />
+                {isVisible ? <IoEye /> : <IoEyeOff />}
               </span>
               <input
                 type={!isVisible ? "password" : "text"}
-                placeholder="رمز عبور"
+                placeholder={errors?.password?.message || "رمز عبور"}
                 maxLength={12}
-                className="outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 px-8 rounded-xl text-left text-gray-800 font-medium text-base h-12 w-full"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                className={`outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 px-8 rounded-xl text-left text-gray-800 font-medium h-12 w-full ${
+                  errors?.password?.message
+                    ? "text-sm placeholder:text-red-500"
+                    : "text-base"
+                }`}
+                {...register("password", {
+                  required: "رمز عبور اجباری است!",
+                  minLength: {
+                    value: 6,
+                    message: "رمز عبور باید بیشتر از 6 کاراکتر باشد!",
+                  },
+                })}
               />
               <div className="absolute top-4 left-2 text-gray-500 text-lg">
                 <IoIosLock />

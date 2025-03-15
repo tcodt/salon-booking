@@ -6,12 +6,14 @@ import Register from "../pages/Register/Register";
 import PrivateRoutes from "./PrivateRoutes";
 import Auth from "../pages/Auth/Auth";
 import SplashScreen from "../components/SplashScreen/SplashScreen";
-import { useAuth } from "../context/AuthContext";
 import UserProfile from "../pages/UserProfile/UserProfile";
 import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
+import ForgotPasswordCode from "../pages/ForgotPasswordCode/ForgotPasswordCode";
+import ChangePassword from "../pages/ChangePassword/ChangePassword";
+import Dashboard from "../pages/Dashboard/Dashboard";
 
 const AppRoutes: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const token = localStorage.getItem("accessToken");
 
   return (
     <Router>
@@ -27,12 +29,22 @@ const AppRoutes: React.FC = () => {
         />
         <Route
           path="/auth"
-          element={isAuthenticated ? <Navigate to="/home" /> : <Auth />}
+          element={token ? <Navigate to="/dashboard" /> : <Auth />}
         />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoutes>
+              <Dashboard />
+            </PrivateRoutes>
+          }
+        />
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/receive-code" element={<ForgotPasswordCode />} />
+        <Route path="/change-password" element={<ChangePassword />} />
       </Routes>
     </Router>
   );

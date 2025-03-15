@@ -1,9 +1,9 @@
 import React from "react";
-import { BsArrowLeft } from "react-icons/bs";
 import { useNavigate } from "react-router";
 import ImageUploader from "../../components/ImageUploader/ImageUploader";
 import Dropdown from "../../components/Dropdown/Dropdown";
 import Button from "../../components/Button/Button";
+import PageBar from "../../components/PageBar/PageBar";
 
 const UserProfile: React.FC = () => {
   const navigate = useNavigate();
@@ -28,22 +28,14 @@ const UserProfile: React.FC = () => {
   };
 
   return (
-    <section className="p-4">
-      <div className="flex items-center justify-between">
-        <span className="text-orange-500 font-medium text-2xl">پروفایل</span>
-        <button
-          className="cursor-pointer text-orange-500"
-          onClick={getBackToPreviousPage}
-        >
-          <BsArrowLeft size={25} />
-        </button>
-      </div>
+    <section className="p-4 flex flex-col justify-between h-screen">
+      <PageBar title="پروفایل" handleClick={getBackToPreviousPage} />
 
       <div className="mb-8">
         <ImageUploader />
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form className="flex flex-col gap-4">
         <label className="md:w-2/4 w-full">
           <input
             type="text"
@@ -63,8 +55,10 @@ const UserProfile: React.FC = () => {
           options={genderOptions}
           onChange={handleGenderChange}
         />
-        <Button type="submit">ادامه</Button>
       </form>
+      <Button type="submit" onClick={() => handleSubmit}>
+        ادامه
+      </Button>
     </section>
   );
 };

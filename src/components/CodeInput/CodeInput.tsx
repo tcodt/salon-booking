@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const CodeInput: React.FC = () => {
   // State برای ذخیره‌سازی مقادیر inputها
@@ -18,6 +18,11 @@ const CodeInput: React.FC = () => {
       }
     }
   };
+
+  // فوکوس به input اول در بارگذاری اولیه
+  useEffect(() => {
+    document.getElementById("input-0")?.focus();
+  }, []);
 
   return (
     <div

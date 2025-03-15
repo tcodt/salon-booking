@@ -56,7 +56,7 @@ const Dropdown: React.FC<DropdownProps> = ({
 
         {/* Dropdown Options */}
         {isOpen && (
-          <div className="absolute z-10 w-full mt-1 bg-white border border-orange-500 rounded-lg shadow-lg">
+          <div className="absolute bottom-14 left-0 z-10 w-full mt-1 bg-white border border-orange-500 rounded-lg shadow-lg">
             {options.map((option) => (
               <div
                 key={option.value}
