@@ -1,18 +1,10 @@
-import { useAuth } from "../../context/AuthContext";
+import React from "react";
 
-const HomePage = () => {
-  const { logout } = useAuth();
-
+const HomePage: React.FC = () => {
   return (
-    <div className="flex flex-col gap-4 items-center justify-center min-h-screen">
-      <h1 className=" text-4xl text-gray-700">صفحه اصلی</h1>
-      <button
-        className="py-2 px-4 rounded-xl bg-red-500 text-white text-base font-medium cursor-pointer hover:bg-red-700 transition"
-        onClick={logout}
-      >
-        خروج
-      </button>
-    </div>
+    <section className="p-4">
+      <h1 className="text-3xl font-bold text-gray-800">صفحه اصلی</h1>
+    </section>
   );
 };
 

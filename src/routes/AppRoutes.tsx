@@ -11,6 +11,8 @@ import ForgotPassword from "../pages/ForgotPassword/ForgotPassword";
 import ForgotPasswordCode from "../pages/ForgotPasswordCode/ForgotPasswordCode";
 import ChangePassword from "../pages/ChangePassword/ChangePassword";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import Reserve from "../pages/Reserve/Reserve";
+import MainLayout from "../layout/MainLayout";
 
 const AppRoutes: React.FC = () => {
   const token = localStorage.getItem("accessToken");
@@ -20,27 +22,48 @@ const AppRoutes: React.FC = () => {
       <Routes>
         <Route path="/" element={<SplashScreen />} />
         <Route
-          path="/home"
-          element={
-            <PrivateRoutes>
-              <HomePage />
-            </PrivateRoutes>
-          }
-        />
-        <Route
           path="/auth"
           element={token ? <Navigate to="/dashboard" /> : <Auth />}
         />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoutes>
-              <Dashboard />
-            </PrivateRoutes>
-          }
-        />
+
+        <Route element={<MainLayout />}>
+          <Route
+            path="/home"
+            element={
+              <PrivateRoutes>
+                <HomePage />
+              </PrivateRoutes>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoutes>
+                <Dashboard />
+              </PrivateRoutes>
+            }
+          />
+          <Route
+            path="/reserve"
+            element={
+              <PrivateRoutes>
+                <Reserve />
+              </PrivateRoutes>
+            }
+          />
+          <Route
+            path="/user-profile"
+            element={
+              <PrivateRoutes>
+                <UserProfile />
+              </PrivateRoutes>
+            }
+          />
+        </Route>
+
+        <Route path="/reserve" element={<Reserve />} />
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/receive-code" element={<ForgotPasswordCode />} />

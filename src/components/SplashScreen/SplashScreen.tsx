@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { useAuth } from "../../context/AuthContext";
 
 const SplashScreen: React.FC = () => {
-  const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
   const [fadeOut, setFadeOut] = useState(false);
+  const token = localStorage.getItem("accessToken");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fadeTimer = setTimeout(() => {
@@ -13,7 +12,7 @@ const SplashScreen: React.FC = () => {
     }, 2000);
 
     const navigateTimer = setTimeout(() => {
-      if (isAuthenticated) {
+      if (token) {
         navigate("/home");
       } else {
         navigate("/auth");
@@ -24,7 +23,7 @@ const SplashScreen: React.FC = () => {
       clearTimeout(fadeTimer);
       clearTimeout(navigateTimer);
     };
-  }, [navigate, isAuthenticated]);
+  }, [navigate, token]);
 
   return (
     <div
