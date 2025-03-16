@@ -1,14 +1,13 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router";
-import { useAuth } from "../../context/AuthContext";
 
 const Auth: React.FC = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const token = localStorage.getItem("accessToken");
 
   useEffect(() => {
-    if (isAuthenticated) navigate("/");
-  }, [isAuthenticated, navigate]);
+    if (token) navigate("/");
+  }, [token, navigate]);
 
   return (
     <section
