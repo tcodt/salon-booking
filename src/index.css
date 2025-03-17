@@ -15,6 +15,10 @@ body,
 html {
   font-family: "mainFont" !important;
   background-color: #ffff;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 .Toastify__toast {
@@ -27,6 +31,11 @@ html {
   background-position: center;
   background-size: cover;
   overflow: hidden;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  margin: 0;
 }
 
 #auth_bg::after {
@@ -38,8 +47,10 @@ html {
   height: 100%;
   background-color: black;
   opacity: 0.7;
+  z-index: 1;
 }
 
 #auth_bg * {
   z-index: 10;
+  position: relative;
 }

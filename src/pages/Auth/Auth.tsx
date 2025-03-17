@@ -11,7 +11,7 @@ const Auth: React.FC = () => {
 
   return (
     <section
-      className="flex items-center justify-center min-h-screen "
+      className="flex items-center justify-center h-screen w-screen overflow-hidden"
       id="auth_bg"
     >
       <div className="flex flex-col gap-8 items-center max-w-[400px] shadow-black p-4 text-center">

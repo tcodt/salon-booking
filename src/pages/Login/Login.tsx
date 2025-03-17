@@ -56,12 +56,12 @@ const Login: React.FC = () => {
   };
 
   return (
-    <section className="p-4 h-screen">
+    <section className="p-4 w-screen h-screen overflow-hidden">
       <PageBar title="ورود" handleClick={getBackToPreviousPage} />
 
       {loginMutation.isPending && <Loading />}
 
-      <div className="mt-12 flex flex-col gap-12 items-center">
+      <div className="mt-6 flex flex-col gap-4 items-center">
         <div className="md:w-2/4 w-full text-center">
           <h3 className="text-3xl text-orange-500 font-semibold">خوش آمدید</h3>
           <p className="text-base font-medium text-gray-500 mt-4">
@@ -138,13 +138,13 @@ const Login: React.FC = () => {
             {/* {phoneNumber.length >= 11 && isCodeInputAvailable && <CodeInput />} */}
 
             <Button type="submit">ورود</Button>
-            <button
+            {/* <button
               type="button"
               className="text-sm font-medium text-gray-600 cursor-pointer hover:text-orange-500 transition"
               onClick={() => navigate("/forgot-password")}
             >
               رمز عبور خود را فراموش کرده اید؟
-            </button>
+            </button> */}
             <span className="text-lg font-medium text-gray-700 text-center">
               ...
             </span>

@@ -59,12 +59,12 @@ const Register: React.FC = () => {
   };
 
   return (
-    <section className="p-4 h-screen" id="shape">
+    <section className="p-4 w-screen h-screen overflow-hidden" id="shape">
       <PageBar title="ثبت نام" handleClick={getBackToPreviousPage} />
 
       {registerMutation.isPending && <Loading />}
 
-      <div className="mt-12 flex flex-col gap-12 items-center">
+      <div className="mt-6 flex flex-col gap-4 items-center">
         <div className="md:w-2/4 w-full text-start">
           <h3 className="text-3xl text-orange-500 font-semibold">
             ایجاد حساب کاربری
