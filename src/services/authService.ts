@@ -20,10 +20,10 @@ export const changePassword = async (data: ChangePasswordDataType) => {
   return response.data;
 };
 
-// export const fetchUserProfile = async () => {
-//     const accessToken = localStorage.getItem('accessToken')
-//     const response = await axios.get(`${API_URL}/`)
-// }
+export const fetchUserProfile = async () => {
+  const response = await api.get("/dashboard/users/profile/");
+  return response.data;
+};
 
 export const logoutUser = async () => {
   localStorage.removeItem("accessToken");

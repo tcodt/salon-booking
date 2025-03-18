@@ -13,13 +13,13 @@ const Navigation: React.FC = () => {
 
   useEffect(() => {
     switch (location.pathname) {
-      case "/reserve":
+      case "/dashboard":
         setValue(0);
         break;
       case "/home":
         setValue(1);
         break;
-      case "/dashboard":
+      case "/reserve":
         setValue(2);
         break;
       default:
@@ -39,13 +39,13 @@ const Navigation: React.FC = () => {
           setValue(newValue);
           switch (newValue) {
             case 0:
-              navigate("/reserve");
+              navigate("/dashboard");
               break;
             case 1:
               navigate("/home");
               break;
             case 2:
-              navigate("/dashboard");
+              navigate("/reserve");
               break;
             default:
               navigate("/home");
@@ -58,10 +58,8 @@ const Navigation: React.FC = () => {
         }}
       >
         <BottomNavigationAction
-          label="رزرو"
-          icon={
-            <LuNotebookText size={25} color={value === 0 ? "orange" : "gray"} />
-          }
+          label="داشبورد"
+          icon={<FaRegUser size={25} color={value === 0 ? "orange" : "gray"} />}
           sx={{ color: value === 0 ? "orange" : "gray" }}
         />
         <BottomNavigationAction
@@ -72,8 +70,10 @@ const Navigation: React.FC = () => {
           sx={{ color: value === 1 ? "orange" : "gray" }}
         />
         <BottomNavigationAction
-          label="داشبورد"
-          icon={<FaRegUser size={25} color={value === 2 ? "orange" : "gray"} />}
+          label="رزرو"
+          icon={
+            <LuNotebookText size={25} color={value === 2 ? "orange" : "gray"} />
+          }
           sx={{ color: value === 2 ? "orange" : "gray" }}
         />
       </BottomNavigation>

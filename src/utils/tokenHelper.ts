@@ -1,11 +1,15 @@
-export const saveTokens = (accessToken: string, refreshToken: string) => {
-  localStorage.setItem("accessToken", accessToken);
-  localStorage.setItem("refreshToken", refreshToken);
+export const storeAuthTokens = (data: { access: string; refresh: string }) => {
+  localStorage.setItem("accessToken", data.access);
+  localStorage.setItem("refreshToken", data.refresh);
 };
 
-export const getAccessToken = localStorage.getItem("accessToken");
-
-export const removeTokens = () => {
+export const clearAuthTokens = () => {
   localStorage.removeItem("accessToken");
   localStorage.removeItem("refreshToken");
+  localStorage.removeItem("user");
+};
+
+export const getUserFromStorage = () => {
+  const user = localStorage.getItem("user");
+  return user ? JSON.parse(user) : null;
 };

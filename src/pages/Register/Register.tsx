@@ -49,7 +49,7 @@ const Register: React.FC = () => {
 
     registerMutation.mutate(transformedData, {
       onSuccess: () => {
-        navigate("/login");
+        navigate("/home"); // Redirect to /login when have SMS panel
       },
     });
 

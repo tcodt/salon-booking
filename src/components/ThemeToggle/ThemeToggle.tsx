@@ -1,22 +1,26 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const ThemeToggle: React.FC = () => {
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") || "light";
-    document.documentElement.setAttribute("data-theme", savedTheme);
-  }, []);
+  const [darkMode, setDarkMode] = useState(
+    localStorage.getItem("theme") === "dark"
+  );
 
-  const toggleTheme = () => {
-    const htmlElem = document.documentElement;
-    const currentTheme = htmlElem.getAttribute("data-theme");
-    const newTheme = currentTheme === "light" ? "dark" : "light";
-    htmlElem.setAttribute("data-theme", newTheme);
-    localStorage.setItem("theme", newTheme);
-  };
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [darkMode]);
 
   return (
-    <button onClick={toggleTheme} className="btn btn-primary">
-      Theme Toggle
+    <button
+      onClick={() => setDarkMode(!darkMode)}
+      className="p-3 rounded-full transition text-xl"
+    >
+      {darkMode ? "🌙" : "☀️"}
     </button>
   );
 };

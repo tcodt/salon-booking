@@ -40,7 +40,7 @@ const Login: React.FC = () => {
     loginMutation.mutate(data, {
       onSuccess: () => {
         toast.success("ورود موفقیت آمیز بود!", { id: toastId });
-        navigate("/dashboard");
+        navigate("/home");
       },
       onError: (error: AxiosError) => {
         console.error("Login failed: ", error);
@@ -138,13 +138,13 @@ const Login: React.FC = () => {
             {/* {phoneNumber.length >= 11 && isCodeInputAvailable && <CodeInput />} */}
 
             <Button type="submit">ورود</Button>
-            {/* <button
+            <button
               type="button"
               className="text-sm font-medium text-gray-600 cursor-pointer hover:text-orange-500 transition"
               onClick={() => navigate("/forgot-password")}
             >
               رمز عبور خود را فراموش کرده اید؟
-            </button> */}
+            </button>
             <span className="text-lg font-medium text-gray-700 text-center">
               ...
             </span>

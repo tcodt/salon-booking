@@ -1,28 +1,34 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   changePassword,
+  fetchUserProfile,
   loginUser,
   logoutUser,
   registerUser,
 } from "../services/authService";
 import { AxiosError } from "axios";
+import { clearAuthTokens, storeAuthTokens } from "../utils/tokenHelper";
 
 export const useRegister = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: registerUser,
     onSuccess: (data) => {
-      localStorage.setItem("accessToken", data.access);
-      localStorage.setItem("refreshToken", data.refresh);
+      storeAuthTokens(data);
+      queryClient.setQueryData(["userProfile"], data.user); // Put user data in cache
     },
   });
 };
 
 export const useLogin = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
-      localStorage.setItem("accessToken", data.access);
-      localStorage.setItem("refreshToken", data.refresh);
+      storeAuthTokens(data);
+      queryClient.setQueryData(["userProfile"], data.user); // Put user data in cache
     },
     onError: (error: AxiosError) => {
       console.log("Login error: ", error);
@@ -54,14 +60,20 @@ export const useChangePassword = () => {
   });
 };
 
-// export const useUserProfile = () => {
-//   return useQuery(["userProfile"], fetchUserProfile);
-// };
+export const useUserProfile = () => {
+  return useQuery({
+    queryKey: ["userProfile"],
+    queryFn: fetchUserProfile,
+    staleTime: Infinity, // User info won't change until logout
+    enabled: !!localStorage.getItem("accessToken"),
+  });
+};
 
 export const useLogout = () => {
   const queryClient = useQueryClient();
   return () => {
     logoutUser();
-    queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+    clearAuthTokens();
+    queryClient.removeQueries({ queryKey: ["userProfile"] });
   };
 };
