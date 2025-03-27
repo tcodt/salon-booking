@@ -13,7 +13,7 @@ import { MdOutlineManageSearch } from "react-icons/md";
 import { CiBag1 } from "react-icons/ci";
 
 const Dashboard: React.FC = () => {
-  const { data: user, isPending, isError, error, refetch } = useUserProfile();
+  const { isPending, isError, error, refetch } = useUserProfile(); // Removed user data
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
