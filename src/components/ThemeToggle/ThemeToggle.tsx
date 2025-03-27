@@ -18,7 +18,7 @@ const ThemeToggle: React.FC = () => {
   return (
     <button
       onClick={() => setDarkMode(!darkMode)}
-      className="p-3 rounded-full transition text-xl"
+      className="p-3 rounded-full transition text-2xl"
     >
       {darkMode ? "🌙" : "☀️"}
     </button>

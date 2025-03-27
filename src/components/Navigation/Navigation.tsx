@@ -16,6 +16,9 @@ const Navigation: React.FC = () => {
       case "/dashboard":
         setValue(0);
         break;
+      case "/dashboard/user-profile":
+        setValue(0);
+        break;
       case "/home":
         setValue(1);
         break;

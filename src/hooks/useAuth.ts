@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   changePassword,
-  fetchUserProfile,
   loginUser,
   logoutUser,
   registerUser,
 } from "../services/authService";
+import { fetchUserProfile } from "../services/userService";
 import { AxiosError } from "axios";
 import { clearAuthTokens, storeAuthTokens } from "../utils/tokenHelper";
 
@@ -64,7 +64,7 @@ export const useUserProfile = () => {
   return useQuery({
     queryKey: ["userProfile"],
     queryFn: fetchUserProfile,
-    staleTime: Infinity, // User info won't change until logout
+    // staleTime: Infinity, // User info won't change until logout
     enabled: !!localStorage.getItem("accessToken"),
   });
 };

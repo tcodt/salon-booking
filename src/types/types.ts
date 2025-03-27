@@ -16,3 +16,9 @@ export interface ChangePasswordDataType {
   new_password: string;
   confirm_password: string;
 }
+
+export interface BookingDataType {
+  date: string;
+  time: string;
+  service: number;
+}

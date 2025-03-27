@@ -4,15 +4,25 @@ import Loading from "../../components/Loading/Loading";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { getGreeting } from "../../utils/greetings";
 import { CiSearch } from "react-icons/ci";
+import { Link } from "react-router";
 
 const HomePage: React.FC = () => {
-  const { data: user, isPending, isError } = useUserProfile();
+  const { data: user, isPending, isError, refetch } = useUserProfile();
 
   const greetingUser = getGreeting(user?.first_name);
 
   if (isPending) return <Loading />;
 
-  if (isError) return <p className="text-red-500">خطا در بارگذاری اطلاعات</p>;
+  if (isError)
+    return (
+      <div className="text-red-500">
+        {" "}
+        <button className="text-blue-500" onClick={() => refetch()}>
+          بارگذاری دوباره
+        </button>{" "}
+        خطا در بارگذاری اطلاعات
+      </div>
+    );
 
   return (
     <section className="p-4 h-screen w-screen overflow-hidden">
@@ -55,6 +65,13 @@ const HomePage: React.FC = () => {
           30%
         </span>
       </div>
+
+      <Link
+        to="/reserve"
+        className="py-2 px-4 inline-block rounded-xl border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white font-normal text-base transition mt-8"
+      >
+        رزرو نوبت
+      </Link>
     </section>
   );
 };

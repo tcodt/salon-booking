@@ -44,7 +44,9 @@ const AppRoutes: React.FC = () => {
                 <Dashboard />
               </PrivateRoutes>
             }
-          />
+          >
+            <Route path="user-profile" element={<UserProfile />} />
+          </Route>
           <Route
             path="/reserve"
             element={
@@ -53,18 +55,10 @@ const AppRoutes: React.FC = () => {
               </PrivateRoutes>
             }
           />
-          <Route
-            path="/user-profile"
-            element={
-              <PrivateRoutes>
-                <UserProfile />
-              </PrivateRoutes>
-            }
-          />
         </Route>
 
-        <Route path="/reserve" element={<Reserve />} />
-        <Route path="/user-profile" element={<UserProfile />} />
+        {/* <Route path="/reserve" element={<Reserve />} />
+        <Route path="/user-profile" element={<UserProfile />} /> */}
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/receive-code" element={<ForgotPasswordCode />} />
         <Route path="/change-password" element={<ChangePassword />} />
