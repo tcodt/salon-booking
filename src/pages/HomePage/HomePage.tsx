@@ -1,10 +1,10 @@
 import React from "react";
 import { useUserProfile } from "../../hooks/useAuth";
 import Loading from "../../components/Loading/Loading";
-import { IoNotificationsOutline } from "react-icons/io5";
 import { getGreeting } from "../../utils/greetings";
 import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router";
+import OfferCarousel from "../../components/OfferCarousel/OfferCarousel";
 
 const HomePage: React.FC = () => {
   const { data: user, isPending, isError, refetch } = useUserProfile();
@@ -15,31 +15,22 @@ const HomePage: React.FC = () => {
 
   if (isError)
     return (
-      <div className="text-red-500">
-        {" "}
+      <div className="flex items-center gap-2">
+        <p className="text-red-500">خطا در بارگذاری اطلاعات</p>
         <button className="text-blue-500" onClick={() => refetch()}>
           بارگذاری دوباره
-        </button>{" "}
-        خطا در بارگذاری اطلاعات
+        </button>
       </div>
     );
 
   return (
-    <section className="p-4 h-screen w-screen overflow-hidden">
-      {/* Top Bar */}
-      <div className="flex items-center justify-between">
-        <div>
-          <IoNotificationsOutline size={30} color="gray" />
-        </div>
-        <div className="p-2 bg-white shadow-md border border-orange-500 rounded-full">
-          <img
-            src="/logo.png"
-            alt="Home Logo"
-            className="w-10 h-10 object-contain"
-          />
-        </div>
-      </div>
-
+    <section
+      className="p-4 h-screen w-screen overflow-y-auto pb-[160px] [&::-webkit-scrollbar]:w-2
+  [&::-webkit-scrollbar-track]:rounded-full
+  [&::-webkit-scrollbar-track]:bg-transparent
+  [&::-webkit-scrollbar-thumb]:rounded-full
+  [&::-webkit-scrollbar-thumb]:bg-transparent"
+    >
       {/* User Name */}
       <h3 className="text-2xl font-bold text-gray-800 my-3">{greetingUser}</h3>
 
@@ -53,25 +44,22 @@ const HomePage: React.FC = () => {
         <CiSearch size={25} className="absolute top-2 left-2 text-gray-500" />
       </div>
 
-      {/* Box */}
-      <div className="bg-orange-400 p-4 rounded-xl z-10 flex flex-col gap-2 relative after:absolute after:content-[''] after:top-2 after:-left-4 after:w-40 after:h-40 after:bg-white after:rounded-full after:bg-opacity-30 after:-z-10">
-        <span className="text-white text-sm font-light">تخفیف ویژه</span>
-        <h4 className="text-white font-semibold text-xl">برای امروز</h4>
-        <p className="text-white text-sm font-light">
-          لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده
-          از طراحان گرافیک است.
-        </p>
-        <span className="absolute top-6 left-6 text-2xl font-bold text-white">
-          30%
-        </span>
-      </div>
+      {/* Offer Box */}
+      <OfferCarousel />
 
-      <Link
-        to="/reserve"
-        className="py-2 px-4 inline-block rounded-xl border border-orange-500 text-orange-500 hover:bg-orange-500 hover:text-white font-normal text-base transition mt-8"
-      >
-        رزرو نوبت
-      </Link>
+      {/* Booking */}
+      <div className="mt-4 p-4 rounded-xl bg-gradient-to-r z-10 from-blue-500 to-violet-500 relative after:absolute after:content-[''] after:top-2 after:-left-4 after:w-40 after:h-40 after:bg-white after:rounded-full after:bg-opacity-30 after:-z-10 before:absolute before:content-[''] before:bottom-2 before:-right-4 before:w-40 before:h-40 before:bg-white before:rounded-full before:bg-opacity-30 before:-z-10">
+        <h3 className="text-xl font-bold text-white mb-2">رزرو نوبت</h3>
+        <p className="text-white text-sm font-light mb-4">
+          همین حالا نوبت خود را رزرو کنید و از خدمات ویژه ما بهره‌مند شوید.
+        </p>
+        <Link
+          to="/reserve"
+          className="py-2 px-4 inline-block rounded-xl bg-white text-blue-500 font-semibold hover:bg-slate-200 transition"
+        >
+          رزرو کن
+        </Link>
+      </div>
     </section>
   );
 };

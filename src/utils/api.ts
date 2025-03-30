@@ -15,4 +15,17 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Handle 401 Unauthorized errors globally
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 401) {
+      console.error("Token expired. Logging out...");
+      localStorage.removeItem("accessToken");
+      window.location.href = "/login"; // Redirect to login
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;
