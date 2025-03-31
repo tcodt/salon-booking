@@ -1,4 +1,8 @@
-export const storeAuthTokens = (data: { access: string; refresh: string }) => {
+export const storeAuthTokens = (data: {
+  access: string;
+  refresh: string;
+  user?: unknown;
+}) => {
   localStorage.setItem("accessToken", data.access);
   localStorage.setItem("refreshToken", data.refresh);
 };

@@ -6,6 +6,8 @@ import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
 import { CacheProvider } from "@emotion/react";
 import { Toaster } from "react-hot-toast";
+import { AuthProvider } from "./context/AuthContext";
+import { SidebarProvider } from "./context/SidebarContext";
 
 const App: React.FC = () => {
   // Create RTL cache
@@ -58,8 +60,12 @@ const App: React.FC = () => {
     <>
       <CacheProvider value={cacheRtl}>
         <ThemeProvider theme={theme}>
-          <AppRoutes />
-          <Toaster />
+          <AuthProvider>
+            <SidebarProvider>
+              <AppRoutes />
+              <Toaster />
+            </SidebarProvider>
+          </AuthProvider>
         </ThemeProvider>
       </CacheProvider>
     </>

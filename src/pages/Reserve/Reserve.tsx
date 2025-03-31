@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { useBookAppointment } from "../../hooks/useBooking";
+import {
+  useBookAppointment,
+  useEmployees,
+  useServices,
+} from "../../hooks/useBooking";
 import Button from "../../components/Button/Button";
 import toast from "react-hot-toast";
 import { DatePicker, TimePicker } from "zaman";
@@ -11,15 +15,19 @@ const Reserve: React.FC = () => {
   const [time, setTime] = useState<{ hour: number; minute: number } | null>(
     null
   );
-  const [service, setService] = useState<string>("");
-  const [status] = useState<string>("pending"); // Default status is "pending"
+  const [services, setServices] = useState<number | null>(null);
+  const [employee, setEmployee] = useState<number | null>(null);
+  const status: string = "pending";
+
+  const { data: servicesData = [] } = useServices();
+  const { data: employeesData = [] } = useEmployees();
 
   const currentUser = getUserFromStorage();
 
   const bookAppointmentMutation = useBookAppointment();
 
   const handleBooking = () => {
-    if (!date || !time || !service) {
+    if (!date || !time || !services) {
       toast.error("لطفا تمام فیلد ها را پر کنید!");
       return;
     }
@@ -35,11 +43,10 @@ const Reserve: React.FC = () => {
     const bookingData = {
       date: formattedDate,
       time: formattedTime,
-      service: service,
+      service_id: Number(services),
       status: status,
       user: currentUser?.id,
-      employee: "default-employee",
-      get_status: "pending",
+      employee_id: Number(employee),
     };
 
     console.log("Sending Booking Data:", bookingData); // Debugging
@@ -105,16 +112,36 @@ const Reserve: React.FC = () => {
         )}
       </div>
 
-      <div className="mb-12">
-        <select
-          className="p-2 border-2 w-full rounded-xl focus:outline-none border-orange-500 transition"
-          value={service}
-          onChange={(e) => setService(e.target.value)}
-        >
-          <option value="">انتخاب سرویس</option>
-          <option value="haircut">کوتاهی مو</option>
-          <option value="beard-trim">اصلاح ریش</option>
-        </select>
+      <div className="flex flex-col gap-4 my-10">
+        <div>
+          <select
+            className="py-2 px-4 border-2 w-full rounded-xl focus:outline-none border-orange-500 transition"
+            value={services || ""}
+            onChange={(e) => setServices(Number(e.target.value) || null)}
+            required
+          >
+            <option value="">انتخاب سرویس</option>
+            {servicesData?.map((service) => (
+              <option key={service.id} value={service.id}>
+                {service.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <select
+            className="py-2 px-4 border-2 w-full rounded-xl focus:outline-none border-orange-500 transition"
+            value={employee || ""}
+            onChange={(e) => setEmployee(Number(e.target.value) || null)}
+          >
+            <option value="">لطفاً کارمند را انتخاب کنید</option>
+            {employeesData?.map((employee) => (
+              <option key={employee.id} value={employee.id}>
+                {employee.skill}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       <Button

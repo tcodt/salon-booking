@@ -1,41 +1,42 @@
 import React from "react";
-import ImageUploader from "../../components/ImageUploader/ImageUploader";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  fetchUserProfile,
-  updateUserProfile,
-} from "../../services/userService";
-import toast from "react-hot-toast";
+// import ImageUploader from "../../components/ImageUploader/ImageUploader";
+// import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+// import {
+//   fetchUserProfile,
+//   updateUserProfile,
+// } from "../../services/userService";
+// import toast from "react-hot-toast";
 
 const UserProfile: React.FC = () => {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
-  const { data: user, isPending } = useQuery({
-    queryKey: ["userProfile"],
-    queryFn: fetchUserProfile,
-  });
+  // const { data: user, isPending } = useQuery({
+  //   queryKey: ["userProfile"],
+  //   queryFn: fetchUserProfile,
+  // });
 
-  if (isPending) toast.loading("درحال بارگذاری...");
+  // if (isPending) toast.loading("درحال بارگذاری...");
 
-  const mutation = useMutation({
-    mutationFn: updateUserProfile,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
-    },
-  });
+  // const mutation = useMutation({
+  //   mutationFn: updateUserProfile,
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+  //   },
+  // });
 
-  const handleImageUpload = (file: File) => {
-    mutation.mutate({ image: file });
-  };
+  // const handleImageUpload = (file: File) => {
+  //   mutation.mutate({ image: file });
+  // };
 
   return (
     <section>
-      <div>
+      <h1>User Profile</h1>
+      {/* <div>
         <ImageUploader
           onUpload={handleImageUpload}
           currentImage={user?.image}
         />
-      </div>
+      </div> */}
 
       {/* <form className="flex flex-col gap-4">
         <label className="md:w-2/4 w-full">

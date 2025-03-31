@@ -1,8 +1,4 @@
-type Username = {
-  username: string;
-};
-
-export function getGreeting(username: Username): string {
+export function getGreeting(username?: string) {
   const hours = new Date().getHours();
   const greetings = [
     "صبح بخیر", // Morning

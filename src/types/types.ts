@@ -20,10 +20,10 @@ export interface ChangePasswordDataType {
 export interface BookingDataType {
   date: string;
   time: string;
-  service: string;
+  service_id: number;
   status: string;
   user: number;
-  employee?: string;
+  employee_id: number;
   get_status?: string;
 }
 
@@ -37,4 +37,22 @@ export interface User {
   is_active: boolean;
   is_owner: boolean;
   is_staff: boolean;
+}
+
+export type GetServices = GetServicesItem[];
+export interface GetServicesItem {
+  id: number;
+  name: string;
+  description: string;
+  duration: string;
+  price: string;
+  business: number;
+  employee: number;
+}
+
+export type GetEmployees = GetEmployeesItem[];
+export interface GetEmployeesItem {
+  id: number;
+  skill: string;
+  user: number;
 }

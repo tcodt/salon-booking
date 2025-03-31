@@ -4,6 +4,7 @@ import {
   UserRegisterType,
 } from "../types/types";
 import api from "../utils/api";
+import { clearAuthTokens } from "../utils/tokenHelper";
 
 export const registerUser = async (userData: UserRegisterType) => {
   const response = await api.post("/accounts/register/", userData);
@@ -21,6 +22,5 @@ export const changePassword = async (data: ChangePasswordDataType) => {
 };
 
 export const logoutUser = async () => {
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("refreshToken");
+  clearAuthTokens();
 };

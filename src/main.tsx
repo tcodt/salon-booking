@@ -17,12 +17,12 @@ const client = new QueryClient({
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <AuthProvider>
-      <QueryClientProvider client={client}>
+    <QueryClientProvider client={client}>
+      <AuthProvider>
         <ThemeProvider>
           <App />
         </ThemeProvider>
-      </QueryClientProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   </StrictMode>
 );

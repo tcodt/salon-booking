@@ -1,8 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { User } from "../types/types";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (token: string) => void;
+  user: User | null;
+  isStaff: boolean;
+  isOwner: boolean;
+  login: (tokens: { access: string; refresh: string }, userData: User) => void;
   logout: () => void;
 }
 
@@ -11,29 +16,50 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const queryClient = useQueryClient();
+  const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const isOwner = user?.is_owner || false;
+  const isStaff = user?.is_staff || false;
 
   // Check local storage for token on app load
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      setIsAuthenticated(true);
+    const accessToken = localStorage.getItem("accessToken");
+    if (accessToken) {
+      const storedUser = localStorage.getItem("user");
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+        setIsAuthenticated(true);
+      }
     }
   }, []);
 
-  const login = (token: string) => {
-    localStorage.setItem("authToken", token); // Store token in local storage
+  const login = (
+    tokens: { access: string; refresh: string },
+    userData: User
+  ) => {
+    localStorage.setItem("accessToken", tokens.access);
+    localStorage.setItem("refreshToken", tokens.refresh);
+    localStorage.setItem("user", JSON.stringify(userData));
+    setUser(userData);
     setIsAuthenticated(true);
   };
 
+  // Clear cache on logout
   const logout = () => {
-    localStorage.removeItem("authToken"); // Remove token from local storage
-    localStorage.removeItem("userData"); // Remove user data from local storage
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("user");
+    setUser(null);
+    queryClient.clear();
     setIsAuthenticated(false);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, isAuthenticated, isStaff, isOwner, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

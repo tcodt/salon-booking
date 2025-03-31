@@ -13,6 +13,8 @@ import ChangePassword from "../pages/ChangePassword/ChangePassword";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Reserve from "../pages/Reserve/Reserve";
 import MainLayout from "../layout/MainLayout";
+import AppointmentsList from "../pages/AppointmentsList/AppointmentsList";
+import Settings from "../pages/Settings/Settings";
 
 const AppRoutes: React.FC = () => {
   const token = localStorage.getItem("accessToken");
@@ -20,6 +22,7 @@ const AppRoutes: React.FC = () => {
   return (
     <Router>
       <Routes>
+        {/* Public routes */}
         <Route path="/" element={<SplashScreen />} />
         <Route
           path="/auth"
@@ -27,41 +30,27 @@ const AppRoutes: React.FC = () => {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
-        <Route element={<MainLayout />}>
-          <Route
-            path="/home"
-            element={
-              <PrivateRoutes>
-                <HomePage />
-              </PrivateRoutes>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoutes>
-                <Dashboard />
-              </PrivateRoutes>
-            }
-          >
-            <Route path="user-profile" element={<UserProfile />} />
-          </Route>
-          <Route
-            path="/reserve"
-            element={
-              <PrivateRoutes>
-                <Reserve />
-              </PrivateRoutes>
-            }
-          />
-        </Route>
-
-        {/* <Route path="/reserve" element={<Reserve />} />
-        <Route path="/user-profile" element={<UserProfile />} /> */}
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/receive-code" element={<ForgotPasswordCode />} />
         <Route path="/change-password" element={<ChangePassword />} />
+
+        {/* Authenticated routes with MainLayout */}
+        <Route
+          element={
+            <PrivateRoutes>
+              <MainLayout />
+            </PrivateRoutes>
+          }
+        >
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/reserve" element={<Reserve />} />
+
+          {/* Shared authenticated routes */}
+          <Route path="/user-profile" element={<UserProfile />} />
+          <Route path="/appointments-list" element={<AppointmentsList />} />
+          <Route path="/settings" element={<Settings />} />
+        </Route>
       </Routes>
     </Router>
   );

@@ -1,27 +1,14 @@
 import React from "react";
-import { useUserProfile } from "../../hooks/useAuth";
-import Loading from "../../components/Loading/Loading";
 import { getGreeting } from "../../utils/greetings";
 import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router";
 import OfferCarousel from "../../components/OfferCarousel/OfferCarousel";
+import { useAuth } from "../../context/AuthContext";
 
 const HomePage: React.FC = () => {
-  const { data: user, isPending, isError, refetch } = useUserProfile();
-
-  const greetingUser = getGreeting(user?.first_name);
-
-  if (isPending) return <Loading />;
-
-  if (isError)
-    return (
-      <div className="flex items-center gap-2">
-        <p className="text-red-500">خطا در بارگذاری اطلاعات</p>
-        <button className="text-blue-500" onClick={() => refetch()}>
-          بارگذاری دوباره
-        </button>
-      </div>
-    );
+  const { user } = useAuth();
+  const username = user?.first_name;
+  const greetingUser = getGreeting(username);
 
   return (
     <section

@@ -8,27 +8,32 @@ import {
 import { fetchUserProfile } from "../services/userService";
 import { AxiosError } from "axios";
 import { clearAuthTokens, storeAuthTokens } from "../utils/tokenHelper";
+import { useAuth } from "../context/AuthContext";
 
 export const useRegister = () => {
   const queryClient = useQueryClient();
+  const { login } = useAuth();
 
   return useMutation({
     mutationFn: registerUser,
     onSuccess: (data) => {
       storeAuthTokens(data);
       queryClient.setQueryData(["userProfile"], data.user); // Put user data in cache
+      login({ access: data.access, refresh: data.refresh }, data.user);
     },
   });
 };
 
 export const useLogin = () => {
   const queryClient = useQueryClient();
+  const { login } = useAuth();
 
   return useMutation({
     mutationFn: loginUser,
     onSuccess: (data) => {
       storeAuthTokens(data);
       queryClient.setQueryData(["userProfile"], data.user); // Put user data in cache
+      login({ access: data.access, refresh: data.refresh }, data.user);
     },
     onError: (error: AxiosError) => {
       console.log("Login error: ", error);
