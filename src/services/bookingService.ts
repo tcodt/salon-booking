@@ -1,4 +1,9 @@
-import { BookingDataType, GetEmployees, GetServices } from "../types/types";
+import {
+  Appointments,
+  BookingDataType,
+  GetEmployees,
+  GetServices,
+} from "../types/types";
 import api from "../utils/api";
 
 export const bookAppointment = async (bookingData: BookingDataType) => {
@@ -7,7 +12,7 @@ export const bookAppointment = async (bookingData: BookingDataType) => {
   return response.data;
 };
 
-export const getUserBookings = async () => {
+export const getUserBookings = async (): Promise<Appointments> => {
   const response = await api.get("/reservations/appointments/");
   console.log("Get booking data: ", response.data);
   return response.data;

@@ -85,7 +85,7 @@ const Reserve: React.FC = () => {
           onChange={(e) => setDate(e.value)}
           defaultValue={new Date()}
           locale="fa"
-          inputClass="border-2 border-orange-500 rounded-xl py-2 px-4 focus:outline-none"
+          inputClass="border-2 border-orange-500 rounded-xl h-12 px-4 focus:outline-none"
         />
 
         <label className="flex items-center gap-2 text-base font-semibold text-gray-700">
@@ -96,7 +96,7 @@ const Reserve: React.FC = () => {
           onChange={(e) => setTime({ hour: e.hour, minute: e.minute })}
           defaultValue={new Date()}
           locale="fa"
-          inputClass="border-2 border-orange-500 rounded-xl py-2 px-4 focus:outline-none"
+          inputClass="border-2 border-orange-500 rounded-xl h-12 px-4 focus:outline-none"
         />
       </div>
 
@@ -115,7 +115,7 @@ const Reserve: React.FC = () => {
       <div className="flex flex-col gap-4 my-10">
         <div>
           <select
-            className="py-2 px-4 border-2 w-full rounded-xl focus:outline-none border-orange-500 transition"
+            className="h-12 px-4 border-2 w-full rounded-xl focus:outline-none border-orange-500 transition"
             value={services || ""}
             onChange={(e) => setServices(Number(e.target.value) || null)}
             required
@@ -130,7 +130,7 @@ const Reserve: React.FC = () => {
         </div>
         <div>
           <select
-            className="py-2 px-4 border-2 w-full rounded-xl focus:outline-none border-orange-500 transition"
+            className="h-12 px-4 border-2 w-full rounded-xl focus:outline-none border-orange-500 transition"
             value={employee || ""}
             onChange={(e) => setEmployee(Number(e.target.value) || null)}
           >

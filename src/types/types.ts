@@ -56,3 +56,22 @@ export interface GetEmployeesItem {
   skill: string;
   user: number;
 }
+
+export enum AppointmentStatus {
+  Pending = "pending",
+  Confirmed = "confirmed",
+  Cancelled = "cancelled",
+  Completed = "completed",
+}
+
+export interface Appointment {
+  date: string;
+  time: string;
+  status: AppointmentStatus;
+  user: number;
+  service: GetServicesItem;
+  employee: GetEmployeesItem;
+  get_status: string;
+}
+
+export type Appointments = Appointment[];

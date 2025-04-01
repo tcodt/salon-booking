@@ -59,7 +59,11 @@ const Sidebar: React.FC = () => {
 
   const navItems = [
     { icon: <MdHome size={20} />, label: "صفحه اصلی", path: "/" },
-    { icon: <MdDateRange size={20} />, label: "نوبت‌دهی", path: "/booking" },
+    {
+      icon: <MdDateRange size={20} />,
+      label: "مدیریت کارمندان",
+      path: "/manage-employees",
+    },
     {
       icon: <LuClipboardList size={20} />,
       label: "لیست رزرو ها",

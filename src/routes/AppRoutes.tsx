@@ -15,6 +15,7 @@ import Reserve from "../pages/Reserve/Reserve";
 import MainLayout from "../layout/MainLayout";
 import AppointmentsList from "../pages/AppointmentsList/AppointmentsList";
 import Settings from "../pages/Settings/Settings";
+import ManageEmployees from "../pages/ManageEmployees/ManageEmployees";
 
 const AppRoutes: React.FC = () => {
   const token = localStorage.getItem("accessToken");
@@ -50,6 +51,7 @@ const AppRoutes: React.FC = () => {
           <Route path="/user-profile" element={<UserProfile />} />
           <Route path="/appointments-list" element={<AppointmentsList />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/manage-employees" element={<ManageEmployees />} />
         </Route>
       </Routes>
     </Router>
