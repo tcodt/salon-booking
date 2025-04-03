@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { FaCut, FaUserTie } from "react-icons/fa";
+import { FaCut, FaUsers, FaUserTie } from "react-icons/fa";
 import { GiBeard } from "react-icons/gi";
 import {
-  MdDateRange,
   MdHome,
   MdOutlineAccountCircle,
   MdOutlineSpaceDashboard,
@@ -60,7 +59,7 @@ const Sidebar: React.FC = () => {
   const navItems = [
     { icon: <MdHome size={20} />, label: "صفحه اصلی", path: "/" },
     {
-      icon: <MdDateRange size={20} />,
+      icon: <FaUsers size={20} />,
       label: "مدیریت کارمندان",
       path: "/manage-employees",
     },
@@ -93,7 +92,7 @@ const Sidebar: React.FC = () => {
       {/* Sidebar - Right positioned for RTL */}
       <div
         id="sidebar"
-        className={`fixed bottom-0 right-0 z-[2000] h-screen bg-white border overflow-y-auto [&::-webkit-scrollbar]:w-2
+        className={`fixed bottom-0 right-0 z-[2000] h-[90%] bg-white border overflow-y-auto [&::-webkit-scrollbar]:w-2
   [&::-webkit-scrollbar-track]:rounded-full
   [&::-webkit-scrollbar-track]:bg-transparent
   [&::-webkit-scrollbar-thumb]:rounded-full

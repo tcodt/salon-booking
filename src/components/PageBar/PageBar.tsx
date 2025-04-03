@@ -3,7 +3,7 @@ import { BsArrowLeft } from "react-icons/bs";
 
 interface PageBarProps {
   title: string;
-  handleClick: () => void;
+  handleClick?: () => void;
 }
 
 const PageBar: React.FC<PageBarProps> = ({ title, handleClick }) => {

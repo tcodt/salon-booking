@@ -39,22 +39,42 @@ export interface User {
   is_staff: boolean;
 }
 
-export type GetServices = GetServicesItem[];
+export interface Employee {
+  id: number;
+  user: User;
+  skill: string;
+}
+
+export interface Business {
+  id: number;
+  name: string;
+  business_type: string; // Or enum if you have specific types
+  address: string;
+  telephone_number: string;
+  phone_number: string;
+  is_coffee_shop: boolean;
+  is_parking: boolean;
+  instagram_link: string;
+  owner: number;
+}
+
 export interface GetServicesItem {
   id: number;
+  business: Business; // Changed from number to Business object
+  employee: Employee; // Changed from number to Employee object
   name: string;
   description: string;
   duration: string;
   price: string;
-  business: number;
-  employee: number;
 }
+
+export type GetServices = GetServicesItem[];
 
 export type GetEmployees = GetEmployeesItem[];
 export interface GetEmployeesItem {
   id: number;
   skill: string;
-  user: number;
+  user: User;
 }
 
 export enum AppointmentStatus {

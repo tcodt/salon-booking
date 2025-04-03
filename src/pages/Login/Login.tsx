@@ -26,10 +26,6 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const loginMutation = useLogin();
 
-  const getBackToPreviousPage = () => {
-    navigate(-1);
-  };
-
   const toggle = () => {
     setIsVisible(!isVisible);
   };
@@ -57,7 +53,7 @@ const Login: React.FC = () => {
 
   return (
     <section className="p-4 w-screen h-screen overflow-hidden">
-      <PageBar title="ورود" handleClick={getBackToPreviousPage} />
+      <PageBar title="ورود" />
 
       {loginMutation.isPending && <Loading />}
 

@@ -1,10 +1,12 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import {
+  addEmployee,
   bookAppointment,
   getEmployees,
   getServices,
   getUserBookings,
 } from "../services/bookingService";
+import { NewEmployee } from "../pages/AddEmployee/AddEmployee";
 
 export const useBookAppointment = () => {
   return useMutation({ mutationFn: bookAppointment });
@@ -26,7 +28,13 @@ export const useServices = () => {
 
 export const useEmployees = () => {
   return useQuery({
-    queryKey: ["employee"],
+    queryKey: ["employees"],
     queryFn: getEmployees,
+  });
+};
+
+export const useAddEmployee = () => {
+  return useMutation<NewEmployee, Error, Omit<NewEmployee, "id">>({
+    mutationFn: addEmployee,
   });
 };

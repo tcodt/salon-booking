@@ -16,6 +16,8 @@ import MainLayout from "../layout/MainLayout";
 import AppointmentsList from "../pages/AppointmentsList/AppointmentsList";
 import Settings from "../pages/Settings/Settings";
 import ManageEmployees from "../pages/ManageEmployees/ManageEmployees";
+import AddEmployee from "../pages/AddEmployee/AddEmployee";
+import NotFound from "../pages/NotFound/NotFound"; // Import the NotFound page
 
 const AppRoutes: React.FC = () => {
   const token = localStorage.getItem("accessToken");
@@ -52,7 +54,11 @@ const AppRoutes: React.FC = () => {
           <Route path="/appointments-list" element={<AppointmentsList />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/manage-employees" element={<ManageEmployees />} />
+          <Route path="/add-employee" element={<AddEmployee />} />
         </Route>
+
+        {/* Not Found route */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

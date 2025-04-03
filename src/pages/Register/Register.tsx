@@ -30,10 +30,6 @@ const Register: React.FC = () => {
   const navigate = useNavigate();
   const registerMutation = useRegister();
 
-  const getBackToPreviousPage = () => {
-    navigate(-1);
-  };
-
   const toggle = () => {
     setIsVisible(!isVisible);
   };
@@ -60,7 +56,7 @@ const Register: React.FC = () => {
 
   return (
     <section className="p-4 w-screen h-screen overflow-hidden" id="shape">
-      <PageBar title="ثبت نام" handleClick={getBackToPreviousPage} />
+      <PageBar title="ثبت نام" />
 
       {registerMutation.isPending && <Loading />}
 

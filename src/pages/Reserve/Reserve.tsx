@@ -137,7 +137,7 @@ const Reserve: React.FC = () => {
             <option value="">لطفاً کارمند را انتخاب کنید</option>
             {employeesData?.map((employee) => (
               <option key={employee.id} value={employee.id}>
-                {employee.skill}
+                {employee?.user?.first_name}
               </option>
             ))}
           </select>
