@@ -11,13 +11,7 @@ const HomePage: React.FC = () => {
   const greetingUser = getGreeting(username);
 
   return (
-    <section
-      className="p-4 h-screen w-screen overflow-y-auto pb-[160px] [&::-webkit-scrollbar]:w-2
-  [&::-webkit-scrollbar-track]:rounded-full
-  [&::-webkit-scrollbar-track]:bg-transparent
-  [&::-webkit-scrollbar-thumb]:rounded-full
-  [&::-webkit-scrollbar-thumb]:bg-transparent"
-    >
+    <section className="space-y-6">
       {/* User Name */}
       <h3 className="text-2xl font-bold text-gray-800 my-3">{greetingUser}</h3>
 

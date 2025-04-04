@@ -52,13 +52,7 @@ const AddEmployee: React.FC = () => {
   };
 
   return (
-    <div
-      className="p-4 w-screen h-screen overflow-y-auto pb-[160px] [&::-webkit-scrollbar]:w-2
-  [&::-webkit-scrollbar-track]:rounded-full
-  [&::-webkit-scrollbar-track]:bg-transparent
-  [&::-webkit-scrollbar-thumb]:rounded-full
-  [&::-webkit-scrollbar-thumb]:bg-transparent"
-    >
+    <div className="p-4">
       <form onSubmit={handleSubmit(addEmployeeHandler)} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <ImageUploader

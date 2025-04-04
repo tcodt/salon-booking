@@ -20,13 +20,7 @@ const ManageEmployees: React.FC = () => {
   }
 
   return (
-    <section
-      className="p-4 w-screen h-screen overflow-y-auto pb-[160px] [&::-webkit-scrollbar]:w-2
-  [&::-webkit-scrollbar-track]:rounded-full
-  [&::-webkit-scrollbar-track]:bg-transparent
-  [&::-webkit-scrollbar-thumb]:rounded-full
-  [&::-webkit-scrollbar-thumb]:bg-transparent"
-    >
+    <section className="p-4">
       <div className="flex items-center gap-2">
         <Link
           to="/add-employee"

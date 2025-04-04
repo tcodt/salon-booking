@@ -64,13 +64,7 @@ const Reserve: React.FC = () => {
   };
 
   return (
-    <div
-      className="p-4 h-screen w-screen overflow-y-auto pb-[160px] [&::-webkit-scrollbar]:w-2
-  [&::-webkit-scrollbar-track]:rounded-full
-  [&::-webkit-scrollbar-track]:bg-transparent
-  [&::-webkit-scrollbar-thumb]:rounded-full
-  [&::-webkit-scrollbar-thumb]:bg-transparent"
-    >
+    <div className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-800 pb-8">
         همین حالا رزرو کن!
       </h2>
@@ -134,10 +128,10 @@ const Reserve: React.FC = () => {
             value={employee || ""}
             onChange={(e) => setEmployee(Number(e.target.value) || null)}
           >
-            <option value="">لطفاً کارمند را انتخاب کنید</option>
+            <option value="">لطفاً آرایشگر را انتخاب کنید</option>
             {employeesData?.map((employee) => (
               <option key={employee.id} value={employee.id}>
-                {employee?.user?.first_name}
+                {employee?.user?.first_name} - {employee?.skill}
               </option>
             ))}
           </select>

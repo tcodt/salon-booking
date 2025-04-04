@@ -7,10 +7,17 @@ import Sidebar from "../components/Sidebar/Sidebar";
 const MainLayout: React.FC = () => {
   return (
     <>
-      <div className="flex flex-col min-h-screen">
+      <div
+        id="mainPageForScroll"
+        className="p-4 h-screen w-screen overflow-y-auto [&::-webkit-scrollbar]:w-2
+        [&::-webkit-scrollbar-track]:rounded-full
+        [&::-webkit-scrollbar-track]:bg-slate-300
+        [&::-webkit-scrollbar-thumb]:rounded-full
+        [&::-webkit-scrollbar-thumb]:bg-slate-400"
+      >
         <TopBar />
         <Sidebar />
-        <main className="flex-grow">
+        <main>
           <Outlet />
         </main>
         <Navigation />

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { FaCut, FaUsers, FaUserTie } from "react-icons/fa";
 import { GiBeard } from "react-icons/gi";
 import {
@@ -16,45 +16,25 @@ import { LuClipboardList } from "react-icons/lu";
 const Sidebar: React.FC = () => {
   const { user } = useAuth();
   const { isSidebarOpen, setIsSidebarOpen } = useSidebar();
-  const [isMobile, setIsMobile] = useState(false);
   const location = useLocation();
-
-  // Check if mobile view on mount and resize
-  useEffect(() => {
-    const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkIfMobile();
-    window.addEventListener("resize", checkIfMobile);
-
-    return () => window.removeEventListener("resize", checkIfMobile);
-  }, []);
 
   // Close sidebar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const sidebar = document.getElementById("sidebar");
-      if (
-        sidebar &&
-        !sidebar.contains(event.target as Node) &&
-        isSidebarOpen &&
-        isMobile
-      ) {
+      if (sidebar && !sidebar.contains(event.target as Node) && isSidebarOpen) {
         setIsSidebarOpen(false);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isSidebarOpen, isMobile, setIsSidebarOpen]);
+  }, [isSidebarOpen, setIsSidebarOpen]);
 
-  // Close sidebar when route changes (mobile only)
+  // Close sidebar when route changes
   useEffect(() => {
-    if (isMobile) {
-      setIsSidebarOpen(false);
-    }
-  }, [location, isMobile, setIsSidebarOpen]);
+    setIsSidebarOpen(false);
+  }, [location, setIsSidebarOpen]);
 
   const navItems = [
     { icon: <MdHome size={20} />, label: "صفحه اصلی", path: "/" },
@@ -85,20 +65,20 @@ const Sidebar: React.FC = () => {
 
   return (
     <>
-      {isSidebarOpen && isMobile && (
+      {isSidebarOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300"></div>
       )}
 
       {/* Sidebar - Right positioned for RTL */}
       <div
         id="sidebar"
-        className={`fixed bottom-0 right-0 z-[2000] h-[90%] bg-white border overflow-y-auto [&::-webkit-scrollbar]:w-2
+        className={`fixed bottom-0 right-0 z-[2000] h-[95%] w-64 bg-white border overflow-y-auto [&::-webkit-scrollbar]:w-2
   [&::-webkit-scrollbar-track]:rounded-full
   [&::-webkit-scrollbar-track]:bg-transparent
   [&::-webkit-scrollbar-thumb]:rounded-full
-  [&::-webkit-scrollbar-thumb]:bg-transparent rounded-e-xl shadow-lg transition-all duration-300 ease-in-out ${
-    isSidebarOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"
-  } ${isMobile ? "w-64" : "w-20 md:w-64"}`}
+  [&::-webkit-scrollbar-thumb]:bg-transparent rounded-e-xl shadow-lg transition-transform duration-300 ease-in-out ${
+    isSidebarOpen ? "translate-x-0" : "translate-x-full"
+  }`}
         style={{ right: 0 }} // Position on right for RTL
       >
         <div className="flex flex-col h-full p-4">
@@ -107,11 +87,7 @@ const Sidebar: React.FC = () => {
             <div className="bg-orange-600 text-white rounded-lg p-2">
               <MdOutlineSpaceDashboard size={28} />
             </div>
-            <span
-              className={`mr-3 text-xl font-bold whitespace-nowrap ${
-                !isSidebarOpen && "hidden md:inline"
-              }`}
-            >
+            <span className="mr-3 text-xl font-bold whitespace-nowrap">
               آرایشگاه من
             </span>
           </div>
@@ -122,37 +98,21 @@ const Sidebar: React.FC = () => {
                 <li key={item.label}>
                   <Link
                     to={item.path}
-                    className={`flex items-center p-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-orange-600 transition-colors duration-200 ${
-                      !isSidebarOpen && "justify-center md:justify-start"
-                    }`}
+                    className="flex items-center p-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-orange-600 transition-colors duration-200"
                   >
                     <span className="text-orange-600">{item.icon}</span>
-                    <span
-                      className={`mr-3 whitespace-nowrap ${
-                        !isSidebarOpen && "hidden md:inline"
-                      }`}
-                    >
-                      {item.label}
-                    </span>
+                    <span className="mr-3 whitespace-nowrap">{item.label}</span>
                   </Link>
                 </li>
               ))}
             </ul>
           </nav>
           {/* User Profile */}
-          <div
-            className={`mt-auto p-3 rounded-lg bg-gray-50 flex items-center ${
-              !isSidebarOpen && "justify-center md:justify-start"
-            }`}
-          >
+          <div className="mt-auto p-3 rounded-lg bg-gray-50 flex items-center">
             <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
               <MdOutlineAccountCircle className="text-orange-600" size={20} />
             </div>
-            <div
-              className={`mr-3 overflow-hidden transition-all duration-300 ${
-                !isSidebarOpen && "hidden md:block"
-              }`}
-            >
+            <div className="mr-3 overflow-hidden">
               <p className="text-sm font-medium">{user?.first_name}</p>
               <p className="text-xs text-gray-500 truncate">{user?.email}</p>
             </div>

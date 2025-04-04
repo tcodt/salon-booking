@@ -16,13 +16,7 @@ const AppointmentsList: React.FC = () => {
   if (isPending) return <Loading />;
 
   return (
-    <div
-      className="p-4 w-screen h-screen overflow-y-auto pb-[160px] [&::-webkit-scrollbar]:w-2
-  [&::-webkit-scrollbar-track]:rounded-full
-  [&::-webkit-scrollbar-track]:bg-transparent
-  [&::-webkit-scrollbar-thumb]:rounded-full
-  [&::-webkit-scrollbar-thumb]:bg-transparent"
-    >
+    <div className="p-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:grid-cols-3">
         {services?.map((service, index) => (
           <div key={index} className="bg-white shadow-sm rounded-xl p-4 border">

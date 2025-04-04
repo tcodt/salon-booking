@@ -4,7 +4,7 @@ import SidebarToggleButton from "../SidebarToggleButton/SidebarToggleButton";
 
 const TopBar: React.FC = () => {
   return (
-    <div className="flex items-center justify-between p-4">
+    <div className="flex items-center justify-between pb-4">
       <div className="flex items-center gap-4">
         <SidebarToggleButton />
         <button className="text-gray-500 text-3xl hover:text-orange-500 transition">
