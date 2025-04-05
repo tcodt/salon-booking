@@ -60,7 +60,7 @@ const Reserve: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div>
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-gray-800">همین حالا رزرو کن!</h2>
         <hr />

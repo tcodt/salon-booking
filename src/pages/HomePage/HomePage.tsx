@@ -14,7 +14,6 @@ const HomePage: React.FC = () => {
     <section className="space-y-6">
       {/* User Name */}
       <h3 className="text-2xl font-bold text-gray-800 my-3">{greetingUser}</h3>
-
       {/* Search Bar */}
       <div className="relative mb-3">
         <input
@@ -24,10 +23,8 @@ const HomePage: React.FC = () => {
         />
         <CiSearch size={25} className="absolute top-2 left-2 text-gray-500" />
       </div>
-
       {/* Offer Box */}
       <OfferCarousel />
-
       {/* Booking */}
       <div className="mt-4 p-4 rounded-xl bg-gradient-to-r z-10 from-blue-500 to-violet-500 relative after:absolute after:content-[''] after:top-2 after:-left-4 after:w-40 after:h-40 after:bg-white after:rounded-full after:bg-opacity-30 after:-z-10 before:absolute before:content-[''] before:bottom-2 before:-right-4 before:w-40 before:h-40 before:bg-white before:rounded-full before:bg-opacity-30 before:-z-10">
         <h3 className="text-xl font-bold text-white mb-2">رزرو نوبت</h3>

@@ -14,7 +14,7 @@ const OfflinePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6">
+    <div className="flex flex-col items-center justify-center">
       <img
         src="/images/no-internet.svg"
         alt="No Internet"

@@ -16,7 +16,7 @@ const AppointmentsList: React.FC = () => {
   if (isPending) return <Loading />;
 
   return (
-    <div className="p-4">
+    <div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:grid-cols-3">
         {services?.map((service, index) => (
           <div key={index} className="bg-white shadow-sm rounded-xl p-4 border">

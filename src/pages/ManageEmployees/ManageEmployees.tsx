@@ -46,8 +46,8 @@ const ManageEmployees: React.FC = () => {
   };
 
   return (
-    <section className="min-h-screen">
-      <div className="flex items-center gap-2 mb-6">
+    <section className="space-y-6">
+      <div className="flex flex-row flex-wrap items-center gap-2">
         <Link
           to="/add-employee"
           className="bg-sky-100 text-sky-500 hover:bg-sky-200 transition rounded-xl py-2 px-4 flex items-center gap-2"
@@ -145,7 +145,7 @@ const ManageEmployees: React.FC = () => {
         </div>
       </CustomModal>
 
-      <h3 className="text-gray-800 text-2xl font-bold mb-6">کارمندان</h3>
+      <h3 className="text-gray-800 text-2xl font-bold ">کارمندان</h3>
       {employees?.length === 0 ? (
         <p className="text-gray-600">کارمندی یافت نشد.</p>
       ) : (
