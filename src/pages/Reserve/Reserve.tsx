@@ -60,7 +60,7 @@ const Reserve: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between">
+    <div className="min-h-screen">
       <div className="space-y-6">
         <h2 className="text-2xl font-bold text-gray-800">همین حالا رزرو کن!</h2>
         <hr />
@@ -130,15 +130,15 @@ const Reserve: React.FC = () => {
             </select>
           </div>
         </div>
-      </div>
 
-      <Button
-        type="submit"
-        onClick={handleBooking}
-        disabled={bookAppointmentMutation.isPending}
-      >
-        {bookAppointmentMutation.isPending ? "درحال ارسال..." : "ثبت رزرو"}
-      </Button>
+        <Button
+          type="submit"
+          onClick={handleBooking}
+          disabled={bookAppointmentMutation.isPending}
+        >
+          {bookAppointmentMutation.isPending ? "درحال ارسال..." : "ثبت رزرو"}
+        </Button>
+      </div>
     </div>
   );
 };

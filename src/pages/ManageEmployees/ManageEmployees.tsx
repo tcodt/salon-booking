@@ -46,7 +46,7 @@ const ManageEmployees: React.FC = () => {
   };
 
   return (
-    <section>
+    <section className="min-h-screen">
       <div className="flex items-center gap-2 mb-6">
         <Link
           to="/add-employee"

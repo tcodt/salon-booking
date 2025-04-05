@@ -54,7 +54,7 @@ const AddEmployee: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="min-h-screen">
       <form onSubmit={handleSubmit(addEmployeeHandler)} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <ImageUploader
