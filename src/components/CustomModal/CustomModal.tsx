@@ -52,7 +52,7 @@ const CustomModal: React.FC<ModalProps> = ({
       {/* Modal with slide-in animation */}
       <div
         ref={modalRef}
-        className="relative bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all duration-300"
+        className="relative bg-white rounded-lg shadow-xl w-full max-w-md max-h-[75%] overflow-hidden overflow-y-auto transform transition-all duration-300"
         style={{
           animation: "modalEnter 0.3s forwards",
         }}

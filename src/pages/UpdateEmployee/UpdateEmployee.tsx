@@ -1,12 +1,15 @@
 import { Checkbox } from "@mui/material";
 import { orange } from "@mui/material/colors";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Button from "../../components/Button/Button";
 import ImageUploader from "../../components/ImageUploader/ImageUploader";
-import { useAddEmployee } from "../../hooks/useBooking";
+import { useEmployeeById, useUpdateEmployee } from "../../hooks/useBooking";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { useParams } from "react-router";
+import Loading from "../../components/Loading/Loading";
+import { AxiosError } from "axios";
 // import { AxiosError } from "axios";
 
 interface NewUser {
@@ -26,36 +29,71 @@ export interface NewEmployee {
   skill: string;
 }
 
-const AddEmployee: React.FC = () => {
+const UpdateEmployee: React.FC = () => {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm<NewEmployee>();
-  const addEmployeeMutation = useAddEmployee();
+  const { id } = useParams<{ id: string }>();
+  const employeeId = Number(id);
+  console.log(employeeId);
+  const { data: employeeData, isPending } = useEmployeeById(employeeId);
+  const updateEmployeeMutation = useUpdateEmployee(employeeId);
   const queryClient = useQueryClient();
 
-  const addEmployeeHandler = (data: NewEmployee) => {
-    const addEmployeeToastId = toast.loading("درحال بارگذاری...");
-    addEmployeeMutation.mutate(data, {
+  useEffect(() => {
+    if (employeeData) {
+      reset(employeeData);
+    }
+  }, [employeeData, reset]);
+
+  //   useEffect(() => {
+  //     if (employeeData) {
+  //       reset({
+  //         user: {
+  //           first_name: employeeData.user.first_name,
+  //           last_name: employeeData.user.last_name,
+  //           phone_number: employeeData.user.phone_number,
+  //           email: employeeData.user.email,
+  //           is_owner: employeeData.user.is_owner,
+  //           is_active: employeeData.user.is_active,
+  //           is_staff: employeeData.user.is_staff,
+  //           image: employeeData.user.image,
+  //         },
+  //         skill: employeeData.skill,
+  //       });
+  //     }
+  //   }, [employeeData, reset]);
+
+  const updateEmployeeHandler = (data: NewEmployee) => {
+    const updateEmployeeToastId = toast.loading("درحال بارگذاری...");
+    updateEmployeeMutation.mutate(data, {
       onSuccess: (data) => {
-        console.log("New employee: ", data);
-        toast.success("کارمند با موفقیت اضافه شد", { id: addEmployeeToastId });
+        console.log("Updated employee: ", data);
+        toast.success("کارمند با موفقیت بروزرسانی شد", {
+          id: updateEmployeeToastId,
+        });
         queryClient.invalidateQueries({ queryKey: ["employees"] });
         reset();
       },
-      onError: () => {
-        // const axiosError = error as AxiosError;
-        // console.log(axiosError.response?.data);
-        toast.error("مشکلی پیش آمد!", { id: addEmployeeToastId });
+      onError: (error) => {
+        const axiosError = error as AxiosError;
+        console.log(axiosError);
+        toast.error("خطا در بروزرسانی!", { id: updateEmployeeToastId });
       },
     });
   };
 
+  if (isPending) return <Loading />;
+
   return (
     <div>
-      <form onSubmit={handleSubmit(addEmployeeHandler)} className="space-y-4">
+      <form
+        onSubmit={handleSubmit(updateEmployeeHandler)}
+        className="space-y-4"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <ImageUploader
             onUpload={(imageUrl) =>
@@ -203,4 +241,4 @@ const AddEmployee: React.FC = () => {
   );
 };
 
-export default AddEmployee;
+export default UpdateEmployee;

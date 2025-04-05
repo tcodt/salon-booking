@@ -18,6 +18,17 @@ import Settings from "../pages/Settings/Settings";
 import ManageEmployees from "../pages/ManageEmployees/ManageEmployees";
 import AddEmployee from "../pages/AddEmployee/AddEmployee";
 import NotFound from "../pages/NotFound/NotFound"; // Import the NotFound page
+import OfflinePage from "../pages/OfflinePage/OfflinePage";
+import { useNetworkStatus } from "../hooks/useNetworkStatus";
+import UpdateEmployee from "../pages/UpdateEmployee/UpdateEmployee";
+
+// Wrapper component for offline detection
+const NetworkStatusWrapper: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  useNetworkStatus(); // Applies offline redirect
+  return <>{children}</>;
+};
 
 const AppRoutes: React.FC = () => {
   const token = localStorage.getItem("accessToken");
@@ -37,11 +48,16 @@ const AppRoutes: React.FC = () => {
         <Route path="/receive-code" element={<ForgotPasswordCode />} />
         <Route path="/change-password" element={<ChangePassword />} />
 
+        {/* Network Status Route */}
+        <Route path="/offline" element={<OfflinePage />} />
+
         {/* Authenticated routes with MainLayout */}
         <Route
           element={
             <PrivateRoutes>
-              <MainLayout />
+              <NetworkStatusWrapper>
+                <MainLayout />
+              </NetworkStatusWrapper>
             </PrivateRoutes>
           }
         >
@@ -55,6 +71,7 @@ const AppRoutes: React.FC = () => {
           <Route path="/settings" element={<Settings />} />
           <Route path="/manage-employees" element={<ManageEmployees />} />
           <Route path="/add-employee" element={<AddEmployee />} />
+          <Route path="/update-employee/:id" element={<UpdateEmployee />} />
         </Route>
 
         {/* Not Found route */}
