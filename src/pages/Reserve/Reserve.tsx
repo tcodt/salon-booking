@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { DatePicker, TimePicker } from "zaman";
 import { FaRegCalendarAlt, FaRegClock } from "react-icons/fa";
 import { getUserFromStorage } from "../../utils/tokenHelper";
+import { useQueryClient } from "@tanstack/react-query"
 
 const Reserve: React.FC = () => {
   const [date, setDate] = useState<Date | null>(new Date());
@@ -21,6 +22,8 @@ const Reserve: React.FC = () => {
 
   const { data: servicesData = [] } = useServices();
   const { data: employeesData = [] } = useEmployees();
+
+  const queryClient = useQueryClient();
 
   const currentUser = getUserFromStorage();
   const bookAppointmentMutation = useBookAppointment();
@@ -51,6 +54,9 @@ const Reserve: React.FC = () => {
       onSuccess: (data) => {
         console.log("Reserve data: ", data);
         toast.success("رزرو شما با موفقیت ثبت شد!");
+        queryClient.invalidateQueries({
+          queryKey: ["services"]
+        })
       },
       onError: (error) => {
         console.log(error);
