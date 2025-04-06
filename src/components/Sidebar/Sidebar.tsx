@@ -73,7 +73,7 @@ const Sidebar: React.FC = () => {
           rounded-e-xl shadow-lg transition-transform duration-300 ease-in-out
           ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}`}
       >
-        <div className="flex flex-col h-full p-4">
+        <div className="flex flex-col p-4 pb-8">
           <div className="flex items-center justify-start p-4 mb-8">
             <div className="bg-orange-600 text-white rounded-lg p-2">
               <MdOutlineSpaceDashboard size={28} />
