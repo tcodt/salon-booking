@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router";
 import Button from "../../components/Button/Button";
+import toast from "react-hot-toast";
 
 const OfflinePage: React.FC = () => {
   const navigate = useNavigate();
@@ -9,7 +10,9 @@ const OfflinePage: React.FC = () => {
     if (navigator.onLine) {
       navigate(-1); // Go back to the previous page
     } else {
-      alert("شما هنوز آفلاین هستید. لطفاً اتصال اینترنت خود را بررسی کنید.");
+      toast.error(
+        "شما هنوز آفلاین هستید. لطفاً اتصال اینترنت خود را بررسی کنید."
+      );
     }
   };
 

@@ -76,6 +76,7 @@ const Login: React.FC = () => {
                 type="text"
                 placeholder="شماره تلفن"
                 maxLength={11}
+                autoComplete="username"
                 className="outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 ps-4 pe-8 rounded-xl text-left text-gray-800 font-medium text-base h-12 w-full"
                 {...register("phone_number", {
                   required: "شماره تلفن اجباری است!",
@@ -112,6 +113,7 @@ const Login: React.FC = () => {
                 type={!isVisible ? "password" : "text"}
                 placeholder="رمز عبور"
                 maxLength={12}
+                autoComplete="current-password"
                 className="outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 px-8 rounded-xl text-left text-gray-800 font-medium text-base h-12 w-full"
                 {...register("password", {
                   required: "رمز عبور اجباری است!",

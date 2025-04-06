@@ -7,6 +7,7 @@ import ImageUploader from "../../components/ImageUploader/ImageUploader";
 import { useAddEmployee } from "../../hooks/useBooking";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
 // import { AxiosError } from "axios";
 
 interface NewUser {
@@ -35,6 +36,7 @@ const AddEmployee: React.FC = () => {
   } = useForm<NewEmployee>();
   const addEmployeeMutation = useAddEmployee();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const addEmployeeHandler = (data: NewEmployee) => {
     const addEmployeeToastId = toast.loading("درحال بارگذاری...");
@@ -44,6 +46,7 @@ const AddEmployee: React.FC = () => {
         toast.success("کارمند با موفقیت اضافه شد", { id: addEmployeeToastId });
         queryClient.invalidateQueries({ queryKey: ["employees"] });
         reset();
+        navigate("/manage-employees");
       },
       onError: () => {
         // const axiosError = error as AxiosError;

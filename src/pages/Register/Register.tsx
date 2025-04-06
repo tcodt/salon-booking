@@ -122,6 +122,7 @@ const Register: React.FC = () => {
                 type="text"
                 maxLength={11}
                 placeholder={errors?.phoneNumber?.message || "شماره تلفن"}
+                autoComplete="username"
                 className={`outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 ps-4 pe-8 rounded-xl text-left text-gray-800 font-medium h-12 w-full ${
                   errors?.phoneNumber?.message
                     ? "text-sm placeholder:text-red-500"
@@ -176,6 +177,7 @@ const Register: React.FC = () => {
                 type={!isVisible ? "password" : "text"}
                 placeholder={errors?.password?.message || "رمز عبور"}
                 maxLength={12}
+                autoComplete="current-password"
                 className={`outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 px-8 rounded-xl text-left text-gray-800 font-medium h-12 w-full ${
                   errors?.password?.message
                     ? "text-sm placeholder:text-red-500"
