@@ -4,12 +4,13 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Button from "../../components/Button/Button";
 import ImageUploader from "../../components/ImageUploader/ImageUploader";
-import { useEmployeeById, useUpdateEmployee } from "../../hooks/useBooking";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import Loading from "../../components/Loading/Loading";
 import { AxiosError } from "axios";
+import { useEmployeeById } from "../../hooks/employees/useEmployeeById";
+import { useUpdateEmployee } from "../../hooks/employees/useUpdateEmployee";
 // import { AxiosError } from "axios";
 
 interface NewUser {
@@ -38,10 +39,10 @@ const UpdateEmployee: React.FC = () => {
   } = useForm<NewEmployee>();
   const { id } = useParams<{ id: string }>();
   const employeeId = Number(id);
-  console.log(employeeId);
   const { data: employeeData, isPending } = useEmployeeById(employeeId);
   const updateEmployeeMutation = useUpdateEmployee(employeeId);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (employeeData) {
@@ -76,6 +77,7 @@ const UpdateEmployee: React.FC = () => {
           id: updateEmployeeToastId,
         });
         queryClient.invalidateQueries({ queryKey: ["employees"] });
+        navigate("/manage-employees");
         reset();
       },
       onError: (error) => {

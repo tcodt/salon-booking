@@ -39,6 +39,8 @@ export interface User {
   is_staff: boolean;
 }
 
+export type Users = User[];
+
 export interface Employee {
   id: number;
   user: User;
@@ -77,6 +79,23 @@ export interface GetEmployeesItem {
   user: User;
 }
 
+export type NewEmployeeType = {
+  user_id: number;
+  skill: string;
+};
+
+interface NewEmployeeUserObj {
+  id: number;
+  name: string;
+  phone: string;
+}
+
+export type NewEmployeePromiseType = {
+  id: number;
+  user: NewEmployeeUserObj;
+  skill: string;
+};
+
 export enum AppointmentStatus {
   Pending = "pending",
   Confirmed = "confirmed",
@@ -85,6 +104,7 @@ export enum AppointmentStatus {
 }
 
 export interface Appointment {
+  id: number;
   date: string;
   time: string;
   status: AppointmentStatus;

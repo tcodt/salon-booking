@@ -84,7 +84,6 @@ const CustomModal: React.FC<ModalProps> = ({
         </div>
       </div>
 
-      {/* Animation keyframes (add to your global CSS) */}
       <style>{`
         @keyframes modalEnter {
           from { 

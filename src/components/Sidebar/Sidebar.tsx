@@ -7,6 +7,7 @@ import {
   MdOutlineSpaceDashboard,
   MdPerson,
   MdSettings,
+  MdSpaceDashboard,
 } from "react-icons/md";
 import { Link, useLocation } from "react-router"; // Fixed import
 import { useSidebar } from "../../context/SidebarContext";
@@ -39,6 +40,11 @@ const Sidebar: React.FC = () => {
       icon: <FaUsers size={20} />,
       label: "مدیریت کارمندان",
       path: "/manage-employees",
+    },
+    {
+      icon: <MdSpaceDashboard size={20} />,
+      label: "مدیریت سرویس ها",
+      path: "/manage-services",
     },
     {
       icon: <LuClipboardList size={20} />,

@@ -1,15 +1,13 @@
 import React, { useState } from "react";
-import {
-  useBookAppointment,
-  useEmployees,
-  useServices,
-} from "../../hooks/useBooking";
 import Button from "../../components/Button/Button";
 import toast from "react-hot-toast";
 import { DatePicker, TimePicker } from "zaman";
 import { FaRegCalendarAlt, FaRegClock } from "react-icons/fa";
 import { getUserFromStorage } from "../../utils/tokenHelper";
-import { useQueryClient } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query";
+import { useAddAppointment } from "../../hooks/appointments/useAddAppointment";
+import { useGetServices } from "../../hooks/services/useGetServices";
+import { useGetEmployees } from "../../hooks/employees/useGetEmployees";
 
 const Reserve: React.FC = () => {
   const [date, setDate] = useState<Date | null>(new Date());
@@ -20,13 +18,13 @@ const Reserve: React.FC = () => {
   const [employee, setEmployee] = useState<number | null>(null);
   const status: string = "pending";
 
-  const { data: servicesData = [] } = useServices();
-  const { data: employeesData = [] } = useEmployees();
+  const { data: servicesData = [] } = useGetServices();
+  const { data: employeesData = [] } = useGetEmployees();
 
   const queryClient = useQueryClient();
 
   const currentUser = getUserFromStorage();
-  const bookAppointmentMutation = useBookAppointment();
+  const addAppointmentMutation = useAddAppointment();
 
   const handleBooking = () => {
     if (!date || !time || !services) {
@@ -50,13 +48,13 @@ const Reserve: React.FC = () => {
 
     console.log("Sending Booking Data:", bookingData);
 
-    bookAppointmentMutation.mutate(bookingData, {
+    addAppointmentMutation.mutate(bookingData, {
       onSuccess: (data) => {
         console.log("Reserve data: ", data);
         toast.success("رزرو شما با موفقیت ثبت شد!");
         queryClient.invalidateQueries({
-          queryKey: ["services"]
-        })
+          queryKey: ["userBookings"],
+        });
       },
       onError: (error) => {
         console.log(error);
@@ -140,9 +138,9 @@ const Reserve: React.FC = () => {
         <Button
           type="submit"
           onClick={handleBooking}
-          disabled={bookAppointmentMutation.isPending}
+          disabled={addAppointmentMutation.isPending}
         >
-          {bookAppointmentMutation.isPending ? "درحال ارسال..." : "ثبت رزرو"}
+          {addAppointmentMutation.isPending ? "درحال ارسال..." : "ثبت رزرو"}
         </Button>
       </div>
     </div>
