@@ -16,11 +16,9 @@ import MainLayout from "../layout/MainLayout";
 import AppointmentsList from "../pages/AppointmentsList/AppointmentsList";
 import Settings from "../pages/Settings/Settings";
 import ManageEmployees from "../pages/ManageEmployees/ManageEmployees";
-// import AddEmployee from "../pages/AddEmployee/AddEmployee";
 import NotFound from "../pages/NotFound/NotFound";
 import OfflinePage from "../pages/OfflinePage/OfflinePage";
 import { useNetworkStatus } from "../hooks/useNetworkStatus";
-import UpdateEmployee from "../pages/UpdateEmployee/UpdateEmployee";
 import ViewAppointment from "../pages/ViewAppointment/ViewAppointment";
 import ManageServices from "../pages/ManageServices/ManageServices";
 
@@ -73,8 +71,6 @@ const AppRoutes: React.FC = () => {
           <Route path="/settings" element={<Settings />} />
           <Route path="/manage-employees" element={<ManageEmployees />} />
           <Route path="/manage-services" element={<ManageServices />} />
-          {/* <Route path="/add-employee" element={<AddEmployee />} /> */}
-          <Route path="/update-employee/:id" element={<UpdateEmployee />} />
           <Route path="/view-appointment/:id" element={<ViewAppointment />} />
         </Route>
 
