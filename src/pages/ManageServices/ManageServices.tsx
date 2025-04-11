@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { MdAttachMoney, MdOutlineRoomService } from "react-icons/md";
 import { PiTimerBold } from "react-icons/pi";
 import Loading from "../../components/Loading/Loading";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { IoPersonAdd } from "react-icons/io5";
 import { RxUpdate } from "react-icons/rx";
 import { FaPencil, FaTrashCan } from "react-icons/fa6";
@@ -13,14 +13,32 @@ import { AxiosError } from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetServices } from "../../hooks/services/useGetServices";
 import { useRemoveService } from "../../hooks/services/useRemoveService";
+import { useForm } from "react-hook-form";
+import { PostServicesData } from "../../types/services";
+import Button from "../../components/Button/Button";
+import { useGetEmployees } from "../../hooks/employees/useGetEmployees";
+import { useGetBusinesses } from "../../hooks/business/useGetBusinesses";
+import { useAddService } from "../../hooks/services/useAddService";
+import TimeInput from "../../components/TimeInput/TimeInput";
 
 const ManageServices: React.FC = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<PostServicesData>();
   const { data: services, isError, isPending, error } = useGetServices();
+  const { data: employees } = useGetEmployees();
+  const { data: businesses } = useGetBusinesses();
   const [isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
+  const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
+  const [duration, setDuration] = useState("00:00:00");
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const removeServiceMutation = useRemoveService();
+  const addServiceMutation = useAddService();
 
   if (isError) {
     toast.error("مشکلی پیش آمد!");
@@ -33,6 +51,29 @@ const ManageServices: React.FC = () => {
   }
 
   if (isPending) return <Loading />;
+
+  const onSubmit = (data: PostServicesData) => {
+    const finalData: PostServicesData = {
+      ...data,
+      duration: duration,
+    };
+
+    const toastId = toast.loading("در حال افزودن سرویس...");
+    addServiceMutation.mutate(finalData, {
+      onSuccess: () => {
+        toast.success("سرویس با موفقیت افزوده شد!", { id: toastId });
+        reset();
+        setDuration("00:00:00");
+        setIsAddOpen(false);
+        queryClient.invalidateQueries({ queryKey: ["services"] });
+      },
+      onError: (error) => {
+        const axiosError = error as AxiosError;
+        toast.error("خطایی رخ داده است!", { id: toastId });
+        console.error(axiosError);
+      },
+    });
+  };
 
   const handleRemoveService = (id: number) => {
     const removeSerId = toast.loading("لطفا منتظر بمانید...");
@@ -52,20 +93,20 @@ const ManageServices: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-row flex-wrap items-center gap-2">
-        <Link
-          to="/add-employee"
-          className="bg-sky-100 text-sky-500 hover:bg-sky-200 transition rounded-xl py-2 px-4 flex items-center gap-2"
+        <button
+          className="bg-sky-100 text-sky-500 hover:bg-sky-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
+          onClick={() => setIsAddOpen(true)}
         >
           افزودن <IoPersonAdd />
-        </Link>
+        </button>
         <button
-          className="bg-orange-100 text-orange-500 hover:bg-orange-200 transition rounded-xl py-2 px-4 flex items-center gap-2"
+          className="bg-orange-100 text-orange-500 hover:bg-orange-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
           onClick={() => setIsUpdateOpen(true)}
         >
           بروزرسانی <RxUpdate />
         </button>
         <button
-          className="bg-red-100 text-red-500 hover:bg-red-200 transition rounded-xl py-2 px-4 flex items-center gap-2"
+          className="bg-red-100 text-red-500 hover:bg-red-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
           onClick={() => setIsDeleteOpen(true)}
         >
           حذف <FaTrashCan />
@@ -146,6 +187,111 @@ const ManageServices: React.FC = () => {
               </button>
             </div>
           ))}
+        </div>
+      </CustomModal>
+
+      {/* Add services modal */}
+      <CustomModal
+        isOpen={isAddOpen}
+        onClose={() => {
+          setIsAddOpen(false);
+          reset();
+          setDuration("00:00:00");
+        }}
+        title="افزودن سرویس جدید"
+      >
+        <div className="flex flex-col gap-6">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
+          >
+            <input
+              type="text"
+              placeholder="نام سرویس"
+              {...register("name", { required: "نام سرویس الزامی است" })}
+              className="primary-input"
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name.message}</p>
+            )}
+
+            <input
+              type="text"
+              placeholder="توضیحات"
+              {...register("description")}
+              className="primary-input"
+            />
+
+            <TimeInput value={duration} onChange={setDuration} />
+
+            {/* <input
+              type="text"
+              placeholder="مدت زمان"
+              {...register("duration", { required: "مدت زمان الزامی است" })}
+              className="primary-input"
+            />
+            {errors.duration && (
+              <p className="text-red-500 text-sm">{errors.duration.message}</p>
+            )} */}
+
+            <input
+              type="text"
+              placeholder="قیمت (مثلا: 200)"
+              {...register("price", {
+                required: "قیمت الزامی است",
+                validate: (value) =>
+                  !isNaN(Number(value)) || "قیمت باید عدد باشد",
+              })}
+              className="primary-input"
+            />
+            {errors.price && (
+              <p className="text-red-500 text-sm">{errors.price.message}</p>
+            )}
+
+            <select
+              {...register("business_id", {
+                required: "کسب‌ و‌ کار الزامی است",
+              })}
+              className="primary-input"
+              defaultValue=""
+            >
+              <option value="" disabled>
+                انتخاب کسب‌ و‌ کار
+              </option>
+              {businesses?.map((biz) => (
+                <option key={biz.id} value={biz.id}>
+                  {biz.name}
+                </option>
+              ))}
+            </select>
+            {errors.business_id && (
+              <p className="text-red-500 text-sm">
+                {errors.business_id.message}
+              </p>
+            )}
+
+            <select
+              {...register("employee_id", { required: "کارمند الزامی است" })}
+              className="primary-input"
+              defaultValue=""
+            >
+              <option value="" disabled>
+                انتخاب کارمند
+              </option>
+              {employees?.map((emp) => (
+                <option key={emp.id} value={emp.id}>
+                  {emp.user.first_name} {emp.user.last_name}
+                </option>
+              ))}
+            </select>
+            {errors.employee_id && (
+              <p className="text-red-500 text-sm">
+                {errors.employee_id.message}
+              </p>
+            )}
+
+            <Button type="submit">ثبت سرویس</Button>
+          </form>
         </div>
       </CustomModal>
 

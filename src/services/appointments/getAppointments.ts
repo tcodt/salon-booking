@@ -1,4 +1,4 @@
-import { Appointments } from "../../types/types";
+import { Appointments } from "../../types/appointments";
 import api from "../../utils/api";
 
 export const getAppointments = async (): Promise<Appointments> => {

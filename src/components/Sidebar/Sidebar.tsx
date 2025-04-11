@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { FaCut, FaUsers, FaUserTie } from "react-icons/fa";
+import { FaUsers, FaUserTie } from "react-icons/fa";
 import { GiBeard } from "react-icons/gi";
 import {
   MdHome,
@@ -8,16 +8,21 @@ import {
   MdPerson,
   MdSettings,
   MdSpaceDashboard,
+  MdTimer,
 } from "react-icons/md";
-import { Link, useLocation } from "react-router"; // Fixed import
+import { Link, useLocation, useNavigate } from "react-router"; // Fixed import
 import { useSidebar } from "../../context/SidebarContext";
 import { useAuth } from "../../context/AuthContext";
-import { LuClipboardList } from "react-icons/lu";
+import { HiClipboardList } from "react-icons/hi";
+import { IoLogOut } from "react-icons/io5";
+import { useLogout } from "../../hooks/useAuth";
 
 const Sidebar: React.FC = () => {
   const { user } = useAuth();
   const { isSidebarOpen, setIsSidebarOpen } = useSidebar();
   const location = useLocation();
+  const navigate = useNavigate();
+  const logout = useLogout();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -43,20 +48,25 @@ const Sidebar: React.FC = () => {
     },
     {
       icon: <MdSpaceDashboard size={20} />,
-      label: "مدیریت سرویس ها",
+      label: "خدمات آرایشگاه",
       path: "/manage-services",
     },
     {
-      icon: <LuClipboardList size={20} />,
+      icon: <HiClipboardList size={20} />,
       label: "لیست رزرو ها",
       path: "/appointments-list",
     },
-    { icon: <FaCut size={20} />, label: "خدمات آرایشگاه", path: "/services" },
+    { icon: <MdTimer size={20} />, label: "ساعات کاری", path: "/work-time" },
     { icon: <FaUserTie size={20} />, label: "آرایشگران", path: "/stylists" },
     { icon: <GiBeard size={20} />, label: "محصولات", path: "/products" },
     { icon: <MdPerson size={20} />, label: "پروفایل", path: "/user-profile" },
     { icon: <MdSettings size={20} />, label: "تنظیمات", path: "/settings" },
   ];
+
+  const handleLogout = () => {
+    logout();
+    navigate("/auth");
+  };
 
   return (
     <>
@@ -103,6 +113,21 @@ const Sidebar: React.FC = () => {
               ))}
             </ul>
           </nav>
+
+          <div className="mt-auto mb-2 p-3 rounded-lg bg-red-50 flex items-center">
+            <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+              <IoLogOut className="text-orange-600" size={20} />
+            </div>
+            <div className="mr-3 overflow-hidden">
+              <button
+                className="cursor-pointer text-sm font-medium"
+                onClick={handleLogout}
+              >
+                خروج
+              </button>
+            </div>
+          </div>
+
           <div className="mt-auto p-3 rounded-lg bg-gray-50 flex items-center">
             <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
               <MdOutlineAccountCircle className="text-orange-600" size={20} />

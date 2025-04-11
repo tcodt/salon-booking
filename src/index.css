@@ -6,6 +6,47 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@layer components {
+  .primary-btn {
+    width: theme("width.full");
+    height: theme("height.12");
+    background-color: theme("backgroundColor.orange.500");
+    color: theme("colors.white");
+    font-size: theme("fontSize.base");
+    font-weight: theme("fontWeight.medium");
+    border-radius: theme("borderRadius.full");
+    padding: theme("padding.2") theme("padding.4");
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: theme("backgroundColor.orange.600");
+    }
+  }
+
+  .primary-title {
+    color: theme("colors.gray.800");
+    font-size: theme("fontSize.2xl");
+    font-weight: theme("fontWeight.semibold");
+  }
+
+  .primary-input {
+    outline: 2px solid transparent;
+    outline-color: theme("colors.transparent");
+    background-color: theme("colors.slate.100");
+    padding: theme("padding.2") theme("padding.4");
+    border-radius: theme("borderRadius.xl");
+    color: theme("colors.gray.800");
+    font-weight: theme("fontWeight.medium");
+    height: theme("height.12");
+    width: theme("width.full");
+
+    &:focus {
+      outline-color: theme("colors.orange.500");
+    }
+  }
+}
+
 @font-face {
   font-family: "mainFont";
   src: url("/fonts/IranSansX(Pro)/Farsi numerals/IRANSansXFaNum-Regular.ttf");

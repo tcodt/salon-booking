@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Loading from "../../components/Loading/Loading";
 import toast from "react-hot-toast";
-import { GetEmployeesItem } from "../../types/types";
+import { GetEmployeesItem } from "../../types/employees";
 import { FaRegTrashAlt, FaUser } from "react-icons/fa";
 import { IoAdd, IoPersonAdd } from "react-icons/io5";
 import { RxUpdate } from "react-icons/rx";
@@ -154,21 +154,21 @@ const ManageEmployees: React.FC = () => {
       <div className="flex flex-row flex-wrap items-center gap-2">
         <button
           type="button"
-          className="bg-sky-100 text-sky-500 hover:bg-sky-200 transition rounded-xl py-2 px-4 flex items-center gap-2"
+          className="bg-sky-100 text-sky-500 hover:bg-sky-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
           onClick={() => setIsAddOpen(true)}
         >
           افزودن <IoPersonAdd />
         </button>
         <button
           type="button"
-          className="bg-orange-100 text-orange-500 hover:bg-orange-200 transition rounded-xl py-2 px-4 flex items-center gap-2"
+          className="bg-orange-100 text-orange-500 hover:bg-orange-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
           onClick={() => setIsUpdateOpen(true)}
         >
           بروزرسانی <RxUpdate />
         </button>
         <button
           type="button"
-          className="bg-red-100 text-red-500 hover:bg-red-200 transition rounded-xl py-2 px-4 flex items-center gap-2"
+          className="bg-red-100 text-red-500 hover:bg-red-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
           onClick={() => setIsDeleteOpen(true)}
         >
           حذف <FaTrashCan />

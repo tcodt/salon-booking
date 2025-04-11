@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { User } from "../types/types";
 import { useQueryClient } from "@tanstack/react-query";
+import { User } from "../types/users";
 
 interface AuthContextType {
   isAuthenticated: boolean;

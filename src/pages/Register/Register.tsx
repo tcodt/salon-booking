@@ -8,9 +8,9 @@ import PageBar from "../../components/PageBar/PageBar";
 import { MdEmail } from "react-icons/md";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRegister } from "../../hooks/useAuth";
-import { UserRegisterType } from "../../types/types";
 import toast from "react-hot-toast";
 import Loading from "../../components/Loading/Loading";
+import { RegisterType } from "../../types/register";
 
 type FormData = {
   name: string;
@@ -35,7 +35,7 @@ const Register: React.FC = () => {
   };
 
   const handleRegister: SubmitHandler<FormData> = async (data) => {
-    const transformedData: UserRegisterType = {
+    const transformedData: RegisterType = {
       first_name: data.name,
       last_name: data.lastName,
       phone_number: data.phoneNumber,

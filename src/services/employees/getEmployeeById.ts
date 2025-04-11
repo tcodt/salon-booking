@@ -1,4 +1,4 @@
-import { NewEmployeePromiseType } from "../../types/types";
+import { NewEmployeePromiseType } from "../../types/employees";
 import api from "../../utils/api";
 
 export const getEmployeeById = async (

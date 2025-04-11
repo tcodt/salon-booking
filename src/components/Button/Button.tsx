@@ -10,11 +10,7 @@ const Button: React.FC<ButtonProps> = ({
   ...rest
 }) => {
   return (
-    <button
-      type={type}
-      className="md:w-2/4 w-full h-12 bg-orange-500 hover:bg-orange-600 text-white transition text-base font-medium rounded-full py-2 px-4 cursor-pointer"
-      {...rest}
-    >
+    <button type={type} className="primary-btn" {...rest}>
       {children}
     </button>
   );
