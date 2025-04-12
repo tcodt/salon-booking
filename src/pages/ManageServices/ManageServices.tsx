@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { MdAttachMoney, MdOutlineRoomService } from "react-icons/md";
 import { PiTimerBold } from "react-icons/pi";
 import Loading from "../../components/Loading/Loading";
-import { useNavigate } from "react-router";
 import { IoPersonAdd } from "react-icons/io5";
 import { RxUpdate } from "react-icons/rx";
 import { FaPencil, FaTrashCan } from "react-icons/fa6";
@@ -20,6 +19,7 @@ import { useGetEmployees } from "../../hooks/employees/useGetEmployees";
 import { useGetBusinesses } from "../../hooks/business/useGetBusinesses";
 import { useAddService } from "../../hooks/services/useAddService";
 import TimeInput from "../../components/TimeInput/TimeInput";
+import { useUpdateService } from "../../hooks/services/useUpdateService";
 
 const ManageServices: React.FC = () => {
   const {
@@ -31,14 +31,21 @@ const ManageServices: React.FC = () => {
   const { data: services, isError, isPending, error } = useGetServices();
   const { data: employees } = useGetEmployees();
   const { data: businesses } = useGetBusinesses();
+
   const [isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
-  const [duration, setDuration] = useState("00:00:00");
-  const navigate = useNavigate();
+  // const [duration, setDuration] = useState("00:00:00");
+  const [serviceToEdit, setServiceToEdit] = useState<PostServicesData | null>(
+    null
+  );
+  const [serviceIdToEdit, setServiceIdToEdit] = useState<number | null>(null);
+  const [time, setTime] = useState({ hour: 0, minute: 0 });
+
   const queryClient = useQueryClient();
   const removeServiceMutation = useRemoveService();
   const addServiceMutation = useAddService();
+  const updateServiceMutation = useUpdateService();
 
   if (isError) {
     toast.error("مشکلی پیش آمد!");
@@ -53,18 +60,41 @@ const ManageServices: React.FC = () => {
   if (isPending) return <Loading />;
 
   const onSubmit = (data: PostServicesData) => {
+    const formattedDuration = `${String(time.hour).padStart(2, "0")}:${String(
+      time.minute
+    ).padStart(2, "0")}:00`;
+
     const finalData: PostServicesData = {
       ...data,
-      duration: duration,
+      duration: formattedDuration,
     };
 
-    const toastId = toast.loading("در حال افزودن سرویس...");
-    addServiceMutation.mutate(finalData, {
+    const toastId = toast.loading(
+      serviceIdToEdit ? "در حال بروزرسانی سرویس..." : "در حال افزودن سرویس..."
+    );
+
+    const mutationFunc = serviceIdToEdit
+      ? updateServiceMutation
+      : addServiceMutation;
+
+    const mutationPayload = serviceIdToEdit
+      ? { id: serviceIdToEdit, values: finalData }
+      : finalData;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mutationFunc.mutate(mutationPayload as any, {
       onSuccess: () => {
-        toast.success("سرویس با موفقیت افزوده شد!", { id: toastId });
+        toast.success(
+          serviceIdToEdit
+            ? "سرویس با موفقیت بروزرسانی شد!"
+            : "سرویس با موفقیت افزوده شد!",
+          { id: toastId }
+        );
         reset();
-        setDuration("00:00:00");
+        // setDuration("00:00:00");
         setIsAddOpen(false);
+        setServiceToEdit(null);
+        setServiceIdToEdit(null);
         queryClient.invalidateQueries({ queryKey: ["services"] });
       },
       onError: (error) => {
@@ -76,18 +106,35 @@ const ManageServices: React.FC = () => {
   };
 
   const handleRemoveService = (id: number) => {
-    const removeSerId = toast.loading("لطفا منتظر بمانید...");
+    const removeSerId = toast.loading("درحال حذف سرویس...");
     removeServiceMutation.mutate(id, {
       onSuccess: () => {
         toast.success("سرویس مورد نظر با موفقیت حذف شد", { id: removeSerId });
         queryClient.invalidateQueries({ queryKey: ["services"] });
       },
       onError: (error) => {
+        toast.error("خطا در حذف سرویس!", { id: removeSerId });
         const axiosError = error as AxiosError;
         console.log(axiosError);
-        console.log(error);
       },
     });
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleUpdateService = (service: any) => {
+    setServiceToEdit({
+      name: service.name,
+      price: service.price,
+      description: service.description,
+      duration: service.duration,
+      business_id: service.business_id,
+      employee_id: service.employee_id,
+    });
+    setServiceIdToEdit(service.id);
+    // setDuration(service.duration);
+    const [hour, minute] = service.duration.split(":").map(Number);
+    setTime({ hour, minute });
+    setIsAddOpen(true);
   };
 
   return (
@@ -181,7 +228,7 @@ const ManageServices: React.FC = () => {
 
               <button
                 className="text-xl text-blue-500 absolute top-7 left-4 hover:text-blue-600 transition"
-                onClick={() => navigate(`/update-service/${ser.id}`)}
+                onClick={() => handleUpdateService(ser)}
               >
                 <FaPencil />
               </button>
@@ -196,7 +243,8 @@ const ManageServices: React.FC = () => {
         onClose={() => {
           setIsAddOpen(false);
           reset();
-          setDuration("00:00:00");
+          // setDuration("00:00:00");
+          setTime({ hour: 0, minute: 0 });
         }}
         title="افزودن سرویس جدید"
       >
@@ -208,6 +256,7 @@ const ManageServices: React.FC = () => {
             <input
               type="text"
               placeholder="نام سرویس"
+              defaultValue={serviceToEdit?.name || ""}
               {...register("name", { required: "نام سرویس الزامی است" })}
               className="primary-input"
             />
@@ -218,31 +267,27 @@ const ManageServices: React.FC = () => {
             <input
               type="text"
               placeholder="توضیحات"
+              defaultValue={serviceToEdit?.description || ""}
               {...register("description")}
               className="primary-input"
             />
 
-            <TimeInput value={duration} onChange={setDuration} />
-
-            {/* <input
-              type="text"
-              placeholder="مدت زمان"
-              {...register("duration", { required: "مدت زمان الزامی است" })}
-              className="primary-input"
+            <TimeInput
+              hour={time.hour}
+              minute={time.minute}
+              onChange={(h, m) => setTime({ hour: h, minute: m })}
             />
-            {errors.duration && (
-              <p className="text-red-500 text-sm">{errors.duration.message}</p>
-            )} */}
 
             <input
-              type="text"
+              type="number"
               placeholder="قیمت (مثلا: 200)"
+              defaultValue={serviceToEdit?.price || ""}
               {...register("price", {
                 required: "قیمت الزامی است",
                 validate: (value) =>
                   !isNaN(Number(value)) || "قیمت باید عدد باشد",
               })}
-              className="primary-input"
+              className="primary-input appearance-none"
             />
             {errors.price && (
               <p className="text-red-500 text-sm">{errors.price.message}</p>
@@ -253,7 +298,7 @@ const ManageServices: React.FC = () => {
                 required: "کسب‌ و‌ کار الزامی است",
               })}
               className="primary-input"
-              defaultValue=""
+              defaultValue={serviceToEdit?.business_id || ""}
             >
               <option value="" disabled>
                 انتخاب کسب‌ و‌ کار
@@ -273,7 +318,7 @@ const ManageServices: React.FC = () => {
             <select
               {...register("employee_id", { required: "کارمند الزامی است" })}
               className="primary-input"
-              defaultValue=""
+              defaultValue={serviceToEdit?.employee_id || ""}
             >
               <option value="" disabled>
                 انتخاب کارمند

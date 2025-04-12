@@ -1,31 +1,50 @@
 import React from "react";
 
 interface TimeInputProps {
-  value: string;
-  onChange: (newTime: string) => void;
+  hour: number;
+  minute: number;
+  onChange: (hour: number, minute: number) => void;
 }
 
-const TimeInput: React.FC<TimeInputProps> = ({ value, onChange }) => {
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const time = e.target.value;
+const toPersianNumber = (num: number): string =>
+  num.toString().replace(/\d/g, (d) => "0123456789"[parseInt(d)]);
 
-    // Match 00:00:00 format
-    const timeRegex = /^([0-1]?[0-9]|2[0-3]):([0-5]?[0-9]):([0-5]?[0-9])$/;
-
-    if (time === "" || timeRegex.test(time)) {
-      onChange(time);
-    }
-  };
+const TimeInput: React.FC<TimeInputProps> = ({ hour, minute, onChange }) => {
+  const hours = Array.from({ length: 24 }, (_, i) => i);
+  const minutes = Array.from({ length: 60 }, (_, i) => i);
 
   return (
-    <input
-      type="text"
-      value={value}
-      onChange={handleChange}
-      placeholder="00:00:00"
-      className="primary-input"
-      dir="ltr"
-    />
+    <div className="flex items-center gap-4">
+      <div className="flex flex-col items-center">
+        <label className="text-sm text-gray-600 mb-1">ساعت</label>
+        <select
+          className="border-2 border-orange-500 rounded-xl h-12 px-4 focus:outline-none text-center"
+          value={hour}
+          onChange={(e) => onChange(parseInt(e.target.value), minute)}
+        >
+          {hours.map((h) => (
+            <option key={h} value={h}>
+              {toPersianNumber(h)}
+            </option>
+          ))}
+        </select>
+      </div>
+      <span className="text-xl text-gray-700">:</span>
+      <div className="flex flex-col items-center">
+        <label className="text-sm text-gray-600 mb-1">دقیقه</label>
+        <select
+          className="border-2 border-orange-500 rounded-xl h-12 px-4 focus:outline-none text-center"
+          value={minute}
+          onChange={(e) => onChange(hour, parseInt(e.target.value))}
+        >
+          {minutes.map((m) => (
+            <option key={m} value={m}>
+              {toPersianNumber(m)}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
   );
 };
 
