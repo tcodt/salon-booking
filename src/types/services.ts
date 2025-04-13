@@ -1,7 +1,16 @@
-import { BusinessItem } from "./business";
+import { Business, BusinessItem } from "./business";
 import { Employee } from "./employees";
 
 export interface GetServicesItem {
+  id: number;
+  business: Business;
+  employee: Employee;
+  name: string;
+  description: string;
+  duration: string;
+  price: string;
+}
+export interface ServicesItem {
   id: number;
   business: BusinessItem;
   employee: Employee;
