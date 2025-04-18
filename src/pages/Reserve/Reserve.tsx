@@ -8,6 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAddAppointment } from "../../hooks/appointments/useAddAppointment";
 import { useGetServices } from "../../hooks/services/useGetServices";
 import { useGetEmployees } from "../../hooks/employees/useGetEmployees";
+import { useNavigate } from "react-router";
 
 const Reserve: React.FC = () => {
   const [date, setDate] = useState<Date | null>(new Date());
@@ -17,6 +18,7 @@ const Reserve: React.FC = () => {
   const [services, setServices] = useState<number | null>(null);
   const [employee, setEmployee] = useState<number | null>(null);
   const status: string = "pending";
+  const navigate = useNavigate();
 
   const { data: servicesData = [] } = useGetServices();
   const { data: employeesData = [] } = useGetEmployees();
@@ -53,8 +55,9 @@ const Reserve: React.FC = () => {
         console.log("Reserve data: ", data);
         toast.success("رزرو شما با موفقیت ثبت شد!");
         queryClient.invalidateQueries({
-          queryKey: ["userBookings"],
+          queryKey: ["appointments"],
         });
+        navigate("/appointments-list");
       },
       onError: (error) => {
         console.log(error);

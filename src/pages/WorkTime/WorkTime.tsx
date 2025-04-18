@@ -35,17 +35,17 @@ const WorkTime: React.FC = () => {
             <div className="flex flex-col gap-2">
               <div className="text-sm text-gray-700 font-normal flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
-                  <BiSolidCalendarX className="text-red-500 text-base" /> ساعت
-                  بسته شدن:
-                </div>
-                <span className="text-gray-500">{time.closing_time}</span>
-              </div>
-              <div className="text-sm text-gray-700 font-normal flex items-center justify-between gap-4">
-                <div className="flex items-center gap-2">
                   <BiSolidCalendarCheck className="text-green-500 text-base" />{" "}
                   ساعت باز شدن:
                 </div>
                 <span className="text-gray-500">{time.opening_time}</span>
+              </div>
+              <div className="text-sm text-gray-700 font-normal flex items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                  <BiSolidCalendarX className="text-red-500 text-base" /> ساعت
+                  بسته شدن:
+                </div>
+                <span className="text-gray-500">{time.closing_time}</span>
               </div>
             </div>
           </div>
