@@ -31,6 +31,15 @@ export interface Appointment {
 
 export type Appointments = Appointment[];
 
+export type AppointmentUpdate = {
+  date: string;
+  time: string;
+  status: string;
+  user: number;
+  service_id: number;
+  employee_id: number;
+};
+
 export interface AppointmentById {
   id: number;
   date: string;

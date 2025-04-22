@@ -69,7 +69,7 @@ const Reserve: React.FC = () => {
   return (
     <div>
       <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-gray-800">همین حالا رزرو کن!</h2>
+        <h2 className="primary-title">همین حالا رزرو کن!</h2>
         <hr />
         <div className="flex flex-col gap-4">
           <label className="flex items-center gap-2 text-base font-semibold text-gray-700">
@@ -80,7 +80,7 @@ const Reserve: React.FC = () => {
             onChange={(e) => setDate(e.value)}
             defaultValue={new Date()}
             locale="fa"
-            inputClass="border-2 border-orange-500 rounded-xl h-12 px-4 focus:outline-none w-full"
+            inputClass="bg-slate-100 focus:border-2 focus:border-orange-500 rounded-xl h-12 px-4 focus:outline-none w-full transition"
           />
           <label className="flex items-center gap-2 text-base font-semibold text-gray-700">
             <FaRegClock size={25} color="gray" />
@@ -90,7 +90,7 @@ const Reserve: React.FC = () => {
             onChange={(e) => setTime({ hour: e.hour, minute: e.minute })}
             defaultValue={new Date()}
             locale="fa"
-            inputClass="border-2 border-orange-500 rounded-xl h-12 px-4 focus:outline-none w-full"
+            inputClass="bg-slate-100 focus:border-2 focus:border-orange-500 rounded-xl h-12 px-4 focus:outline-none w-full transition"
           />
         </div>
         <div className="flex flex-col gap-4">
@@ -109,7 +109,7 @@ const Reserve: React.FC = () => {
         <div className="flex flex-col gap-4">
           <div>
             <select
-              className="h-12 px-4 border-2 w-full rounded-xl focus:outline-none border-orange-500 transition"
+              className="h-12 px-4 bg-slate-100 focus:border-2 w-full rounded-xl focus:outline-none focus:border-orange-500 transition"
               value={services || ""}
               onChange={(e) => setServices(Number(e.target.value) || null)}
               required
@@ -124,7 +124,7 @@ const Reserve: React.FC = () => {
           </div>
           <div>
             <select
-              className="h-12 px-4 border-2 w-full rounded-xl focus:outline-none border-orange-500 transition"
+              className="h-12 px-4 bg-slate-100 focus:border-2 w-full rounded-xl focus:outline-none focus:border-orange-500 transition"
               value={employee || ""}
               onChange={(e) => setEmployee(Number(e.target.value) || null)}
             >

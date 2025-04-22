@@ -21,7 +21,10 @@ import OfflinePage from "../pages/OfflinePage/OfflinePage";
 import { useNetworkStatus } from "../hooks/useNetworkStatus";
 import ViewAppointment from "../pages/ViewAppointment/ViewAppointment";
 import ManageServices from "../pages/ManageServices/ManageServices";
-import WorkTime from "../pages/WorkTime/WorkTime";
+import UpdateAppointment from "../pages/UpdateAppointment/UpdateAppointment";
+import WorkingTime from "../pages/WorkingTime/WorkingTime";
+import AddWorkingTime from "../pages/AddWorkingTime/AddWorkingTime";
+import Sliders from "../pages/Sliders/Sliders";
 
 // Wrapper component for offline detection
 const NetworkStatusWrapper: React.FC<{ children: React.ReactNode }> = ({
@@ -73,7 +76,13 @@ const AppRoutes: React.FC = () => {
           <Route path="/manage-employees" element={<ManageEmployees />} />
           <Route path="/manage-services" element={<ManageServices />} />
           <Route path="/view-appointment/:id" element={<ViewAppointment />} />
-          <Route path="/work-time" element={<WorkTime />} />
+          <Route
+            path="/update-appointment/:id"
+            element={<UpdateAppointment />}
+          />
+          <Route path="/working-time" element={<WorkingTime />} />
+          <Route path="/add-working-time" element={<AddWorkingTime />} />
+          <Route path="/sliders" element={<Sliders />} />
         </Route>
 
         {/* Not Found route */}

@@ -6,3 +6,9 @@ export interface WorkTimeType {
 }
 
 export type WorkTimePromise = WorkTimeType[];
+
+export interface WorkingTimePost {
+  day: string;
+  opening_time: string;
+  closing_time: string;
+}

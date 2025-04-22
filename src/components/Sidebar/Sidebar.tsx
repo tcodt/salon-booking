@@ -10,12 +10,13 @@ import {
   MdSpaceDashboard,
   MdTimer,
 } from "react-icons/md";
-import { Link, useLocation, useNavigate } from "react-router"; // Fixed import
+import { Link, useLocation, useNavigate } from "react-router";
 import { useSidebar } from "../../context/SidebarContext";
 import { useAuth } from "../../context/AuthContext";
 import { HiClipboardList } from "react-icons/hi";
 import { IoLogOut } from "react-icons/io5";
 import { useLogout } from "../../hooks/useAuth";
+import { FaSliders } from "react-icons/fa6";
 
 const Sidebar: React.FC = () => {
   const { user } = useAuth();
@@ -56,7 +57,12 @@ const Sidebar: React.FC = () => {
       label: "لیست رزرو ها",
       path: "/appointments-list",
     },
-    { icon: <MdTimer size={20} />, label: "ساعات کاری", path: "/work-time" },
+    { icon: <MdTimer size={20} />, label: "ساعات کاری", path: "/working-time" },
+    {
+      icon: <FaSliders size={20} />,
+      label: "اسلایدر",
+      path: "/sliders",
+    },
     { icon: <FaUserTie size={20} />, label: "آرایشگران", path: "/stylists" },
     { icon: <GiBeard size={20} />, label: "محصولات", path: "/products" },
     { icon: <MdPerson size={20} />, label: "پروفایل", path: "/user-profile" },

@@ -45,6 +45,12 @@
       outline-color: theme("colors.orange.500");
     }
   }
+
+  .primary-title {
+    color: theme("colors.gray.800");
+    font-size: theme("fontSize.xl");
+    font-weight: theme("fontWeight.semibold");
+  }
 }
 
 @font-face {
