@@ -8,7 +8,6 @@ import {
   MdPerson,
   MdSettings,
   MdSpaceDashboard,
-  MdTimer,
 } from "react-icons/md";
 import { Link, useLocation, useNavigate } from "react-router";
 import { useSidebar } from "../../context/SidebarContext";
@@ -57,7 +56,7 @@ const Sidebar: React.FC = () => {
       label: "لیست رزرو ها",
       path: "/appointments-list",
     },
-    { icon: <MdTimer size={20} />, label: "ساعات کاری", path: "/working-time" },
+    // { icon: <MdTimer size={20} />, label: "ساعات کاری", path: "/working-time" },
     {
       icon: <FaSliders size={20} />,
       label: "اسلایدر",

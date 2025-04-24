@@ -3,7 +3,7 @@ import Loading from "../../components/Loading/Loading";
 import toast from "react-hot-toast";
 import { BiSolidCalendarCheck, BiSolidCalendarX } from "react-icons/bi";
 import { RxUpdate } from "react-icons/rx";
-import { FaTrashCan } from "react-icons/fa6";
+import { FaPencil, FaTrashCan } from "react-icons/fa6";
 import { IoPersonAdd } from "react-icons/io5";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -43,6 +43,10 @@ const WorkingTime: React.FC = () => {
         console.log(axiosError);
       },
     });
+  };
+
+  const handleUpdateWorkingTime = (id: number) => {
+    navigate(`/update-working-time/${id}`);
   };
 
   return (
@@ -118,49 +122,80 @@ const WorkingTime: React.FC = () => {
         onClose={() => setIsUpdateOpen(false)}
         title="بروزرسانی ساعت کاری"
       >
-        <p>درحال توسعه...</p>
+        <div className="flex flex-col gap-6">
+          {workingTimes?.map((time) => (
+            <div
+              key={time.id}
+              className="flex items-center gap-4 relative border-s-2 border-s-orange-500 rounded-xl border border-gray-200 p-2"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-base text-gray-800 font-medium">
+                  {time.day}
+                </span>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <div className="text-sm text-gray-700 font-normal flex items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <BiSolidCalendarCheck className="text-green-500 text-base" />
+                  </div>
+                  <span className="text-gray-500">{time.opening_time}</span>
+                </div>
+                <div className="text-sm text-gray-700 font-normal flex items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <BiSolidCalendarX className="text-red-500 text-base" />
+                  </div>
+                  <span className="text-gray-500">{time.closing_time}</span>
+                </div>
+              </div>
+
+              <button
+                className="text-xl text-orange-500 absolute top-6 left-3 hover:text-orange-600 transition"
+                onClick={() => handleUpdateWorkingTime(time.id)}
+              >
+                <FaPencil />
+              </button>
+            </div>
+          ))}
+        </div>
       </CustomModal>
 
       <h2 className="primary-title">ساعات کاری</h2>
-      {!workingTimes && (
+      {!workingTimes?.length && (
         <p className="text-base text-red-500 font-normal">
           هیچ ساعت کاری تنظیم نشده است!
         </p>
       )}
 
       <div className="mt-8">
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-slate-100">
-              <th className="p-4 text-right border border-gray-300">روز</th>
-              <th className="p-4 text-right border border-gray-300">باز شدن</th>
-              <th className="p-4 text-right border border-gray-300">
-                بسته شدن
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {workingTimes?.map((time) => (
-              <tr key={time.id} className="bg-white">
-                <td className="p-4 border border-gray-300 text-orange-500 font-medium">
+        <div className="grid grid-cols-1 gap-6">
+          {workingTimes?.map((time) => (
+            <div
+              key={time.id}
+              className="p-4 border border-gray-300 rounded-xl bg-slate-100"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-orange-500">
                   {time.day}
-                </td>
-                <td className="p-4 border border-gray-300">
-                  <div className="flex items-center gap-2">
-                    <BiSolidCalendarCheck className="text-green-500 text-base" />
-                    <span className="text-gray-500">{time.opening_time}</span>
-                  </div>
-                </td>
-                <td className="p-4 border border-gray-300">
-                  <div className="flex items-center gap-2">
-                    <BiSolidCalendarX className="text-red-500 text-base" />
-                    <span className="text-gray-500">{time.closing_time}</span>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </h3>
+              </div>
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-2">
+                  <BiSolidCalendarCheck className="text-green-500 text-xl" />
+                  <span className="text-gray-700 font-medium">
+                    باز شدن: {time.opening_time}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <BiSolidCalendarX className="text-red-500 text-xl" />
+                  <span className="text-gray-700 font-medium">
+                    بسته شدن: {time.closing_time}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

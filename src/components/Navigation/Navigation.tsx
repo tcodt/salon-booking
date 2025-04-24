@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaRegUser } from "react-icons/fa";
 import { GrHomeRounded } from "react-icons/gr";
 import { LuNotebookText } from "react-icons/lu";
+import { MdTimer } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router";
 
 const Navigation: React.FC = () => {
@@ -22,6 +23,9 @@ const Navigation: React.FC = () => {
         break;
       case "/reserve":
         setValue(2);
+        break;
+      case "/working-time":
+        setValue(3);
         break;
       default:
         setValue(1);
@@ -66,6 +70,18 @@ const Navigation: React.FC = () => {
         >
           <FaRegUser size={25} />
           <span className="text-sm">داشبورد</span>
+        </button>
+        <button
+          onClick={() => {
+            setValue(3);
+            navigate("/working-time");
+          }}
+          className={`flex flex-col items-center ${
+            value === 3 ? "text-orange-500" : "text-gray-500"
+          }`}
+        >
+          <MdTimer size={25} />
+          <span className="text-sm">ساعات کاری</span>
         </button>
         <button
           onClick={() => {

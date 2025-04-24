@@ -5,7 +5,6 @@ export const updateAppointment = async (data: {
   id: number;
   values: AppointmentUpdate;
 }): Promise<AppointmentById> => {
-  console.log(data);
   const response = await api.put(
     `/reservations/appointments/${data.id}/`,
     data.values
