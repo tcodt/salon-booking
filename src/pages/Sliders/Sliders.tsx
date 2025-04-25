@@ -49,8 +49,8 @@ const Sliders: React.FC = () => {
     slidersMutation.mutate(data, {
       onSuccess: () => {
         toast.success("اسلایدر با موفقیت ایجاد شد!");
-        reset();
         queryClient.invalidateQueries({ queryKey: ["sliders"] });
+        reset();
       },
       onError: (error) => {
         const axiosError = error as AxiosError;
@@ -280,38 +280,36 @@ const Sliders: React.FC = () => {
       <div className="mt-8">
         <h3 className="primary-title">لیست اسلایدر ها</h3>
         <div className="mt-5">
-          <table className="table-auto w-full border-collapse border border-gray-300">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border border-gray-300 px-4 py-2">ردیف</th>
-                <th className="border border-gray-300 px-4 py-2">عنوان</th>
-                <th className="border border-gray-300 px-4 py-2">زیرعنوان</th>
-                <th className="border border-gray-300 px-4 py-2">وضعیت</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sliders?.map((slider) => (
-                <tr key={slider.id} className="text-center">
-                  <td className="border border-gray-300 px-4 py-2 text-sm">
-                    {slider.id}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2 text-sm">
-                    {slider.title}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2 text-sm">
-                    {slider.sub_title}
-                  </td>
-                  <td
-                    className={`border border-gray-300 px-4 py-2 text-sm ${
-                      slider.is_active ? "text-green-500" : "text-red-500"
-                    }`}
-                  >
-                    {slider.is_active ? "فعال" : "غیرفعال"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className="grid grid-cols-1 gap-4">
+            {sliders?.map((slider) => (
+              <div
+                key={slider.id}
+                className="border border-gray-300 rounded-xl p-4 transition bg-slate-100"
+              >
+                <h4 className="text-lg font-semibold text-gray-700 mb-2">
+                  {slider.title}
+                </h4>
+                <p
+                  className="text-sm text-gray-500 mb-4 line-clamp-2 cursor-pointer"
+                  onClick={(e) => {
+                    const target = e.target as HTMLElement;
+                    target.classList.toggle("line-clamp-2");
+                  }}
+                >
+                  {slider.sub_title}
+                </p>
+                <span
+                  className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${
+                    slider.is_active
+                      ? "bg-green-100 text-green-600"
+                      : "bg-red-100 text-red-600"
+                  }`}
+                >
+                  {slider.is_active ? "فعال" : "غیرفعال"}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
