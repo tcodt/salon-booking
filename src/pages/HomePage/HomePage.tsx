@@ -4,6 +4,7 @@ import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router";
 import OfferCarousel from "../../components/OfferCarousel/OfferCarousel";
 import { useAuth } from "../../context/AuthContext";
+import PackagesList from "../../components/PackagesList/PackagesList";
 
 const HomePage: React.FC = () => {
   const { user } = useAuth();
@@ -38,6 +39,9 @@ const HomePage: React.FC = () => {
           رزرو کن
         </Link>
       </div>
+
+      {/* Packages */}
+      <PackagesList />
     </section>
   );
 };

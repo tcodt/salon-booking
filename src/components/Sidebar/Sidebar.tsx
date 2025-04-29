@@ -62,8 +62,8 @@ const Sidebar: React.FC = () => {
       label: "اسلایدر",
       path: "/sliders",
     },
+    { icon: <GiBeard size={20} />, label: "پکیج ها", path: "/packages" },
     { icon: <FaUserTie size={20} />, label: "آرایشگران", path: "/stylists" },
-    { icon: <GiBeard size={20} />, label: "محصولات", path: "/products" },
     { icon: <MdPerson size={20} />, label: "پروفایل", path: "/user-profile" },
     { icon: <MdSettings size={20} />, label: "تنظیمات", path: "/settings" },
   ];

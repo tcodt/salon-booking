@@ -342,6 +342,10 @@ const ManageServices: React.FC = () => {
 
       <h3 className="text-gray-800 text-2xl font-bold ">سرویس ها</h3>
 
+      {!services?.length && (
+        <div className="text-base text-red-500">هیچ سرویسی وجود ندارد!</div>
+      )}
+
       {services?.map((service) => (
         <div
           className="p-4 border rounded-xl shadow-sm bg-white"

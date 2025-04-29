@@ -17,6 +17,8 @@ const ViewAppointment: React.FC = () => {
 
   if (isPending) return <Loading />;
 
+  console.log(appointmentData?.service?.business?.id);
+
   return (
     <div className="mt-8 space-y-6">
       <div className="flex flex-col gap-4">
