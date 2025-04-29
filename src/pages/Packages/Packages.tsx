@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import OptionsBox from "../../components/OptionsBox/OptionsBox";
 import { IoCamera, IoPersonAdd } from "react-icons/io5";
@@ -15,12 +16,7 @@ import { AxiosError } from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 
 const Packages: React.FC = () => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<AddPackage>();
+  const { register, handleSubmit } = useForm<AddPackage>();
   const { data: packages, isPending, isError, error } = useGetPackages();
   const addPackageMutation = useAddPackage();
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
