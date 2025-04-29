@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import OptionsBox from "../../components/OptionsBox/OptionsBox";
 import { IoCamera, IoPersonAdd } from "react-icons/io5";
-import { RxUpdate } from "react-icons/rx";
-import { FaTrashCan } from "react-icons/fa6";
+// import { RxUpdate } from "react-icons/rx";
+// import { FaTrashCan } from "react-icons/fa6";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import Button from "../../components/Button/Button";
 import { useGetPackages } from "../../hooks/packages/useGetPackages";
@@ -11,18 +10,18 @@ import Loading from "../../components/Loading/Loading";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { AddPackage } from "../../types/packages";
-import { useAddPackage } from "../../hooks/packages/useAddPackage";
-import { AxiosError } from "axios";
-import { useQueryClient } from "@tanstack/react-query";
+// import { useAddPackage } from "../../hooks/packages/useAddPackage";
+// import { AxiosError } from "axios";
+// import { useQueryClient } from "@tanstack/react-query";
 
 const Packages: React.FC = () => {
   const { register, handleSubmit } = useForm<AddPackage>();
   const { data: packages, isPending, isError, error } = useGetPackages();
-  const addPackageMutation = useAddPackage();
+  // const addPackageMutation = useAddPackage();
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
-  const [isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
-  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
-  const queryClient = useQueryClient();
+  // const [isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
+  // const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
+  // const queryClient = useQueryClient();
 
   if (isPending) return <Loading />;
 
@@ -71,7 +70,7 @@ const Packages: React.FC = () => {
           color="blue"
           icon={<IoPersonAdd />}
         />
-        <OptionsBox
+        {/* <OptionsBox
           onClick={() => setIsUpdateOpen(true)}
           title="بروزرسانی"
           color="orange"
@@ -82,7 +81,7 @@ const Packages: React.FC = () => {
           title="حذف"
           color="red"
           icon={<FaTrashCan />}
-        />
+        /> */}
       </div>
 
       <h3 className="primary-title">پکیج ها</h3>
