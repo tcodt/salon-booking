@@ -141,19 +141,19 @@ const ManageServices: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-row flex-wrap items-center gap-2">
         <button
-          className="bg-sky-100 text-sky-500 hover:bg-sky-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
+          className="bg-sky-100 text-sky-500 hover:bg-sky-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-sky-300"
           onClick={() => setIsAddOpen(true)}
         >
           افزودن <IoPersonAdd />
         </button>
         <button
-          className="bg-orange-100 text-orange-500 hover:bg-orange-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
+          className="bg-green-100 text-green-500 hover:bg-green-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-green-300"
           onClick={() => setIsUpdateOpen(true)}
         >
           بروزرسانی <RxUpdate />
         </button>
         <button
-          className="bg-red-100 text-red-500 hover:bg-red-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
+          className="bg-red-100 text-red-500 hover:bg-red-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-red-300"
           onClick={() => setIsDeleteOpen(true)}
         >
           حذف <FaTrashCan />
@@ -170,7 +170,7 @@ const ManageServices: React.FC = () => {
           {services.map((ser) => (
             <div
               key={ser.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-orange-500 rounded-xl border border-gray-200 p-2"
+              className="flex items-center gap-4 relative border-s-2 border-s-red-500 rounded-xl border border-gray-200 p-2"
             >
               <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
                 {ser?.employee?.user.image ? (
@@ -208,7 +208,7 @@ const ManageServices: React.FC = () => {
           {services.map((ser) => (
             <div
               key={ser.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-orange-500 rounded-xl border border-gray-200 p-2"
+              className="flex items-center gap-4 relative border-s-2 border-s-green-500 rounded-xl border border-gray-200 p-2"
             >
               <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
                 {ser?.employee?.user.image ? (
@@ -227,7 +227,7 @@ const ManageServices: React.FC = () => {
               </div>
 
               <button
-                className="text-xl text-blue-500 absolute top-7 left-4 hover:text-blue-600 transition"
+                className="text-xl text-green-500 absolute top-7 left-4 hover:text-green-600 transition"
                 onClick={() => handleUpdateService(ser)}
               >
                 <FaPencil />
@@ -335,7 +335,9 @@ const ManageServices: React.FC = () => {
               </p>
             )}
 
-            <Button type="submit">ثبت سرویس</Button>
+            <Button variant="add" type="submit">
+              ثبت سرویس
+            </Button>
           </form>
         </div>
       </CustomModal>
@@ -343,7 +345,7 @@ const ManageServices: React.FC = () => {
       <h3 className="text-gray-800 text-2xl font-bold ">سرویس ها</h3>
 
       {!services?.length && (
-        <div className="text-base text-red-500">هیچ سرویسی وجود ندارد!</div>
+        <div className="text-base text-gray-500">هیچ سرویسی وجود ندارد!</div>
       )}
 
       {services?.map((service) => (

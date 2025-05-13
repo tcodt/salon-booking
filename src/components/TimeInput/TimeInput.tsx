@@ -18,7 +18,7 @@ const TimeInput: React.FC<TimeInputProps> = ({ hour, minute, onChange }) => {
       <div className="flex flex-col items-center">
         <label className="text-sm text-gray-600 mb-1">ساعت</label>
         <select
-          className="border-2 border-orange-500 rounded-xl h-12 px-4 focus:outline-none text-center"
+          className="primary-input"
           value={hour}
           onChange={(e) => onChange(parseInt(e.target.value), minute)}
         >
@@ -33,7 +33,7 @@ const TimeInput: React.FC<TimeInputProps> = ({ hour, minute, onChange }) => {
       <div className="flex flex-col items-center">
         <label className="text-sm text-gray-600 mb-1">دقیقه</label>
         <select
-          className="border-2 border-orange-500 rounded-xl h-12 px-4 focus:outline-none text-center"
+          className="primary-input"
           value={minute}
           onChange={(e) => onChange(hour, parseInt(e.target.value))}
         >

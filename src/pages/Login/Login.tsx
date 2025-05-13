@@ -52,7 +52,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <section className="p-4 w-screen h-screen overflow-hidden">
+    <section className="p-4 w-screen h-screen overflow-y-auto">
       <PageBar title="ورود" />
 
       {loginMutation.isPending && <Loading />}
@@ -77,7 +77,7 @@ const Login: React.FC = () => {
                 placeholder="شماره تلفن"
                 maxLength={11}
                 autoComplete="username"
-                className="outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 ps-4 pe-8 rounded-xl text-left text-gray-800 font-medium text-base h-12 w-full"
+                className="primary-input"
                 {...register("phone_number", {
                   required: "شماره تلفن اجباری است!",
                   pattern: {
@@ -114,7 +114,7 @@ const Login: React.FC = () => {
                 placeholder="رمز عبور"
                 maxLength={12}
                 autoComplete="current-password"
-                className="outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 px-8 rounded-xl text-left text-gray-800 font-medium text-base h-12 w-full"
+                className="primary-input px-8"
                 {...register("password", {
                   required: "رمز عبور اجباری است!",
                   minLength: {

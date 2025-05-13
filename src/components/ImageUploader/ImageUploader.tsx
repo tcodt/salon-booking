@@ -3,8 +3,8 @@ import { FaUser, FaPencil } from "react-icons/fa6";
 import toast from "react-hot-toast";
 
 interface ImageUploaderProps {
-  onUpload: (imageData: string) => void; // Changed to string for base64
-  currentImage?: string; // Existing image URL or base64 string
+  onUpload: (file: File) => void; // Changed to File
+  currentImage?: string; // Existing image URL
 }
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({
@@ -35,8 +35,9 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       if (!file) return;
 
       // Validate file type and size
-      if (!file.type.startsWith("image/")) {
-        toast.error("لطفاً یک فایل تصویری انتخاب کنید!");
+      const ALLOWED_TYPES = ["image/jpeg", "image/png"];
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        toast.error("لطفاً یک فایل JPEG یا PNG انتخاب کنید!");
         return;
       }
       if (file.size > 5 * 1024 * 1024) {
@@ -45,17 +46,9 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         return;
       }
 
-      // Convert file to base64
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setPreviewUrl(URL.createObjectURL(file)); // For preview
-        onUpload(base64String); // Send base64 to parent
-      };
-      reader.onerror = () => {
-        toast.error("خطا در بارگذاری تصویر!");
-      };
-      reader.readAsDataURL(file);
+      // Set preview and pass File to parent
+      setPreviewUrl(URL.createObjectURL(file));
+      onUpload(file);
     },
     [onUpload]
   );
@@ -65,11 +58,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       <label className="cursor-pointer relative">
         <input
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/png"
           onChange={handleFileChange}
           className="hidden"
         />
-        <div className="w-40 h-40 bg-slate-100 border-4 border-orange-500 rounded-full flex items-center justify-center relative">
+        <div className="w-32 h-3w-32 bg-slate-100 border-4 border-orange-500 rounded-full flex items-center justify-center relative">
           {previewUrl ? (
             <img
               src={previewUrl}
@@ -79,7 +72,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           ) : (
             <FaUser color="gray" size={70} />
           )}
-          <div className="p-3 bg-orange-500 text-white text-lg absolute bottom-2 right-2 rounded-full shadow-md hover:bg-orange-600 transition">
+          <div className="p-3 bg-orange-500 text-white text-lg absolute bottom-0 right-0 rounded-full shadow-md hover:bg-orange-600 transition">
             <FaPencil />
           </div>
         </div>

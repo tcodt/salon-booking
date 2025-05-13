@@ -112,7 +112,7 @@ const AppointmentsList: React.FC = () => {
           <h1 className="text-2xl font-semibold text-gray-800">
             هیچ رزوری یافت نشد!
           </h1>
-          <Button onClick={() => navigate("/reserve")}>
+          <Button variant="secondary" onClick={() => navigate("/reserve")}>
             همین حالا رزرو کن!
           </Button>
         </div>

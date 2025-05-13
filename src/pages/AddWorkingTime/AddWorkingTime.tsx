@@ -117,8 +117,8 @@ const AddWorkingTime: React.FC = () => {
             onChange={handleOpeningTimeChange}
             buttonLabel="ساعت باز شدن"
             buttonIcon={<FiClock size={20} />}
-            bgColor="bg-blue-100"
-            textColor="text-blue-500"
+            bgColor="bg-green-100"
+            textColor="green-500"
           />
 
           {openingHour !== null && openingMinute !== null && (
@@ -137,7 +137,7 @@ const AddWorkingTime: React.FC = () => {
             buttonLabel="ساعت بسته شدن"
             buttonIcon={<FiClock size={20} />}
             bgColor="bg-red-100"
-            textColor="text-red-500"
+            textColor="red-500"
           />
           {closingHour !== null && closingMinute !== null && (
             <div className="bg-red-100 text-red-500 rounded-xl py-2 px-4">
@@ -154,11 +154,11 @@ const AddWorkingTime: React.FC = () => {
             onChange={handleDayValue}
             buttonIcon={<FaRegCalendarAlt size={20} />}
             buttonLabel="انتخاب روز"
-            bgColor="bg-gray-100"
-            textColor="text-gray-500"
+            bgColor="bg-white"
+            textColor="gray-500"
           />
           {weekDay !== null && day !== null && (
-            <div className="bg-gray-100 text-gray-500 py-2 px-4 rounded-xl">
+            <div className="bg-white text-gray-500 py-2 px-4 rounded-xl">
               <p className="">
                 {weekDay} {day} {month}
               </p>

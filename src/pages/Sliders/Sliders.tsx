@@ -118,19 +118,19 @@ const Sliders: React.FC = () => {
     <div>
       <div className="flex flex-row flex-wrap items-center gap-2">
         <button
-          className="bg-sky-100 text-sky-500 hover:bg-sky-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
+          className="bg-sky-100 text-sky-500 hover:bg-sky-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-sky-300"
           onClick={() => setIsAddOpen(true)}
         >
           افزودن <IoPersonAdd />
         </button>
         <button
-          className="bg-orange-100 text-orange-500 hover:bg-orange-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
+          className="bg-green-100 text-green-500 hover:bg-green-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-green-300"
           onClick={() => setIsUpdateOpen(true)}
         >
           بروزرسانی <RxUpdate />
         </button>
         <button
-          className="bg-red-100 text-red-500 hover:bg-red-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
+          className="bg-red-100 text-red-500 hover:bg-red-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-red-300"
           onClick={() => setIsDeleteOpen(true)}
         >
           حذف <FaTrashCan />
@@ -284,7 +284,7 @@ const Sliders: React.FC = () => {
             {sliders?.map((slider) => (
               <div
                 key={slider.id}
-                className="border border-gray-300 rounded-xl p-4 transition bg-slate-100"
+                className="border border-gray-300 rounded-xl p-4 transition bg-white"
               >
                 <h4 className="text-lg font-semibold text-gray-700 mb-2">
                   {slider.title}

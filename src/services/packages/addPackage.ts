@@ -1,7 +1,9 @@
-import { Packages } from "../../types/packages";
+// import { Packages } from "../../types/packages";
 import api from "../../utils/api";
 
-export const addPackage = async (formData: FormData): Promise<Packages> => {
-  const response = await api.post("/packages/", formData);
+export const addPackage = async (data: FormData) => {
+  const response = await api.post("/packages/", data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response.data;
 };

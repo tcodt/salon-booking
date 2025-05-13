@@ -119,9 +119,9 @@ const Sidebar: React.FC = () => {
             </ul>
           </nav>
 
-          <div className="mt-auto mb-2 p-3 rounded-lg bg-red-50 flex items-center">
-            <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
-              <IoLogOut className="text-orange-600" size={20} />
+          <div className="mt-auto mb-2 p-3 rounded-lg bg-red-100 flex items-center">
+            <div className="w-8 h-8 rounded-full bg-red-200 flex items-center justify-center">
+              <IoLogOut className="text-red-600" size={20} />
             </div>
             <div className="mr-3 overflow-hidden">
               <button
@@ -133,8 +133,8 @@ const Sidebar: React.FC = () => {
             </div>
           </div>
 
-          <div className="mt-auto p-3 rounded-lg bg-gray-50 flex items-center">
-            <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
+          <div className="mt-auto p-3 rounded-lg bg-gray-100 flex items-center">
+            <div className="w-8 h-8 rounded-full bg-orange-200 flex items-center justify-center">
               <MdOutlineAccountCircle className="text-orange-600" size={20} />
             </div>
             <div className="mr-3 overflow-hidden">

@@ -48,7 +48,7 @@ const PersianTimePicker: React.FC<PersianTimePickerType> = ({
         format="HH:mm"
         render={
           <button
-            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${bgColor} ${textColor} text-base font-medium`}
+            className={`flex items-center gap-2 py-2 px-4 rounded-xl ${bgColor} text-${textColor} text-base font-medium border border-${textColor}`}
           >
             {buttonIcon} {buttonLabel}
           </button>

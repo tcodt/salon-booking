@@ -154,21 +154,21 @@ const ManageEmployees: React.FC = () => {
       <div className="flex flex-row flex-wrap items-center gap-2">
         <button
           type="button"
-          className="bg-sky-100 text-sky-500 hover:bg-sky-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
+          className="bg-sky-100 text-sky-500 hover:bg-sky-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-sky-300"
           onClick={() => setIsAddOpen(true)}
         >
           افزودن <IoPersonAdd />
         </button>
         <button
           type="button"
-          className="bg-orange-100 text-orange-500 hover:bg-orange-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
+          className="bg-green-100 text-green-500 hover:bg-green-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-green-300"
           onClick={() => setIsUpdateOpen(true)}
         >
           بروزرسانی <RxUpdate />
         </button>
         <button
           type="button"
-          className="bg-red-100 text-red-500 hover:bg-red-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
+          className="bg-red-100 text-red-500 hover:bg-red-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-red-300"
           onClick={() => setIsDeleteOpen(true)}
         >
           حذف <FaTrashCan />
@@ -235,12 +235,14 @@ const ManageEmployees: React.FC = () => {
             defaultValue={skillUpdate}
             onChange={(e) => setSkillUpdate(e.target.value)}
           ></textarea>
-          <Button onClick={handleUpdateEmployee}>بروزرسانی کارمند</Button>
+          <Button variant="update" onClick={handleUpdateEmployee}>
+            بروزرسانی کارمند
+          </Button>
           <div className="flex flex-col gap-6">
             {employees.map((emp) => (
               <div
                 key={emp.id}
-                className="flex items-center gap-4 relative border-s-2 border-s-orange-500 rounded-xl border border-gray-200 p-2"
+                className="flex items-center gap-4 relative border-s-2 border-s-green-500 rounded-xl border border-gray-200 p-2"
               >
                 <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
                   {emp.user.image ? (
@@ -259,7 +261,7 @@ const ManageEmployees: React.FC = () => {
                 </div>
 
                 <button
-                  className="text-xl text-orange-500 absolute top-7 left-4 hover:text-orange-600 transition"
+                  className="text-xl text-green-500 absolute top-7 left-4 hover:text-green-600 transition"
                   onClick={() =>
                     handleUpdateEmp(
                       emp.id,
@@ -298,11 +300,13 @@ const ManageEmployees: React.FC = () => {
             value={skill}
             onChange={(e) => setSkill(e.target.value)}
           ></textarea>
-          <Button onClick={handleAddEmployee}>ثبت کارمند</Button>
+          <Button variant="add" onClick={handleAddEmployee}>
+            ثبت کارمند
+          </Button>
           {users.map((user) => (
             <div
               key={user.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-blue-500 rounded-xl border border-gray-200 p-2"
+              className="flex items-center gap-4 relative border-s-2 border-s-sky-500 rounded-xl border border-gray-200 p-2"
             >
               <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
                 {user.image ? (
@@ -321,7 +325,7 @@ const ManageEmployees: React.FC = () => {
               </div>
 
               <button
-                className="text-xl text-blue-500 absolute top-6 left-4 bg-blue-100 p-1 rounded-full hover:text-blue-600 transition"
+                className="text-xl text-sky-500 absolute top-6 left-4 bg-blue-100 p-1 rounded-full hover:text-sky-600 transition"
                 onClick={() => handleAddUser(user.id, user.first_name)}
               >
                 <IoAdd />

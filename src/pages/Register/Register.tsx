@@ -55,7 +55,7 @@ const Register: React.FC = () => {
   };
 
   return (
-    <section className="p-4 w-screen h-screen overflow-hidden" id="shape">
+    <section className="p-4 w-screen h-screen overflow-y-auto" id="shape">
       <PageBar title="ثبت نام" />
 
       {registerMutation.isPending && <Loading />}
@@ -77,7 +77,7 @@ const Register: React.FC = () => {
                 <input
                   type="text"
                   placeholder={errors?.name?.message || "نام"}
-                  className={`outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 px-4 rounded-xl text-gray-800 font-medium h-12 w-full ${
+                  className={`primary-input ${
                     errors?.name?.message
                       ? "text-sm placeholder:text-red-500"
                       : "text-base"
@@ -99,7 +99,7 @@ const Register: React.FC = () => {
                 <input
                   type="text"
                   placeholder={errors?.lastName?.message || "نام خانوادگی"}
-                  className={`outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 px-4 rounded-xl text-gray-800 font-medium h-12 w-full ${
+                  className={`primary-input ${
                     errors?.lastName?.message
                       ? "text-sm placeholder:text-red-500"
                       : "text-base"
@@ -123,7 +123,7 @@ const Register: React.FC = () => {
                 maxLength={11}
                 placeholder={errors?.phoneNumber?.message || "شماره تلفن"}
                 autoComplete="username"
-                className={`outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 ps-4 pe-8 rounded-xl text-left text-gray-800 font-medium h-12 w-full ${
+                className={`primary-input ps-4 pe-8 ${
                   errors?.phoneNumber?.message
                     ? "text-sm placeholder:text-red-500"
                     : "text-base"
@@ -149,7 +149,7 @@ const Register: React.FC = () => {
               <input
                 type="email"
                 placeholder={errors?.email?.message || "ایمیل"}
-                className={`outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 px-8 rounded-xl text-gray-800 font-medium h-12 w-full text-left ${
+                className={`primary-input px-8 text-left ${
                   errors?.email?.message
                     ? "text-sm placeholder:text-red-500"
                     : "text-base"
@@ -178,7 +178,7 @@ const Register: React.FC = () => {
                 placeholder={errors?.password?.message || "رمز عبور"}
                 maxLength={12}
                 autoComplete="current-password"
-                className={`outline-2 outline-transparent focus:outline-orange-500 bg-slate-100 py-2 px-8 rounded-xl text-left text-gray-800 font-medium h-12 w-full ${
+                className={`primary-input px-8 text-left ${
                   errors?.password?.message
                     ? "text-sm placeholder:text-red-500"
                     : "text-base"

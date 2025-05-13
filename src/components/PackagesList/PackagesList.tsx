@@ -1,13 +1,18 @@
 import React from "react";
 import { useGetPackages } from "../../hooks/packages/useGetPackages";
 import toast from "react-hot-toast";
+import { HiOutlineBuildingOffice } from "react-icons/hi2";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { EffectCoverflow, Pagination } from "swiper/modules";
+import { EffectCoverflow, Autoplay } from "swiper/modules";
+import { GiCoffeeCup } from "react-icons/gi";
+import { LuCircleParking } from "react-icons/lu";
+import Button from "../Button/Button";
+import { useNavigate } from "react-router";
 
 const PackagesList: React.FC = () => {
   const { data: packages, isError, error } = useGetPackages();
-  console.log("Packages: ", packages);
+  const navigate = useNavigate();
 
   if (isError) {
     console.log(error);
@@ -28,22 +33,55 @@ const PackagesList: React.FC = () => {
         slideShadows: true,
       }}
       pagination={true}
-      modules={[EffectCoverflow, Pagination]}
+      modules={[EffectCoverflow, Autoplay]}
       className="mySwiper"
     >
       {packages?.map((item) => (
-        <SwiperSlide key={item.id}>
-          <div className="bg-white border border-gray-300 h-44 w-full p-4 rounded-xl shadow-md flex flex-col justify-between">
-            <div>
-              <h5 className="text-lg font-semibold mb-2">{item.name}</h5>
-              <p className="text-gray-600 line-clamp-2">{item.desc}</p>
-              <p className="text-gray-600 line-clamp-2">
-                {item.total_price} هزارتومان
+        <SwiperSlide key={item?.id}>
+          <div className="bg-white border border-gray-300 h-auto w-full p-4 rounded-xl shadow-md flex flex-col gap-8">
+            <div className="space-y-4">
+              <div>
+                <img
+                  src={
+                    item?.image
+                      ? `https://queuingprojectapi.pythonanywhere.com${item?.image}`
+                      : "/images/no-image.jpg"
+                  }
+                  alt="Package Image"
+                  className="rounded-xl h-40 w-full object-cover"
+                />
+              </div>
+              <h5 className="text-lg font-semibold">{item?.name}</h5>
+              <p className="text-gray-600 line-clamp-2">{item?.desc}</p>
+              <div className="flex flex-row items-center gap-4 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <HiOutlineBuildingOffice className="text-2xl text-orange-500" />
+                  <p className="text-sm font-medium text-gray-600">
+                    {item?.business?.name}
+                  </p>
+                </div>
+                {item?.business?.is_coffee_shop && (
+                  <div className="flex items-center gap-2">
+                    <GiCoffeeCup className="text-2xl text-orange-500" />
+                    <p className="text-sm font-medium text-gray-600">
+                      کافی شاپ
+                    </p>
+                  </div>
+                )}
+                {item?.business?.is_parking && (
+                  <div className="flex items-center gap-2">
+                    <LuCircleParking className="text-2xl text-orange-500" />
+                    <p className="text-sm font-medium text-gray-600">پارکینگ</p>
+                  </div>
+                )}
+              </div>
+              <p className="text-orange-600 line-clamp-2 text-left">
+                {item?.total_price} هزارتومان
               </p>
             </div>
-            <button className="bg-orange-500 text-white rounded-xl py-2 px-4">
-              خرید
-            </button>
+            <Button onClick={() => navigate(`/packages/${item?.id}`)}>
+              نمایش بیشتر
+            </Button>
           </div>
         </SwiperSlide>
       ))}

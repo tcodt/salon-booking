@@ -16,7 +16,7 @@ const OptionsBox: React.FC<OptionsBoxProps> = ({
   return (
     <button
       type="button"
-      className={`bg-${color}-100 text-${color}-500 hover:bg-${color}-200 transition rounded-xl py-1 px-3 flex items-center gap-2`}
+      className={`bg-${color}-100 text-${color}-500 hover:bg-${color}-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-${color}-300`}
       onClick={onClick}
     >
       {title} {icon}

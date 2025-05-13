@@ -27,6 +27,7 @@ import AddWorkingTime from "../pages/AddWorkingTime/AddWorkingTime";
 import Sliders from "../pages/Sliders/Sliders";
 import UpdateWorkingTime from "../pages/UpdateWorkingTime/UpdateWorkingTime";
 import Packages from "../pages/Packages/Packages";
+import PackagesInfo from "../pages/PackagesInfo/PackagesInfo";
 
 // Wrapper component for offline detection
 const NetworkStatusWrapper: React.FC<{ children: React.ReactNode }> = ({
@@ -90,6 +91,7 @@ const AppRoutes: React.FC = () => {
             element={<UpdateWorkingTime />}
           />
           <Route path="/packages" element={<Packages />} />
+          <Route path="/packages/:id" element={<PackagesInfo />} />
         </Route>
 
         {/* Not Found route */}

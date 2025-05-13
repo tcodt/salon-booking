@@ -20,7 +20,7 @@ const HomePage: React.FC = () => {
         <input
           type="text"
           placeholder="جستجو"
-          className="py-2 px-4 h-11 bg-slate-100 w-full rounded-xl border focus:border-orange-500 transition outline-none"
+          className="py-2 px-4 h-11 bg-white w-full rounded-xl border focus:border-orange-500 transition outline-none"
         />
         <CiSearch size={25} className="absolute top-2 left-2 text-gray-500" />
       </div>

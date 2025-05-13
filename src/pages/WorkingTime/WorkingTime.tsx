@@ -53,19 +53,19 @@ const WorkingTime: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-row flex-wrap items-center gap-2">
         <button
-          className="bg-sky-100 text-sky-500 hover:bg-sky-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
+          className="bg-sky-100 text-sky-500 hover:bg-sky-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-sky-300"
           onClick={() => navigate("/add-working-time")}
         >
           افزودن <IoPersonAdd />
         </button>
         <button
-          className="bg-orange-100 text-orange-500 hover:bg-orange-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
+          className="bg-green-100 text-green-500 hover:bg-green-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-green-300"
           onClick={() => setIsUpdateOpen(true)}
         >
           بروزرسانی <RxUpdate />
         </button>
         <button
-          className="bg-red-100 text-red-500 hover:bg-red-200 transition rounded-xl py-1 px-3 flex items-center gap-2"
+          className="bg-red-100 text-red-500 hover:bg-red-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-red-300"
           onClick={() => setIsDeleteOpen(true)}
         >
           حذف <FaTrashCan />
@@ -126,7 +126,7 @@ const WorkingTime: React.FC = () => {
           {workingTimes?.map((time) => (
             <div
               key={time.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-orange-500 rounded-xl border border-gray-200 p-2"
+              className="flex items-center gap-4 relative border-s-2 border-s-green-500 rounded-xl border border-gray-200 p-2"
             >
               <div className="flex items-center gap-2">
                 <span className="text-base text-gray-800 font-medium">
@@ -150,7 +150,7 @@ const WorkingTime: React.FC = () => {
               </div>
 
               <button
-                className="text-xl text-orange-500 absolute top-6 left-3 hover:text-orange-600 transition"
+                className="text-xl text-green-500 absolute top-6 left-3 hover:text-green-600 transition"
                 onClick={() => handleUpdateWorkingTime(time.id)}
               >
                 <FaPencil />
@@ -172,7 +172,7 @@ const WorkingTime: React.FC = () => {
           {workingTimes?.map((time) => (
             <div
               key={time.id}
-              className="p-4 border border-gray-300 rounded-xl bg-slate-100"
+              className="p-4 border border-gray-300 rounded-xl bg-white"
             >
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-orange-500">
