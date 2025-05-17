@@ -1,11 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   changePassword,
   loginUser,
   logoutUser,
   registerUser,
 } from "../services/authService";
-import { fetchUserProfile } from "../services/userService";
+// import { fetchUserProfile } from "../services/userService";
 import { AxiosError } from "axios";
 import { clearAuthTokens, storeAuthTokens } from "../utils/tokenHelper";
 import { useAuth } from "../context/AuthContext";
@@ -65,14 +65,14 @@ export const useChangePassword = () => {
   });
 };
 
-export const useUserProfile = () => {
-  return useQuery({
-    queryKey: ["userProfile"],
-    queryFn: fetchUserProfile,
-    // staleTime: Infinity, // User info won't change until logout
-    enabled: !!localStorage.getItem("accessToken"),
-  });
-};
+// export const useUserProfile = () => {
+//   return useQuery({
+//     queryKey: ["userProfile"],
+//     queryFn: fetchUserProfile,
+//     // staleTime: Infinity, // User info won't change until logout
+//     enabled: !!localStorage.getItem("accessToken"),
+//   });
+// };
 
 export const useLogout = () => {
   const queryClient = useQueryClient();

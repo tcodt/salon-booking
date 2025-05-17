@@ -1,10 +1,10 @@
-import { AddPackage, Packages } from "../../types/packages";
+import { Packages } from "../../types/packages";
 import api from "../../utils/api";
 
 export const updatePackage = async (data: {
   id: number;
-  values: AddPackage;
+  formData: FormData;
 }): Promise<Packages> => {
-  const response = await api.put(`/packages/${data.id}/`, data.values);
+  const response = await api.put(`/packages/${data.id}/update/`, data.formData);
   return response.data;
 };

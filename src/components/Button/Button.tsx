@@ -12,7 +12,7 @@ const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   ...rest
 }) => {
-  const baseClasses = "px-4 h-12 py-2 font-medium transition-colors";
+  const baseClasses = "px-4 h-12 py-2 font-medium transition-colors w-full";
 
   const variantClasses = {
     primary: "primary-btn",

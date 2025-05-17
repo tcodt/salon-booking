@@ -30,3 +30,7 @@ export interface AddPackage {
   image?: File | null;
   media_files?: File | null;
 }
+
+export interface UpdatePackage extends AddPackage {
+  id: number;
+}

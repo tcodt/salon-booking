@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import OptionsBox from "../../components/OptionsBox/OptionsBox";
 import { IoCamera, IoPersonAdd } from "react-icons/io5";
@@ -11,11 +12,13 @@ import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { AddPackage } from "../../types/packages";
+import { AddPackage, UpdatePackage } from "../../types/packages";
 import { Link } from "react-router";
-import { FaTrashCan } from "react-icons/fa6";
+import { FaPencil, FaTrashCan } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useRemovePackage } from "../../hooks/packages/useRemovePackage";
+import { RxUpdate } from "react-icons/rx";
+import { useUpdatePackage } from "../../hooks/packages/useUpdatePackage";
 
 const Packages: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
@@ -23,6 +26,9 @@ const Packages: React.FC = () => {
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
   const [isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
+  const [selectedPackage, setSelectedPackage] = useState<UpdatePackage | null>(
+    null
+  );
 
   const {
     register,
@@ -44,6 +50,7 @@ const Packages: React.FC = () => {
   const { data: servicesData = [] } = useGetServices();
   const addPackageMutation = useAddPackage();
   const removePackageMutation = useRemovePackage();
+  const updatePackageMutation = useUpdatePackage();
   const queryClient = useQueryClient();
 
   const MAX_SIZE = 5 * 1024 * 1024;
@@ -87,8 +94,7 @@ const Packages: React.FC = () => {
     formData.append("total_price", data.total_price);
     formData.append("image", image);
 
-    // ✅ Key fix: use JSON string for service_ids
-    data.service_ids.map(Number).forEach((id) => {
+    (data.service_ids || []).map(Number).forEach((id) => {
       formData.append("service_ids", id.toString());
     });
 
@@ -115,6 +121,26 @@ const Packages: React.FC = () => {
     };
   }, [preview]);
 
+  useEffect(() => {
+    if (selectedPackage) {
+      // reset RHF form values to the selected package
+      reset({
+        business_id: selectedPackage.business_id,
+        name: selectedPackage.name,
+        desc: selectedPackage.desc,
+        total_price: selectedPackage.total_price,
+        // react-hook-form will coerce these back to numbers if needed
+        service_ids: (selectedPackage.service_ids || []).map(Number),
+      });
+      // if you want to show the existing image:
+      setPreview(
+        selectedPackage.image
+          ? `https://queuingprojectapi.pythonanywhere.com${selectedPackage.image}`
+          : null
+      );
+    }
+  }, [selectedPackage, reset]);
+
   if (isPending) return <Loading />;
   if (isError) {
     console.error(error);
@@ -139,6 +165,51 @@ const Packages: React.FC = () => {
     });
   };
 
+  const handleUpdatePackage = (pkg: any) => {
+    reset(pkg);
+    setSelectedPackage(pkg);
+  };
+
+  const handleUpdateSubmit = (data: AddPackage) => {
+    if (!selectedPackage) return;
+
+    const toastId = toast.loading("درحال بروزرسانی پکیج...");
+
+    const formDataUpdate = new FormData();
+    formDataUpdate.append("business_id", "3");
+    formDataUpdate.append("name", data.name);
+    formDataUpdate.append("desc", data.desc);
+    formDataUpdate.append("total_price", data.total_price);
+
+    if (image) {
+      formDataUpdate.append("image", image);
+    }
+
+    data.service_ids.map(Number).forEach((id) => {
+      formDataUpdate.append("service_ids", id.toString());
+    });
+
+    updatePackageMutation.mutate(
+      { id: selectedPackage?.id, formData: formDataUpdate },
+      {
+        onSuccess: () => {
+          toast.success("پکیج با موفقیت بروزرسانی شد", { id: toastId });
+          queryClient.invalidateQueries({ queryKey: ["packages"] });
+          reset();
+          setImage(null);
+          setPreview(null);
+          setIsUpdateOpen(false);
+          setSelectedPackage(null);
+        },
+        onError: (error) => {
+          const axiosError = error as AxiosError;
+          console.error("Update Package Error:", axiosError);
+          toast.error("خطا در بروزرسانی پکیج!", { id: toastId });
+        },
+      }
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-row flex-wrap items-center gap-2">
@@ -152,7 +223,7 @@ const Packages: React.FC = () => {
           onClick={() => setIsUpdateOpen(true)}
           title="بروزرسانی"
           color="green"
-          icon={<FaTrashCan />}
+          icon={<RxUpdate />}
         />
         <OptionsBox
           onClick={() => setIsDeleteOpen(true)}
@@ -208,9 +279,13 @@ const Packages: React.FC = () => {
               placeholder="قیمت"
               {...register("total_price", {
                 required: "قیمت الزامی است",
-                pattern: {
-                  value: /^-?\d*\.?\d+$/,
-                  message: "لطفا یک عدد معتبر وارد کنید",
+                // pattern: {
+                //   value: /^-?\d*\.?\d+$/,
+                //   message: "لطفا یک عدد معتبر وارد کنید",
+                // },
+                onChange: (e) => {
+                  const value = e.target.value.replace(/,/g, "");
+                  e.target.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 },
               })}
             />
@@ -292,10 +367,156 @@ const Packages: React.FC = () => {
       {/* Update Package Modal */}
       <CustomModal
         isOpen={isUpdateOpen}
-        onClose={() => setIsUpdateOpen(false)}
+        onClose={() => {
+          setIsUpdateOpen(false);
+          setSelectedPackage(null);
+        }}
         title="بروزرسانی پکیج"
       >
-        Update
+        {selectedPackage && (
+          <form
+            onSubmit={handleSubmit(handleUpdateSubmit)}
+            className="flex flex-col gap-6 mb-8"
+          >
+            <div>
+              <input
+                type="text"
+                className="primary-input"
+                placeholder="نام پکیج"
+                defaultValue={selectedPackage.name}
+                {...register("name", { required: "نام پکیج الزامی است" })}
+              />
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.name.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <textarea
+                className="primary-input"
+                placeholder="توضیحات"
+                defaultValue={selectedPackage.desc}
+                {...register("desc", { required: "توضیحات الزامی است" })}
+              ></textarea>
+              {errors.desc && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.desc.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <input
+                type="text"
+                className="primary-input"
+                placeholder="قیمت"
+                defaultValue={selectedPackage.total_price}
+                {...register("total_price", {
+                  required: "قیمت الزامی است",
+                  onChange: (e) => {
+                    const value = e.target.value.replace(/,/g, "");
+                    e.target.value = value.replace(
+                      /\B(?=(\d{3})+(?!\d))/g,
+                      ","
+                    );
+                  },
+                })}
+              />
+              {errors.total_price && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.total_price.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                سرویس‌ها
+              </label>
+              {servicesData.length === 0 ? (
+                <p className="text-red-500 text-sm">هیچ سرویسی در دسترس نیست</p>
+              ) : (
+                <div className="flex flex-col gap-2 max-h-40 overflow-y-auto">
+                  {servicesData.map((service) => (
+                    <label
+                      key={service.id}
+                      className="flex items-center gap-2 text-sm cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        value={service.id}
+                        {...register("service_ids", {
+                          validate: (value) =>
+                            value.length > 0 || "حداقل یک سرویس انتخاب کنید",
+                        })}
+                        defaultChecked={selectedPackage?.service_ids?.includes(
+                          service.id
+                        )}
+                      />
+                      {service.name}
+                    </label>
+                  ))}
+                </div>
+              )}
+              {errors.service_ids && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.service_ids.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label htmlFor="package-image">
+                <div className="bg-gray-200 text-gray-800 hover:bg-gray-300 border-2 border-gray-300 rounded-xl py-2 px-4 flex items-center gap-2">
+                  انتخاب عکس <IoCamera size={20} />
+                </div>
+              </label>
+              <input
+                type="file"
+                className="hidden"
+                id="package-image"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+              {preview && (
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="mt-2 w-32 rounded-md"
+                />
+              )}
+            </div>
+
+            <Button variant="update" type="submit">
+              بروزرسانی
+            </Button>
+          </form>
+        )}
+        <div className="flex flex-col gap-6">
+          {packages.map((pkg) => (
+            <div
+              key={pkg.id}
+              className="flex items-center gap-4 relative border-s-2 border-s-green-500 rounded-xl border border-gray-200 p-2"
+            >
+              <div className="space-y-2">
+                <h4 className="text-base text-gray-800 font-normal">
+                  {pkg.name}
+                </h4>
+                <p className="text-sm text-gray-500 font-thin line-clamp-1">
+                  {pkg.desc}
+                </p>
+              </div>
+              <button
+                className="text-xl text-green-500 absolute top-6 left-4 hover:text-green-600 transition"
+                onClick={() => handleUpdatePackage(pkg)}
+              >
+                <FaPencil />
+              </button>
+            </div>
+          ))}
+        </div>
       </CustomModal>
 
       {/* Delete Package Modal */}
@@ -329,7 +550,7 @@ const Packages: React.FC = () => {
             key={pkg.id}
             className="bg-white border border-gray-300 rounded-xl p-4 flex flex-row items-center justify-between hover:bg-slate-100 transition"
           >
-            <div className="space-y-2">
+            <div className="space-y-2 flex-1">
               <h4 className="text-base font-medium text-gray-800">
                 {pkg.name}
               </h4>
@@ -337,7 +558,7 @@ const Packages: React.FC = () => {
                 {pkg.desc}
               </p>
             </div>
-            <div>
+            <div className="flex-1 flex justify-end">
               <img
                 src={
                   pkg?.image

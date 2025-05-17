@@ -14,7 +14,6 @@ import { useSidebar } from "../../context/SidebarContext";
 import { useAuth } from "../../context/AuthContext";
 import { HiClipboardList } from "react-icons/hi";
 import { IoLogOut } from "react-icons/io5";
-import { useLogout } from "../../hooks/useAuth";
 import { FaSliders } from "react-icons/fa6";
 
 const Sidebar: React.FC = () => {
@@ -22,7 +21,6 @@ const Sidebar: React.FC = () => {
   const { isSidebarOpen, setIsSidebarOpen } = useSidebar();
   const location = useLocation();
   const navigate = useNavigate();
-  const logout = useLogout();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -67,11 +65,6 @@ const Sidebar: React.FC = () => {
     { icon: <MdPerson size={20} />, label: "پروفایل", path: "/user-profile" },
     { icon: <MdSettings size={20} />, label: "تنظیمات", path: "/settings" },
   ];
-
-  const handleLogout = () => {
-    logout();
-    navigate("/auth");
-  };
 
   return (
     <>
@@ -126,7 +119,7 @@ const Sidebar: React.FC = () => {
             <div className="mr-3 overflow-hidden">
               <button
                 className="cursor-pointer text-sm font-medium"
-                onClick={handleLogout}
+                onClick={() => navigate("/logout")}
               >
                 خروج
               </button>

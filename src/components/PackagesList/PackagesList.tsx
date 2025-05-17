@@ -76,7 +76,7 @@ const PackagesList: React.FC = () => {
                 )}
               </div>
               <p className="text-orange-600 line-clamp-2 text-left">
-                {item?.total_price} هزارتومان
+                {item?.total_price} تومان
               </p>
             </div>
             <Button onClick={() => navigate(`/packages/${item?.id}`)}>

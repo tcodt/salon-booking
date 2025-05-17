@@ -3,12 +3,12 @@ import { getGreeting } from "../../utils/greetings";
 import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router";
 import OfferCarousel from "../../components/OfferCarousel/OfferCarousel";
-import { useAuth } from "../../context/AuthContext";
 import PackagesList from "../../components/PackagesList/PackagesList";
+import { useGetProfile } from "../../hooks/profile/useGetProfile";
 
 const HomePage: React.FC = () => {
-  const { user } = useAuth();
-  const username = user?.first_name;
+  const { data: userProfile } = useGetProfile();
+  const username = userProfile?.first_name;
   const greetingUser = getGreeting(username);
 
   return (
