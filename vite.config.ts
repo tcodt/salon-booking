@@ -7,26 +7,40 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: "autoUpdate", // Automatically updates the service worker
-      includeAssets: ["logo.png"],
+      registerType: "autoUpdate",
+      includeAssets: [
+        "favicon.svg",
+        "favicon.ico",
+        "robots.txt",
+        "apple-touch-icon.png",
+      ],
       manifest: {
         name: "Salon Booking",
-        short_name: "Salon",
-        description: "An Online Salon Booking For Men and Women",
+        short_name: "SalonBooking",
+        description: "Salon booking app",
         theme_color: "#ffffff",
         background_color: "#ffffff",
         display: "standalone",
+        scope: "/",
         start_url: "/",
         icons: [
           {
-            src: "/logo.png",
+            src: "pwa-192x192.png",
             sizes: "192x192",
             type: "image/png",
           },
+          {
+            src: "pwa-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+          },
+          {
+            src: "pwa-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any maskable",
+          },
         ],
-      },
-      workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
       },
     }),
   ],
