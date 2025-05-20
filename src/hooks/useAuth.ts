@@ -2,12 +2,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   changePassword,
   loginUser,
-  logoutUser,
   registerUser,
 } from "../services/authService";
 // import { fetchUserProfile } from "../services/userService";
 import { AxiosError } from "axios";
-import { clearAuthTokens, storeAuthTokens } from "../utils/tokenHelper";
+import { storeAuthTokens } from "../utils/tokenHelper";
 import { useAuth } from "../context/AuthContext";
 
 export const useRegister = () => {
@@ -74,11 +73,11 @@ export const useChangePassword = () => {
 //   });
 // };
 
-export const useLogout = () => {
-  const queryClient = useQueryClient();
-  return () => {
-    logoutUser();
-    clearAuthTokens();
-    queryClient.removeQueries({ queryKey: ["userProfile"] });
-  };
-};
+// export const useLogout = () => {
+//   const queryClient = useQueryClient();
+//   return () => {
+//     logoutUser();
+//     clearAuthTokens();
+//     queryClient.removeQueries({ queryKey: ["userProfile"] });
+//   };
+// };

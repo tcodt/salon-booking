@@ -6,7 +6,7 @@ import PageBar from "../../components/PageBar/PageBar";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { IoIosLock } from "react-icons/io";
-import { useLogin } from "../../hooks/useAuth";
+import { useLogin } from "../../hooks/accounts/login/useLogin";
 import { AxiosError } from "axios";
 import Loading from "../../components/Loading/Loading";
 import toast from "react-hot-toast";
