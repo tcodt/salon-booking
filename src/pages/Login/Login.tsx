@@ -10,6 +10,8 @@ import { useLogin } from "../../hooks/accounts/login/useLogin";
 import { AxiosError } from "axios";
 import Loading from "../../components/Loading/Loading";
 import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "../../context/AuthContext";
 
 interface LoginFormData {
   phone_number: string;
@@ -25,6 +27,8 @@ const Login: React.FC = () => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const navigate = useNavigate();
   const loginMutation = useLogin();
+  const queryClient = useQueryClient();
+  const { login: loginContext } = useAuth();
 
   const toggle = () => {
     setIsVisible(!isVisible);
@@ -34,13 +38,16 @@ const Login: React.FC = () => {
     const toastId = toast.loading("درحال ورود...");
 
     loginMutation.mutate(data, {
-      onSuccess: () => {
+      onSuccess: (data) => {
         toast.success("ورود موفقیت آمیز بود!", { id: toastId });
+        queryClient.setQueryData(["userProfile"], data.user); // Put user data in cache
+        loginContext({ access: data.access, refresh: data.refresh }, data.user);
         navigate("/home");
       },
-      onError: (error: AxiosError) => {
-        console.error("Login failed: ", error);
-        if (error.response?.status === 401) {
+      onError: (error) => {
+        const axiosError = error as AxiosError;
+        console.error("Login failed: ", axiosError);
+        if (axiosError.response?.status === 401) {
           toast.error("شماره تلفن یا رمز عبور اشتباه است!", { id: toastId });
         } else {
           toast.error("خطایی رخ داده است، لطفاً دوباره تلاش کنید", {

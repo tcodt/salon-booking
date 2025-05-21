@@ -11,6 +11,8 @@ import { useRegister } from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 import Loading from "../../components/Loading/Loading";
 import { RegisterType } from "../../types/register";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "../../context/AuthContext";
 
 type FormData = {
   name: string;
@@ -29,6 +31,8 @@ const Register: React.FC = () => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const navigate = useNavigate();
   const registerMutation = useRegister();
+  const queryClient = useQueryClient();
+  const { login: loginContext } = useAuth();
 
   const toggle = () => {
     setIsVisible(!isVisible);
@@ -44,7 +48,9 @@ const Register: React.FC = () => {
     };
 
     registerMutation.mutate(transformedData, {
-      onSuccess: () => {
+      onSuccess: (data) => {
+        queryClient.setQueryData(["userProfile"], data.user); // Put user data in cache
+        loginContext({ access: data.access, refresh: data.refresh }, data.user);
         navigate("/home"); // Redirect to /login when have SMS panel
       },
     });

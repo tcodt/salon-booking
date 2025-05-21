@@ -3,7 +3,7 @@ import { getProfile } from "../../services/profile/getProfile";
 
 export const useGetProfile = () => {
   return useQuery({
-    queryKey: ["profile"],
+    queryKey: ["userProfile"],
     queryFn: getProfile,
     enabled: !!localStorage.getItem("accessToken"),
   });
