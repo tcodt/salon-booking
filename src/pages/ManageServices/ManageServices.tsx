@@ -20,6 +20,7 @@ import { useGetBusinesses } from "../../hooks/business/useGetBusinesses";
 import { useAddService } from "../../hooks/services/useAddService";
 import TimeInput from "../../components/TimeInput/TimeInput";
 import { useUpdateService } from "../../hooks/services/useUpdateService";
+import PageTitle from "../../components/PageTitle/PageTitle";
 
 const ManageServices: React.FC = () => {
   const {
@@ -342,7 +343,7 @@ const ManageServices: React.FC = () => {
         </div>
       </CustomModal>
 
-      <h3 className="text-gray-800 text-2xl font-bold ">سرویس ها</h3>
+      <PageTitle title="سرویس ها" />
 
       {!services?.length && (
         <div className="text-base text-gray-500">هیچ سرویسی وجود ندارد!</div>

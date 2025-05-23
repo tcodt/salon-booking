@@ -7,27 +7,19 @@ import Button from "../../components/Button/Button";
 import PageBar from "../../components/PageBar/PageBar";
 import { MdEmail } from "react-icons/md";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useRegister } from "../../hooks/useAuth";
+import { useRegister } from "../../hooks/accounts/register/useRegister";
 import toast from "react-hot-toast";
 import Loading from "../../components/Loading/Loading";
 import { RegisterType } from "../../types/register";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../context/AuthContext";
 
-type FormData = {
-  name: string;
-  lastName: string;
-  phoneNumber: string;
-  email: string;
-  password: string;
-};
-
 const Register: React.FC = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<RegisterType>();
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const navigate = useNavigate();
   const registerMutation = useRegister();
@@ -38,11 +30,11 @@ const Register: React.FC = () => {
     setIsVisible(!isVisible);
   };
 
-  const handleRegister: SubmitHandler<FormData> = async (data) => {
+  const handleRegister: SubmitHandler<RegisterType> = async (data) => {
     const transformedData: RegisterType = {
-      first_name: data.name,
-      last_name: data.lastName,
-      phone_number: data.phoneNumber,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      phone_number: data.phone_number,
       email: data.email,
       password: data.password,
     };
@@ -55,7 +47,7 @@ const Register: React.FC = () => {
       },
     });
 
-    if (errors.phoneNumber) {
+    if (errors.phone_number) {
       toast.error("شماره تلفن صحیح نیست!");
     }
   };
@@ -82,13 +74,13 @@ const Register: React.FC = () => {
               <label className="md:w-2/4 w-full relative">
                 <input
                   type="text"
-                  placeholder={errors?.name?.message || "نام"}
+                  placeholder={errors?.first_name?.message || "نام"}
                   className={`primary-input ${
-                    errors?.name?.message
+                    errors?.first_name?.message
                       ? "text-sm placeholder:text-red-500"
                       : "text-base"
                   }`}
-                  {...register("name", {
+                  {...register("first_name", {
                     required: "الزامی",
                     minLength: {
                       value: 2,
@@ -104,13 +96,13 @@ const Register: React.FC = () => {
               <label className="md:w-2/4 w-full relative">
                 <input
                   type="text"
-                  placeholder={errors?.lastName?.message || "نام خانوادگی"}
+                  placeholder={errors?.last_name?.message || "نام خانوادگی"}
                   className={`primary-input ${
-                    errors?.lastName?.message
+                    errors?.last_name?.message
                       ? "text-sm placeholder:text-red-500"
                       : "text-base"
                   }`}
-                  {...register("lastName", {
+                  {...register("last_name", {
                     required: "الزامی",
                     minLength: {
                       value: 2,
@@ -127,14 +119,14 @@ const Register: React.FC = () => {
               <input
                 type="text"
                 maxLength={11}
-                placeholder={errors?.phoneNumber?.message || "شماره تلفن"}
+                placeholder={errors?.phone_number?.message || "شماره تلفن"}
                 autoComplete="username"
                 className={`primary-input ps-4 pe-8 ${
-                  errors?.phoneNumber?.message
+                  errors?.phone_number?.message
                     ? "text-sm placeholder:text-red-500"
                     : "text-base"
                 }`}
-                {...register("phoneNumber", {
+                {...register("phone_number", {
                   required: "شماره تلفن اجباری است!",
                   pattern: {
                     value: /^09[0-9]{9}$/,

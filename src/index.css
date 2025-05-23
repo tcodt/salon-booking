@@ -100,3 +100,19 @@ html {
   z-index: 10;
   position: relative;
 }
+
+#rotation_profile {
+  animation: rotate-x-pause 4s linear infinite;
+}
+
+@keyframes rotate-x-pause {
+  0% {
+    transform: rotateY(0deg);
+  }
+  25% {
+    transform: rotateY(360deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}

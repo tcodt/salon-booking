@@ -9,6 +9,7 @@ import { useAddAppointment } from "../../hooks/appointments/useAddAppointment";
 import { useGetServices } from "../../hooks/services/useGetServices";
 import { useGetEmployees } from "../../hooks/employees/useGetEmployees";
 import { useNavigate } from "react-router";
+import PageTitle from "../../components/PageTitle/PageTitle";
 
 const Reserve: React.FC = () => {
   const [date, setDate] = useState<Date | null>(new Date());
@@ -69,7 +70,7 @@ const Reserve: React.FC = () => {
   return (
     <div>
       <div className="space-y-6">
-        <h2 className="primary-title">همین حالا رزرو کن!</h2>
+        <PageTitle title="همین حالا رزرو کن!" />
         <hr />
         <div className="flex flex-col gap-4">
           <label className="flex items-center gap-2 text-base font-semibold text-gray-700">

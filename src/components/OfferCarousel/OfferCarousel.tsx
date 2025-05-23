@@ -67,7 +67,7 @@ const OfferCarousel: React.FC = () => {
         return (
           <SwiperSlide key={slider.id}>
             <div
-              className={`${variant.color} ${variant.textColor} rounded-xl shadow-sm p-6 h-52 flex flex-col`}
+              className={`${variant.color} ${variant.textColor} rounded-xl shadow-md p-6 h-52 flex flex-col`}
             >
               <h3 className="text-xl font-bold mb-3">{slider.title}</h3>
               <p className="mb-4">{slider.sub_title}</p>

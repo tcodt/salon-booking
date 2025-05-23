@@ -14,6 +14,7 @@ import { useGetUsers } from "../../hooks/users/useGetUsers";
 import Button from "../../components/Button/Button";
 import { useAddEmployee } from "../../hooks/employees/useAddEmployee";
 import { useUpdateEmployee } from "../../hooks/employees/useUpdateEmployee";
+import PageTitle from "../../components/PageTitle/PageTitle";
 
 const ManageEmployees: React.FC = () => {
   const {
@@ -335,7 +336,7 @@ const ManageEmployees: React.FC = () => {
         </div>
       </CustomModal>
 
-      <h3 className="text-gray-800 text-2xl font-bold ">کارمندان</h3>
+      <PageTitle title="کارمندان" />
       {employees?.length === 0 ? (
         <p className="text-gray-600">کارمندی یافت نشد.</p>
       ) : (

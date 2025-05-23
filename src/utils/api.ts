@@ -1,6 +1,6 @@
-import axios, { AxiosInstance } from "axios";
+import axios from "axios";
 
-const api: AxiosInstance = axios.create({
+const api = axios.create({
   baseURL: "https://queuingprojectapi.pythonanywhere.com",
   headers: {
     "Content-Type": "application/json",

@@ -15,6 +15,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { useRemoveSlider } from "../../hooks/sliders/useRemoveSlider";
 import { RxUpdate } from "react-icons/rx";
 import { useUpdateSlider } from "../../hooks/sliders/useUpdateSlider";
+import PageTitle from "../../components/PageTitle/PageTitle";
 
 const Sliders: React.FC = () => {
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
@@ -278,7 +279,7 @@ const Sliders: React.FC = () => {
       </CustomModal>
 
       <div className="mt-8">
-        <h3 className="primary-title">لیست اسلایدر ها</h3>
+        <PageTitle title="اسلایدر ها" />
         <div className="mt-5">
           <div className="grid grid-cols-1 gap-4">
             {sliders?.map((slider) => (

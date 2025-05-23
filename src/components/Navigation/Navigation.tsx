@@ -54,7 +54,7 @@ const Navigation: React.FC = () => {
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 z-50 border-t border-gray-300 transition-transform duration-300 ${
+      className={`fixed bottom-2 left-2 right-2 z-50 transition-transform duration-300 rounded-full shadow-md ${
         isVisible ? "translate-y-0" : "translate-y-full"
       } bg-white shadow-lg`}
     >
@@ -68,7 +68,7 @@ const Navigation: React.FC = () => {
             value === 0 ? "text-orange-500" : "text-gray-500"
           }`}
         >
-          <FaRegUser size={25} />
+          <FaRegUser size={20} />
           <span className="text-sm">داشبورد</span>
         </button>
         <button
@@ -80,7 +80,7 @@ const Navigation: React.FC = () => {
             value === 3 ? "text-orange-500" : "text-gray-500"
           }`}
         >
-          <MdTimer size={25} />
+          <MdTimer size={20} />
           <span className="text-sm">ساعات کاری</span>
         </button>
         <button
@@ -92,7 +92,7 @@ const Navigation: React.FC = () => {
             value === 1 ? "text-orange-500" : "text-gray-500"
           }`}
         >
-          <GrHomeRounded size={25} />
+          <GrHomeRounded size={20} />
           <span className="text-sm">خانه</span>
         </button>
         <button
@@ -104,7 +104,7 @@ const Navigation: React.FC = () => {
             value === 2 ? "text-orange-500" : "text-gray-500"
           }`}
         >
-          <LuNotebookText size={25} />
+          <LuNotebookText size={20} />
           <span className="text-sm">رزرو</span>
         </button>
       </div>

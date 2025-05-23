@@ -12,6 +12,7 @@ import { AxiosError } from "axios";
 import { useRemoveWorkingTime } from "../../hooks/working-time/useRemoveWorkingTime";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
+import PageTitle from "../../components/PageTitle/PageTitle";
 
 const WorkingTime: React.FC = () => {
   const { data: workingTimes, isPending, isError, error } = useGetWorkingTime();
@@ -160,7 +161,7 @@ const WorkingTime: React.FC = () => {
         </div>
       </CustomModal>
 
-      <h2 className="primary-title">ساعات کاری</h2>
+      <PageTitle title="ساعات کاری" />
       {!workingTimes?.length && (
         <p className="text-base text-red-500 font-normal">
           هیچ ساعت کاری تنظیم نشده است!

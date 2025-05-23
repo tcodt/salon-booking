@@ -10,38 +10,29 @@ import { useLogin } from "../../hooks/accounts/login/useLogin";
 import { AxiosError } from "axios";
 import Loading from "../../components/Loading/Loading";
 import toast from "react-hot-toast";
-import { useQueryClient } from "@tanstack/react-query";
-import { useAuth } from "../../context/AuthContext";
-
-interface LoginFormData {
-  phone_number: string;
-  password: string;
-}
+import { LoginType } from "../../types/login";
 
 const Login: React.FC = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>();
+  } = useForm<LoginType>();
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const navigate = useNavigate();
   const loginMutation = useLogin();
-  const queryClient = useQueryClient();
-  const { login: loginContext } = useAuth();
 
   const toggle = () => {
     setIsVisible(!isVisible);
   };
 
-  const handleLogin: SubmitHandler<LoginFormData> = (data) => {
+  const handleLogin: SubmitHandler<LoginType> = (data) => {
     const toastId = toast.loading("درحال ورود...");
+    console.log(data);
 
     loginMutation.mutate(data, {
-      onSuccess: (data) => {
+      onSuccess: () => {
         toast.success("ورود موفقیت آمیز بود!", { id: toastId });
-        queryClient.setQueryData(["userProfile"], data.user); // Put user data in cache
-        loginContext({ access: data.access, refresh: data.refresh }, data.user);
         navigate("/home");
       },
       onError: (error) => {

@@ -38,7 +38,7 @@ const PackagesList: React.FC = () => {
     >
       {packages?.map((item) => (
         <SwiperSlide key={item?.id}>
-          <div className="bg-white border border-gray-300 h-auto w-full p-4 rounded-xl shadow-md flex flex-col gap-8">
+          <div className="bg-white h-auto w-full p-4 rounded-xl shadow-md flex flex-col gap-8">
             <div className="space-y-4">
               <div>
                 <img
@@ -51,8 +51,8 @@ const PackagesList: React.FC = () => {
                   className="rounded-xl h-40 w-full object-cover"
                 />
               </div>
-              <h5 className="text-lg font-semibold">{item?.name}</h5>
-              <p className="text-gray-600 line-clamp-2">{item?.desc}</p>
+              <h4 className="text-lg font-semibold">{item?.name}</h4>
+              <p className="text-gray-600 line-clamp-2 text-sm">{item?.desc}</p>
               <div className="flex flex-row items-center gap-4 flex-wrap">
                 <div className="flex items-center gap-2">
                   <HiOutlineBuildingOffice className="text-2xl text-orange-500" />
@@ -75,7 +75,7 @@ const PackagesList: React.FC = () => {
                   </div>
                 )}
               </div>
-              <p className="text-orange-600 line-clamp-2 text-left">
+              <p className="text-orange-600 line-clamp-2 text-left text-base">
                 {item?.total_price} تومان
               </p>
             </div>

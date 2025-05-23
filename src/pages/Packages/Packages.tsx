@@ -19,6 +19,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { useRemovePackage } from "../../hooks/packages/useRemovePackage";
 import { RxUpdate } from "react-icons/rx";
 import { useUpdatePackage } from "../../hooks/packages/useUpdatePackage";
+import PageTitle from "../../components/PageTitle/PageTitle";
 
 const Packages: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
@@ -233,7 +234,7 @@ const Packages: React.FC = () => {
         />
       </div>
 
-      <h3 className="primary-title">پکیج‌ها</h3>
+      <PageTitle title="پکیج ها" />
 
       {!packages?.length && (
         <div className="text-center p-6 text-gray-500">هیچ پکیجی یافت نشد!</div>

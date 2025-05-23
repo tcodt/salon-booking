@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { useGetProfile } from "../../hooks/profile/useGetProfile";
-import { FaPencil } from "react-icons/fa6";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import { IoCamera } from "react-icons/io5";
 import toast from "react-hot-toast";
@@ -12,6 +11,7 @@ import { UpdateProfile } from "../../types/profile";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateProfile } from "../../hooks/profile/useUpdateProfile";
 import { AxiosError } from "axios";
+import { FaPencil } from "react-icons/fa6";
 
 const UserProfile: React.FC = () => {
   const [isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
@@ -30,9 +30,9 @@ const UserProfile: React.FC = () => {
     defaultValues: {
       first_name: userProfile?.first_name || "",
       last_name: userProfile?.last_name || "",
-      phone_number: "",
+      phone_number: userProfile?.phone_number || "",
       is_owner: userProfile?.is_owner || false,
-      is_superuser: false,
+      is_superuser: userProfile?.is_superuser || false,
       is_staff: !userProfile?.is_owner || false,
     },
   });
@@ -64,7 +64,7 @@ const UserProfile: React.FC = () => {
       setValue("phone_number", userProfile.phone_number || "");
       setValue("is_owner", userProfile.is_owner || false);
       setValue("is_superuser", userProfile.is_superuser || false);
-      setValue("is_staff", !userProfile.is_owner || false);
+      setValue("is_staff", !userProfile.is_staff || false);
     }
   }, [userProfile, setValue]);
 
@@ -82,7 +82,7 @@ const UserProfile: React.FC = () => {
 
     updateProfileMutation.mutate(formData, {
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["profile"] });
+        queryClient.invalidateQueries({ queryKey: ["userProfile"] });
         toast.success("پروفایل با موفقیت بروزرسانی شد");
         setIsUpdateOpen(false);
         reset();
@@ -99,25 +99,28 @@ const UserProfile: React.FC = () => {
 
   return (
     <section>
-      <div className="p-4 rounded-xl bg-gradient-to-r from-orange-300 to-orange-500 border-2 border-orange-700">
+      <div className="bg-white p-4 rounded-xl shadow-md">
         <div className="flex items-start justify-between">
-          <ul className="space-y-4 list-disc marker:text-orange-700 ms-4">
-            <li className="text-white font-medium">
+          <ul className="space-y-4 list-disc marker:text-orange-500 ms-4">
+            <li className="text-gray-700 font-medium">
               نام: <span>{userProfile?.first_name}</span>
             </li>
-            <li className="text-white font-medium">
+            <li className="text-gray-700 font-medium">
               خانوادگی: <span>{userProfile?.last_name}</span>
             </li>
-            <li className="text-white font-medium">
+            <li className="text-gray-700 font-medium">
               نقش: <span>{userProfile?.is_owner ? "ادمین" : "کاربر"}</span>
             </li>
           </ul>
-          <div className="border-2 border-white rounded-full bg-orange-50">
+          <div
+            className="border-2 border-orange-500 rounded-full bg-orange-50 p-1 w-20 h-20 flex items-center justify-center"
+            id="rotation_profile"
+          >
             {userProfile?.image ? (
               <img
                 src={userProfile.image}
                 alt="User"
-                className="w-16 h-16 rounded-full object-cover"
+                className="rounded-full object-cover"
               />
             ) : (
               <FaUser className="text-gray-500 text-4xl" />
@@ -130,9 +133,6 @@ const UserProfile: React.FC = () => {
         isOpen={isUpdateOpen}
         onClose={() => {
           setIsUpdateOpen(false);
-          reset();
-          setImage(null);
-          setPreview(null);
         }}
         title="بروزرسانی"
       >
@@ -236,7 +236,7 @@ const UserProfile: React.FC = () => {
             <div className="flex flex-row items-center">
               <Checkbox
                 {...register("is_superuser")}
-                defaultChecked={false}
+                defaultChecked={userProfile?.is_superuser}
                 color="default"
                 id="super_user"
               />
@@ -245,28 +245,38 @@ const UserProfile: React.FC = () => {
             <div className="flex flex-row items-center">
               <Checkbox
                 {...register("is_staff")}
-                defaultChecked={!userProfile?.is_owner}
+                defaultChecked={!userProfile?.is_staff}
                 color="default"
                 id="user"
               />
               <label htmlFor="user">کاربر</label>
             </div>
           </div>
-          <Button variant="update" type="submit">
+          <Button variant="primary" type="submit">
             بروزرسانی
           </Button>
         </form>
       </CustomModal>
 
-      <div className="mt-8">
-        <button
+      <div className="my-8">
+        <Button
           type="button"
-          className="text-orange-500 hover:text-orange-600 transition font-medium text-base flex items-center gap-2"
+          variant="primary"
           onClick={() => setIsUpdateOpen(true)}
         >
-          <FaPencil className="text-xl" /> ویرایش
-        </button>
+          <span className="flex items-center gap-2 justify-center">
+            <FaPencil /> ویرایش
+          </span>
+        </Button>
       </div>
+
+      <p className="text-sm font-normal text-gray-600 text-right">
+        <span className="text-red-500 font-medium text-base">توجه!</span> لورم
+        ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از
+        طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و
+        سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای
+        متنوع با هدف بهبود ابزارهای کاربردی می باشد.
+      </p>
     </section>
   );
 };
