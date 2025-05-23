@@ -28,7 +28,6 @@ const Login: React.FC = () => {
 
   const handleLogin: SubmitHandler<LoginType> = (data) => {
     const toastId = toast.loading("درحال ورود...");
-    console.log(data);
 
     loginMutation.mutate(data, {
       onSuccess: () => {
