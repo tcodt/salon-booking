@@ -49,11 +49,8 @@ const Reserve: React.FC = () => {
       employee_id: Number(employee),
     };
 
-    console.log("Sending Booking Data:", bookingData);
-
     addAppointmentMutation.mutate(bookingData, {
-      onSuccess: (data) => {
-        console.log("Reserve data: ", data);
+      onSuccess: () => {
         toast.success("رزرو شما با موفقیت ثبت شد!");
         queryClient.invalidateQueries({
           queryKey: ["appointments"],

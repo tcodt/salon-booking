@@ -21,83 +21,88 @@ const PackagesInfo: React.FC = () => {
   return (
     <section>
       <div className="space-y-4">
-        <div>
-          <img
-            src={
-              packageData?.image
-                ? `https://queuingprojectapi.pythonanywhere.com${packageData.image}`
-                : "/images/no-image.jpg"
-            }
-            alt="Packge Image"
-            className="rounded-xl h-48 w-full object-cover"
-          />
-        </div>
-        <h3 className="text-lg font-semibold text-gray-800">
-          {packageData?.name}
-        </h3>
-        <p className="text-sm font-medium text-gray-600">{packageData?.desc}</p>
-
-        <ul className="list-disc marker:text-orange-500 ms-4">
-          {packageData?.services.map((service) => (
-            <li key={service.id} className="text-sm font-medium text-gray-700">
-              {service.name}
-            </li>
-          ))}
-        </ul>
-        <hr />
-        <div className="space-y-2">
-          <p className="text-base font-medium text-gray-800 flex items-center gap-2">
-            <HiOutlineBuildingOffice className="text-2xl text-orange-500" />{" "}
-            {packageData?.business.name}
-          </p>
+        <div className="bg-white p-4 rounded-xl shadow-md space-y-4">
+          <div>
+            <img
+              src={
+                packageData?.image
+                  ? `https://queuingprojectapi.pythonanywhere.com${packageData.image}`
+                  : "/images/no-image.jpg"
+              }
+              alt="Packge Image"
+              className="rounded-xl h-48 w-full object-cover"
+            />
+          </div>
+          <h3 className="text-lg font-semibold text-gray-800">
+            {packageData?.name}
+          </h3>
           <p className="text-sm font-medium text-gray-600">
-            <span className="text-gray-800">آدرس:</span>{" "}
-            {packageData?.business.address}
+            {packageData?.desc}
           </p>
+          <ul className="list-disc marker:text-orange-500 ms-4">
+            {packageData?.services.map((service) => (
+              <li
+                key={service.id}
+                className="text-sm font-medium text-gray-700"
+              >
+                {service.name}
+              </li>
+            ))}
+          </ul>
         </div>
-        <div className="flex flex-row items-center gap-4 flex-wrap">
-          {packageData?.business?.is_coffee_shop && (
-            <div className="flex items-center gap-2">
-              <GiCoffeeCup className="text-2xl text-orange-500" />
-              <p className="text-sm font-medium text-gray-600">کافی شاپ</p>
-            </div>
-          )}
-          {packageData?.business?.is_parking && (
-            <div className="flex items-center gap-2">
-              <LuCircleParking className="text-2xl text-orange-500" />
-              <p className="text-sm font-medium text-gray-600">پارکینگ</p>
-            </div>
-          )}
-
-          <a
-            href={packageData?.business?.instagram_link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2"
-          >
-            <FaInstagram className="text-2xl text-orange-500" />
-            <p className="text-sm font-medium text-gray-600">اینستاگرام</p>
-          </a>
-
-          <a
-            href={`tel:${packageData?.business.phone_number}`}
-            className="flex items-center gap-2"
-          >
-            <HiMiniDevicePhoneMobile className="text-2xl text-orange-500" />
-            <p className="text-sm font-medium text-gray-600">
-              تماس: {packageData?.business.phone_number}
+        <hr />
+        <div className="bg-white p-4 rounded-xl shadow-md space-y-4">
+          <div className="space-y-4">
+            <p className="text-base font-medium text-gray-800 flex items-center gap-2">
+              <HiOutlineBuildingOffice className="text-2xl text-orange-500" />{" "}
+              {packageData?.business.name}
             </p>
-          </a>
-
-          <a
-            href={`tel:${packageData?.business.telephone_number}`}
-            className="flex items-center gap-2"
-          >
-            <GiRotaryPhone className="text-2xl text-orange-500" />
             <p className="text-sm font-medium text-gray-600">
-              تلفن: {packageData?.business.telephone_number}
+              <span className="text-gray-800">آدرس:</span>{" "}
+              {packageData?.business.address}
             </p>
-          </a>
+          </div>
+          <div className="flex flex-row items-center gap-4 flex-wrap">
+            {packageData?.business?.is_coffee_shop && (
+              <div className="flex items-center gap-2">
+                <GiCoffeeCup className="text-2xl text-orange-500" />
+                <p className="text-sm font-medium text-gray-600">کافی شاپ</p>
+              </div>
+            )}
+            {packageData?.business?.is_parking && (
+              <div className="flex items-center gap-2">
+                <LuCircleParking className="text-2xl text-orange-500" />
+                <p className="text-sm font-medium text-gray-600">پارکینگ</p>
+              </div>
+            )}
+            <a
+              href={packageData?.business?.instagram_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2"
+            >
+              <FaInstagram className="text-2xl text-orange-500" />
+              <p className="text-sm font-medium text-gray-600">اینستاگرام</p>
+            </a>
+            <a
+              href={`tel:${packageData?.business.phone_number}`}
+              className="flex items-center gap-2"
+            >
+              <HiMiniDevicePhoneMobile className="text-2xl text-orange-500" />
+              <p className="text-sm font-medium text-gray-600">
+                تماس: {packageData?.business.phone_number}
+              </p>
+            </a>
+            <a
+              href={`tel:${packageData?.business.telephone_number}`}
+              className="flex items-center gap-2"
+            >
+              <GiRotaryPhone className="text-2xl text-orange-500" />
+              <p className="text-sm font-medium text-gray-600">
+                تلفن: {packageData?.business.telephone_number}
+              </p>
+            </a>
+          </div>
         </div>
         <hr />
         <div className="flex flex-row items-center justify-between">

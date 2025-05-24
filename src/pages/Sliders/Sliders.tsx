@@ -285,7 +285,7 @@ const Sliders: React.FC = () => {
             {sliders?.map((slider) => (
               <div
                 key={slider.id}
-                className="border border-gray-300 rounded-xl p-4 transition bg-white"
+                className="rounded-xl p-4 transition bg-white shadow-md"
               >
                 <h4 className="text-lg font-semibold text-gray-700 mb-2">
                   {slider.title}

@@ -335,9 +335,11 @@ const Packages: React.FC = () => {
 
           <div>
             <label htmlFor="package-image">
-              <div className="bg-gray-200 text-gray-800 hover:bg-gray-300 border-2 border-gray-300 rounded-xl py-2 px-4 flex items-center gap-2">
-                انتخاب عکس <IoCamera size={20} />
-              </div>
+              <Button variant="select">
+                <span className="flex items-center gap-2">
+                  انتخاب عکس <IoCamera size={20} />
+                </span>
+              </Button>
             </label>
             <input
               type="file"
@@ -356,7 +358,7 @@ const Packages: React.FC = () => {
           </div>
 
           <Button
-            variant="add"
+            variant="primary"
             type="submit"
             disabled={addPackageMutation.isPending}
           >
@@ -499,7 +501,7 @@ const Packages: React.FC = () => {
           {packages.map((pkg) => (
             <div
               key={pkg.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-green-500 rounded-xl border border-gray-200 p-2"
+              className="flex items-center gap-4 relative border-s-2 border-s-orange-500 rounded-xl border border-gray-200 p-2"
             >
               <div className="space-y-2">
                 <h4 className="text-base text-gray-800 font-normal">
@@ -510,7 +512,7 @@ const Packages: React.FC = () => {
                 </p>
               </div>
               <button
-                className="text-xl text-green-500 absolute top-6 left-4 hover:text-green-600 transition"
+                className="text-xl text-orange-500 absolute top-6 left-4 hover:text-orange-600 transition"
                 onClick={() => handleUpdatePackage(pkg)}
               >
                 <FaPencil />
@@ -549,7 +551,7 @@ const Packages: React.FC = () => {
           <Link
             to={`/packages/${pkg.id}`}
             key={pkg.id}
-            className="bg-white border border-gray-300 rounded-xl p-4 flex flex-row items-center justify-between hover:bg-slate-100 transition"
+            className="bg-white shadow-md rounded-xl p-4 flex flex-row items-center justify-between"
           >
             <div className="space-y-2 flex-1">
               <h4 className="text-base font-medium text-gray-800">

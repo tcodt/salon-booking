@@ -127,12 +127,14 @@ const Sidebar: React.FC = () => {
           </div>
 
           <div className="mt-auto p-3 rounded-lg bg-gray-100 flex items-center">
-            <div className="w-8 h-8 rounded-full bg-orange-200 flex items-center justify-center">
-              <MdOutlineAccountCircle className="text-orange-600" size={20} />
+            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+              <MdOutlineAccountCircle className="text-gray-600" size={20} />
             </div>
             <div className="mr-3 overflow-hidden">
               <p className="text-sm font-medium">{user?.first_name}</p>
-              <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+              <p className="text-xs text-gray-500 truncate">
+                {user?.phone_number}
+              </p>
             </div>
           </div>
         </div>

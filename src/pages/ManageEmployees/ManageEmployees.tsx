@@ -236,14 +236,14 @@ const ManageEmployees: React.FC = () => {
             defaultValue={skillUpdate}
             onChange={(e) => setSkillUpdate(e.target.value)}
           ></textarea>
-          <Button variant="update" onClick={handleUpdateEmployee}>
+          <Button variant="primary" onClick={handleUpdateEmployee}>
             بروزرسانی کارمند
           </Button>
           <div className="flex flex-col gap-6">
             {employees.map((emp) => (
               <div
                 key={emp.id}
-                className="flex items-center gap-4 relative border-s-2 border-s-green-500 rounded-xl border border-gray-200 p-2"
+                className="flex items-center gap-4 relative border-s-2 border-s-orange-500 rounded-xl border border-gray-200 p-2"
               >
                 <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
                   {emp.user.image ? (
@@ -262,7 +262,7 @@ const ManageEmployees: React.FC = () => {
                 </div>
 
                 <button
-                  className="text-xl text-green-500 absolute top-7 left-4 hover:text-green-600 transition"
+                  className="text-xl text-orange-500 absolute top-7 left-4 hover:text-orange-600 transition"
                   onClick={() =>
                     handleUpdateEmp(
                       emp.id,
@@ -292,22 +292,22 @@ const ManageEmployees: React.FC = () => {
             placeholder="کاربر را اضافه کنید"
             value={selectedUser}
             readOnly
-            className="py-2 px-4 h-11 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-blue-500 text-gray-700 text-base transition"
+            className="py-2 px-4 h-11 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-orange-500 text-gray-700 text-base transition"
           />
           <textarea
             rows={2}
-            className="p-4 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-blue-500 text-gray-700 text-base transition"
+            className="p-4 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-orange-500 text-gray-700 text-base transition"
             placeholder="مهارت ها..."
             value={skill}
             onChange={(e) => setSkill(e.target.value)}
           ></textarea>
-          <Button variant="add" onClick={handleAddEmployee}>
+          <Button variant="primary" onClick={handleAddEmployee}>
             ثبت کارمند
           </Button>
           {users.map((user) => (
             <div
               key={user.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-sky-500 rounded-xl border border-gray-200 p-2"
+              className="flex items-center gap-4 relative border-s-2 border-s-orange-500 rounded-xl border border-gray-200 p-2"
             >
               <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
                 {user.image ? (
@@ -326,7 +326,7 @@ const ManageEmployees: React.FC = () => {
               </div>
 
               <button
-                className="text-xl text-sky-500 absolute top-6 left-4 bg-blue-100 p-1 rounded-full hover:text-sky-600 transition"
+                className="text-xl text-orange-500 absolute top-6 left-4 bg-orange-100 p-1 rounded-full hover:text-orange-600 transition"
                 onClick={() => handleAddUser(user.id, user.first_name)}
               >
                 <IoAdd />
@@ -361,10 +361,6 @@ const ManageEmployees: React.FC = () => {
               <table className="table-auto w-full text-sm text-gray-600">
                 <tbody>
                   <tr>
-                    <td className="font-medium py-2 w-1/4">ایمیل:</td>
-                    <td className="py-2 text-end">{employee.user.email}</td>
-                  </tr>
-                  <tr>
                     <td className="font-medium py-2">شماره تلفن:</td>
                     <td className="py-2 text-end">
                       {employee.user.phone_number}
@@ -376,8 +372,8 @@ const ManageEmployees: React.FC = () => {
                       <span
                         className={`px-2 py-1 rounded text-xs ${
                           employee.user.is_active
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
+                            ? "bg-green-100 text-green-500"
+                            : "bg-red-100 text-red-500"
                         }`}
                       >
                         {employee.user.is_active ? "فعال" : "غیرفعال"}

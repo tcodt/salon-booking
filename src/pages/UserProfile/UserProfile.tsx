@@ -204,9 +204,11 @@ const UserProfile: React.FC = () => {
           </div>
           <div>
             <label htmlFor="package-image">
-              <div className="bg-gray-200 text-gray-800 hover:bg-gray-300 border-2 border-gray-300 rounded-xl py-2 px-4 flex items-center gap-2 cursor-pointer">
-                انتخاب عکس <IoCamera size={20} />
-              </div>
+              <Button variant="select">
+                <span className="flex items-center gap-2">
+                  انتخاب عکس <IoCamera size={20} />
+                </span>
+              </Button>
             </label>
             <input
               type="file"

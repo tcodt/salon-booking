@@ -47,14 +47,14 @@ const AppointmentsList: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="space-y-6">
       <PageTitle title="رزرو ها" />
       {appointments && appointments.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:grid-cols-3">
           {appointments?.map((appointment) => (
             <div
               key={appointment.id}
-              className="bg-white shadow-sm rounded-xl p-4 border"
+              className="bg-white shadow-md rounded-xl p-4"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">

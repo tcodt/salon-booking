@@ -54,7 +54,7 @@ const Navigation: React.FC = () => {
 
   return (
     <div
-      className={`fixed bottom-2 left-2 right-2 z-50 transition-transform duration-300 rounded-full shadow-md ${
+      className={`fixed bottom-0 left-2 right-2 z-50 bg-slate-100 px-3 py-1 transition-transform duration-300 rounded-t-3xl shadow-xl border border-slate-200 ${
         isVisible ? "translate-y-0" : "translate-y-full"
       } bg-white shadow-lg`}
     >

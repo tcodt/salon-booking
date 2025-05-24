@@ -127,7 +127,7 @@ const WorkingTime: React.FC = () => {
           {workingTimes?.map((time) => (
             <div
               key={time.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-green-500 rounded-xl border border-gray-200 p-2"
+              className="flex items-center gap-4 relative border-s-2 border-s-orange-500 rounded-xl border border-gray-200 p-2"
             >
               <div className="flex items-center gap-2">
                 <span className="text-base text-gray-800 font-medium">
@@ -151,7 +151,7 @@ const WorkingTime: React.FC = () => {
               </div>
 
               <button
-                className="text-xl text-green-500 absolute top-6 left-3 hover:text-green-600 transition"
+                className="text-xl text-orange-500 absolute top-6 left-3 hover:text-orange-600 transition"
                 onClick={() => handleUpdateWorkingTime(time.id)}
               >
                 <FaPencil />
@@ -171,10 +171,7 @@ const WorkingTime: React.FC = () => {
       <div className="mt-8">
         <div className="grid grid-cols-1 gap-6">
           {workingTimes?.map((time) => (
-            <div
-              key={time.id}
-              className="p-4 border border-gray-300 rounded-xl bg-white"
-            >
+            <div key={time.id} className="p-4 rounded-xl bg-white shadow-md">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-orange-500">
                   {time.day}

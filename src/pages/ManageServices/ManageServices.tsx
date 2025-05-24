@@ -209,7 +209,7 @@ const ManageServices: React.FC = () => {
           {services.map((ser) => (
             <div
               key={ser.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-green-500 rounded-xl border border-gray-200 p-2"
+              className="flex items-center gap-4 relative border-s-2 border-s-orange-500 rounded-xl border border-gray-200 p-2"
             >
               <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
                 {ser?.employee?.user.image ? (
@@ -228,7 +228,7 @@ const ManageServices: React.FC = () => {
               </div>
 
               <button
-                className="text-xl text-green-500 absolute top-7 left-4 hover:text-green-600 transition"
+                className="text-xl text-orange-500 absolute top-7 left-4 hover:text-orange-600 transition"
                 onClick={() => handleUpdateService(ser)}
               >
                 <FaPencil />
@@ -336,7 +336,7 @@ const ManageServices: React.FC = () => {
               </p>
             )}
 
-            <Button variant="add" type="submit">
+            <Button variant="primary" type="submit">
               ثبت سرویس
             </Button>
           </form>
