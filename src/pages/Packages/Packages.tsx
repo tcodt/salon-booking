@@ -335,11 +335,11 @@ const Packages: React.FC = () => {
 
           <div>
             <label htmlFor="package-image">
-              <Button variant="select">
+              <div className="bg-white text-gray-500 hover:bg-slate-100 border-2 border-gray-300 rounded-xl border-dashed p-4 cursor-pointer">
                 <span className="flex items-center gap-2">
                   انتخاب عکس <IoCamera size={20} />
                 </span>
-              </Button>
+              </div>
             </label>
             <input
               type="file"
@@ -472,8 +472,10 @@ const Packages: React.FC = () => {
 
             <div>
               <label htmlFor="package-image">
-                <div className="bg-gray-200 text-gray-800 hover:bg-gray-300 border-2 border-gray-300 rounded-xl py-2 px-4 flex items-center gap-2">
-                  انتخاب عکس <IoCamera size={20} />
+                <div className="bg-white text-gray-500 hover:bg-slate-100 border-2 border-gray-300 rounded-xl border-dashed p-4 cursor-pointer">
+                  <span className="flex items-center gap-2">
+                    انتخاب عکس <IoCamera size={20} />
+                  </span>
                 </div>
               </label>
               <input
@@ -492,7 +494,7 @@ const Packages: React.FC = () => {
               )}
             </div>
 
-            <Button variant="update" type="submit">
+            <Button variant="primary" type="submit">
               بروزرسانی
             </Button>
           </form>
