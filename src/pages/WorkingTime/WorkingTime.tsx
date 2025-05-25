@@ -13,6 +13,7 @@ import { useRemoveWorkingTime } from "../../hooks/working-time/useRemoveWorkingT
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import PageTitle from "../../components/PageTitle/PageTitle";
+import { useThemeColor } from "../../context/ThemeColor";
 
 const WorkingTime: React.FC = () => {
   const { data: workingTimes, isPending, isError, error } = useGetWorkingTime();
@@ -21,6 +22,7 @@ const WorkingTime: React.FC = () => {
   const [isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { themeColor } = useThemeColor();
 
   if (isPending) return <Loading />;
 
@@ -127,7 +129,7 @@ const WorkingTime: React.FC = () => {
           {workingTimes?.map((time) => (
             <div
               key={time.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-orange-500 rounded-xl border border-gray-200 p-2"
+              className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-xl border border-gray-200 p-2`}
             >
               <div className="flex items-center gap-2">
                 <span className="text-base text-gray-800 font-medium">
@@ -151,7 +153,7 @@ const WorkingTime: React.FC = () => {
               </div>
 
               <button
-                className="text-xl text-orange-500 absolute top-6 left-3 hover:text-orange-600 transition"
+                className={`text-xl text-${themeColor}-500 absolute top-6 left-3 hover:text-${themeColor}-600 transition`}
                 onClick={() => handleUpdateWorkingTime(time.id)}
               >
                 <FaPencil />
@@ -173,7 +175,7 @@ const WorkingTime: React.FC = () => {
           {workingTimes?.map((time) => (
             <div key={time.id} className="p-4 rounded-xl bg-white shadow-md">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-orange-500">
+                <h3 className={`text-lg font-semibold text-${themeColor}-500`}>
                   {time.day}
                 </h3>
               </div>

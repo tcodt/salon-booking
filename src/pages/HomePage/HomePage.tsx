@@ -5,11 +5,13 @@ import { Link } from "react-router";
 import OfferCarousel from "../../components/OfferCarousel/OfferCarousel";
 import PackagesList from "../../components/PackagesList/PackagesList";
 import { useGetProfile } from "../../hooks/profile/useGetProfile";
+import { useThemeColor } from "../../context/ThemeColor";
 
 const HomePage: React.FC = () => {
   const { data: userProfile } = useGetProfile();
   const username = userProfile?.first_name;
   const greetingUser = getGreeting(username);
+  const { themeColor } = useThemeColor();
 
   return (
     <section className="space-y-6">
@@ -20,7 +22,7 @@ const HomePage: React.FC = () => {
         <input
           type="text"
           placeholder="جستجو"
-          className="py-2 px-4 h-11 bg-white w-full rounded-xl border focus:border-orange-500 transition outline-none"
+          className={`py-2 px-4 h-11 bg-white w-full rounded-xl border-2 focus:border-${themeColor}-500 transition outline-none`}
         />
         <CiSearch size={25} className="absolute top-2 left-2 text-gray-500" />
       </div>

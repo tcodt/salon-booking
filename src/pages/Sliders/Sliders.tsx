@@ -16,6 +16,7 @@ import { useRemoveSlider } from "../../hooks/sliders/useRemoveSlider";
 import { RxUpdate } from "react-icons/rx";
 import { useUpdateSlider } from "../../hooks/sliders/useUpdateSlider";
 import PageTitle from "../../components/PageTitle/PageTitle";
+import { useThemeColor } from "../../context/ThemeColor";
 
 const Sliders: React.FC = () => {
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
@@ -36,6 +37,7 @@ const Sliders: React.FC = () => {
   const updateSliderMutation = useUpdateSlider();
   const { data: sliders, isPending, isError, error } = useGetSliders();
   const queryClient = useQueryClient();
+  const { themeColor } = useThemeColor();
 
   if (isPending) return <Loading />;
 
@@ -240,11 +242,11 @@ const Sliders: React.FC = () => {
           {sliders?.map((slider) => (
             <div
               key={slider.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-orange-500 rounded-xl border border-gray-200 p-2"
+              className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-xl border border-gray-200 p-2`}
             >
               <p>{slider.title}</p>
               <button
-                className="text-xl text-orange-500 absolute top-3 left-2 hover:text-orange-600 transition"
+                className={`text-xl text-${themeColor}-500 absolute top-3 left-2 hover:text-${themeColor}-600 transition`}
                 onClick={() => handleSlider(slider)}
               >
                 <FaPencil />

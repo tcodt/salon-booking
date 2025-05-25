@@ -8,12 +8,14 @@ import { RiScissors2Line } from "react-icons/ri";
 import { TbDeviceMobile } from "react-icons/tb";
 import { BsTelephone } from "react-icons/bs";
 import { useAppointmentById } from "../../hooks/appointments/useAppointmentById";
+import { useThemeColor } from "../../context/ThemeColor";
 
 const ViewAppointment: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const appointmentId = Number(id);
   const { data: appointmentData, isPending } =
     useAppointmentById(appointmentId);
+  const { themeColor } = useThemeColor();
 
   if (isPending) return <Loading />;
 
@@ -40,7 +42,8 @@ const ViewAppointment: React.FC = () => {
           </p>
           <div className="flex items-center justify-between text-base">
             <span className="text-gray-700 flex items-center gap-2">
-              <LuAlarmClock className="text-xl text-orange-500" /> زمان:
+              <LuAlarmClock className={`text-xl text-${themeColor}-500`} />{" "}
+              زمان:
             </span>{" "}
             <p className="text-gray-500">
               {appointmentData?.service?.duration}
@@ -48,7 +51,8 @@ const ViewAppointment: React.FC = () => {
           </div>
           <div className="flex items-center justify-between text-base">
             <span className="text-gray-700 flex items-center gap-2">
-              <MdAttachMoney className="text-xl text-orange-500" /> قیمت:
+              <MdAttachMoney className={`text-xl text-${themeColor}-500`} />{" "}
+              قیمت:
             </span>{" "}
             <p className="text-gray-500">
               {appointmentData?.service?.price} هزارتومان
@@ -59,7 +63,8 @@ const ViewAppointment: React.FC = () => {
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between text-base">
             <span className="text-gray-700 flex items-center gap-2">
-              <FiUser className="text-xl text-orange-500" /> نام آرایشگر:
+              <FiUser className={`text-xl text-${themeColor}-500`} /> نام
+              آرایشگر:
             </span>{" "}
             <p className="text-gray-500">
               {appointmentData?.employee?.user?.first_name}{" "}
@@ -68,14 +73,15 @@ const ViewAppointment: React.FC = () => {
           </div>
           <div className="flex items-center justify-between text-base">
             <span className="text-gray-700 flex items-center gap-2">
-              <RiScissors2Line className="text-xl text-orange-500" /> مهارت:
+              <RiScissors2Line className={`text-xl text-${themeColor}-500`} />{" "}
+              مهارت:
             </span>{" "}
             <p className="text-gray-500">{appointmentData?.employee?.skill}</p>
           </div>
           <div className="flex items-center justify-between text-base">
             <span className="text-gray-700 flex items-center gap-2">
-              <TbDeviceMobile className="text-xl text-orange-500" /> شماره
-              موبایل:
+              <TbDeviceMobile className={`text-xl text-${themeColor}-500`} />{" "}
+              شماره موبایل:
             </span>{" "}
             <p className="text-gray-500">
               {appointmentData?.employee?.user?.phone_number}
@@ -92,8 +98,8 @@ const ViewAppointment: React.FC = () => {
           </p>
           <div className="flex items-center justify-between text-base">
             <span className="text-gray-700 flex items-center gap-2">
-              <TbDeviceMobile className="text-xl text-orange-500" /> شماره
-              موبایل:
+              <TbDeviceMobile className={`text-xl text-${themeColor}-500`} />{" "}
+              شماره موبایل:
             </span>{" "}
             <p className="text-gray-500">
               {appointmentData?.service?.business?.phone_number}
@@ -101,7 +107,7 @@ const ViewAppointment: React.FC = () => {
           </div>
           <div className="flex items-center justify-between text-base">
             <span className="text-gray-700 flex items-center gap-2">
-              <BsTelephone className="text-xl text-orange-500" /> تلفن:
+              <BsTelephone className={`text-xl text-${themeColor}-500`} /> تلفن:
             </span>{" "}
             <p className="text-gray-500">
               {appointmentData?.service?.business?.telephone_number}
@@ -111,7 +117,7 @@ const ViewAppointment: React.FC = () => {
       </div>
       <div className="flex justify-start mt-4">
         <button
-          className="px-4 py-2 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition"
+          className={`px-4 py-2 bg-${themeColor}-500 text-white rounded-xl hover:bg-${themeColor}-600 transition`}
           onClick={() => {
             const appointment = appointmentData;
             const lines = [

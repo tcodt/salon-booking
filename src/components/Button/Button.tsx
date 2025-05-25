@@ -1,4 +1,5 @@
 import React, { ButtonHTMLAttributes, ReactNode } from "react";
+import { useThemeColor } from "../../context/ThemeColor";
 
 type ButtonVariant =
   | "primary"
@@ -18,10 +19,11 @@ const Button: React.FC<ButtonProps> = ({
   variant = "primary",
   ...rest
 }) => {
+  const { themeColor } = useThemeColor();
   const baseClasses = "px-4 h-12 py-2 font-medium transition-colors w-full";
 
   const variantClasses = {
-    primary: "primary-btn",
+    primary: `w-full h-12 bg-${themeColor}-500 text-white text-base font-medium rounded-full px-4 py-2 cursor-pointer transition-colors duration-300 hover:bg-${themeColor}-600`,
     secondary:
       "bg-gray-200 text-gray-800 hover:bg-gray-300 border-2 border-gray-300 rounded-full",
     add: "bg-sky-100 text-sky-500 hover:bg-sky-200 border-2 border-sky-200 rounded-full",

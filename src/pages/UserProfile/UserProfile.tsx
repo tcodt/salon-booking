@@ -12,6 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateProfile } from "../../hooks/profile/useUpdateProfile";
 import { AxiosError } from "axios";
 import { FaPencil } from "react-icons/fa6";
+import { useThemeColor } from "../../context/ThemeColor";
 
 const UserProfile: React.FC = () => {
   const [isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
@@ -36,6 +37,7 @@ const UserProfile: React.FC = () => {
       is_staff: !userProfile?.is_owner || false,
     },
   });
+  const { themeColor } = useThemeColor();
 
   const MAX_SIZE = 5 * 1024 * 1024;
   const ALLOWED_TYPES = ["image/jpeg", "image/png"];
@@ -101,7 +103,9 @@ const UserProfile: React.FC = () => {
     <section>
       <div className="bg-white p-4 rounded-xl shadow-md">
         <div className="flex items-start justify-between">
-          <ul className="space-y-4 list-disc marker:text-orange-500 ms-4">
+          <ul
+            className={`space-y-4 list-disc marker:text-${themeColor}-500 ms-4`}
+          >
             <li className="text-gray-700 font-medium">
               نام: <span>{userProfile?.first_name}</span>
             </li>
@@ -113,7 +117,7 @@ const UserProfile: React.FC = () => {
             </li>
           </ul>
           <div
-            className="border-2 border-orange-500 rounded-full bg-orange-50 p-1 w-20 h-20 flex items-center justify-center"
+            className={`border-2 border-${themeColor}-500 rounded-full bg-${themeColor}-50 p-1 w-20 h-20 flex items-center justify-center`}
             id="rotation_profile"
           >
             {userProfile?.image ? (

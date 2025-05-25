@@ -15,12 +15,14 @@ import { useAuth } from "../../context/AuthContext";
 import { HiClipboardList } from "react-icons/hi";
 import { IoLogOut } from "react-icons/io5";
 import { FaSliders } from "react-icons/fa6";
+import { useThemeColor } from "../../context/ThemeColor";
 
 const Sidebar: React.FC = () => {
   const { user } = useAuth();
   const { isSidebarOpen, setIsSidebarOpen } = useSidebar();
   const location = useLocation();
   const navigate = useNavigate();
+  const { themeColor } = useThemeColor();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -89,7 +91,7 @@ const Sidebar: React.FC = () => {
       >
         <div className="flex flex-col p-4 pb-8">
           <div className="flex items-center justify-start p-4 mb-8">
-            <div className="bg-orange-600 text-white rounded-lg p-2">
+            <div className={`bg-${themeColor}-600 text-white rounded-lg p-2`}>
               <MdOutlineSpaceDashboard size={28} />
             </div>
             <span className="mr-3 text-xl font-bold whitespace-nowrap">
@@ -102,9 +104,11 @@ const Sidebar: React.FC = () => {
                 <li key={item.label}>
                   <Link
                     to={item.path}
-                    className="flex items-center p-3 rounded-lg hover:bg-orange-50 text-gray-700 hover:text-orange-600 transition-colors duration-200"
+                    className={`flex items-center p-3 rounded-lg hover:bg-${themeColor}-50 text-gray-700 hover:text-${themeColor}-600 transition-colors duration-200`}
                   >
-                    <span className="text-orange-600">{item.icon}</span>
+                    <span className={`text-${themeColor}-600`}>
+                      {item.icon}
+                    </span>
                     <span className="mr-3 whitespace-nowrap">{item.label}</span>
                   </Link>
                 </li>

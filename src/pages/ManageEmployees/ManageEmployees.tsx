@@ -15,6 +15,7 @@ import Button from "../../components/Button/Button";
 import { useAddEmployee } from "../../hooks/employees/useAddEmployee";
 import { useUpdateEmployee } from "../../hooks/employees/useUpdateEmployee";
 import PageTitle from "../../components/PageTitle/PageTitle";
+import { useThemeColor } from "../../context/ThemeColor";
 
 const ManageEmployees: React.FC = () => {
   const {
@@ -54,6 +55,7 @@ const ManageEmployees: React.FC = () => {
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const removeEmployeeMutation = useRemoveEmployee();
+  const { themeColor } = useThemeColor();
 
   if (isPending) return <Loading />;
 
@@ -227,11 +229,11 @@ const ManageEmployees: React.FC = () => {
             placeholder="کارمند انتخاب شده..."
             value={selectedUserUpdate}
             readOnly
-            className="py-2 px-4 h-11 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-orange-500 text-gray-700 text-base transition"
+            className={`py-2 px-4 h-11 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-${themeColor}-500 text-gray-700 text-base transition`}
           />
           <textarea
             rows={2}
-            className="p-4 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-orange-500 text-gray-700 text-base transition"
+            className={`p-4 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-${themeColor}-500 text-gray-700 text-base transition`}
             placeholder="مهارت ها..."
             defaultValue={skillUpdate}
             onChange={(e) => setSkillUpdate(e.target.value)}
@@ -243,7 +245,7 @@ const ManageEmployees: React.FC = () => {
             {employees.map((emp) => (
               <div
                 key={emp.id}
-                className="flex items-center gap-4 relative border-s-2 border-s-orange-500 rounded-xl border border-gray-200 p-2"
+                className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-xl border border-gray-200 p-2`}
               >
                 <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
                   {emp.user.image ? (
@@ -262,7 +264,7 @@ const ManageEmployees: React.FC = () => {
                 </div>
 
                 <button
-                  className="text-xl text-orange-500 absolute top-7 left-4 hover:text-orange-600 transition"
+                  className={`text-xl text-${themeColor}-500 absolute top-7 left-4 hover:text-${themeColor}-600 transition`}
                   onClick={() =>
                     handleUpdateEmp(
                       emp.id,
@@ -292,11 +294,11 @@ const ManageEmployees: React.FC = () => {
             placeholder="کاربر را اضافه کنید"
             value={selectedUser}
             readOnly
-            className="py-2 px-4 h-11 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-orange-500 text-gray-700 text-base transition"
+            className={`py-2 px-4 h-11 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-${themeColor}-500 text-gray-700 text-base transition`}
           />
           <textarea
             rows={2}
-            className="p-4 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-orange-500 text-gray-700 text-base transition"
+            className={`p-4 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-${themeColor}-500 text-gray-700 text-base transition`}
             placeholder="مهارت ها..."
             value={skill}
             onChange={(e) => setSkill(e.target.value)}
@@ -307,11 +309,15 @@ const ManageEmployees: React.FC = () => {
           {users.map((user) => (
             <div
               key={user.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-orange-500 rounded-xl border border-gray-200 p-2"
+              className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-xl border border-gray-200 p-2`}
             >
               <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
                 {user.image ? (
-                  <img src={user.image} alt="Employee Image" />
+                  <img
+                    src={user.image}
+                    alt="Employee Image"
+                    className="object-cover rounded-full"
+                  />
                 ) : (
                   <FaUser size={20} />
                 )}
@@ -326,7 +332,7 @@ const ManageEmployees: React.FC = () => {
               </div>
 
               <button
-                className="text-xl text-orange-500 absolute top-6 left-4 bg-orange-100 p-1 rounded-full hover:text-orange-600 transition"
+                className={`text-xl text-${themeColor}-500 absolute top-6 left-4 bg-${themeColor}-100 p-1 rounded-full hover:text-${themeColor}-600 transition`}
                 onClick={() => handleAddUser(user.id, user.first_name)}
               >
                 <IoAdd />

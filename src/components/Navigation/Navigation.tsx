@@ -4,6 +4,7 @@ import { GrHomeRounded } from "react-icons/gr";
 import { LuNotebookText } from "react-icons/lu";
 import { MdTimer } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router";
+import { useThemeColor } from "../../context/ThemeColor";
 
 const Navigation: React.FC = () => {
   const [value, setValue] = useState<number>(1);
@@ -11,6 +12,7 @@ const Navigation: React.FC = () => {
   const [lastScrollY, setLastScrollY] = useState<number>(0);
   const navigate = useNavigate();
   const location = useLocation();
+  const { themeColor } = useThemeColor();
 
   useEffect(() => {
     switch (location.pathname) {
@@ -65,7 +67,7 @@ const Navigation: React.FC = () => {
             navigate("/dashboard");
           }}
           className={`flex flex-col items-center ${
-            value === 0 ? "text-orange-500" : "text-gray-500"
+            value === 0 ? `text-${themeColor}-500` : "text-gray-500"
           }`}
         >
           <FaRegUser size={20} />
@@ -77,7 +79,7 @@ const Navigation: React.FC = () => {
             navigate("/working-time");
           }}
           className={`flex flex-col items-center ${
-            value === 3 ? "text-orange-500" : "text-gray-500"
+            value === 3 ? `text-${themeColor}-500` : "text-gray-500"
           }`}
         >
           <MdTimer size={20} />
@@ -89,7 +91,7 @@ const Navigation: React.FC = () => {
             navigate("/home");
           }}
           className={`flex flex-col items-center ${
-            value === 1 ? "text-orange-500" : "text-gray-500"
+            value === 1 ? `text-${themeColor}-500` : "text-gray-500"
           }`}
         >
           <GrHomeRounded size={20} />
@@ -101,7 +103,7 @@ const Navigation: React.FC = () => {
             navigate("/reserve");
           }}
           className={`flex flex-col items-center ${
-            value === 2 ? "text-orange-500" : "text-gray-500"
+            value === 2 ? `text-${themeColor}-500` : "text-gray-500"
           }`}
         >
           <LuNotebookText size={20} />

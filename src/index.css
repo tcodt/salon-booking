@@ -6,6 +6,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+:root {
+  --theme-color: #f97316; /* Default to orange-500 hex */
+}
+
 @layer components {
   .primary-btn {
     width: theme("width.full");
@@ -41,7 +45,7 @@
     width: theme("width.full");
 
     &:focus {
-      outline-color: theme("colors.orange.500");
+      outline-color: var(--theme-color);
     }
   }
 

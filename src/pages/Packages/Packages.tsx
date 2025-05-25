@@ -20,6 +20,7 @@ import { useRemovePackage } from "../../hooks/packages/useRemovePackage";
 import { RxUpdate } from "react-icons/rx";
 import { useUpdatePackage } from "../../hooks/packages/useUpdatePackage";
 import PageTitle from "../../components/PageTitle/PageTitle";
+import { useThemeColor } from "../../context/ThemeColor";
 
 const Packages: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
@@ -53,6 +54,7 @@ const Packages: React.FC = () => {
   const removePackageMutation = useRemovePackage();
   const updatePackageMutation = useUpdatePackage();
   const queryClient = useQueryClient();
+  const { themeColor } = useThemeColor();
 
   const MAX_SIZE = 5 * 1024 * 1024;
   const ALLOWED_TYPES = ["image/jpeg", "image/png"];
@@ -503,7 +505,7 @@ const Packages: React.FC = () => {
           {packages.map((pkg) => (
             <div
               key={pkg.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-orange-500 rounded-xl border border-gray-200 p-2"
+              className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-xl border border-gray-200 p-2`}
             >
               <div className="space-y-2">
                 <h4 className="text-base text-gray-800 font-normal">
@@ -514,7 +516,7 @@ const Packages: React.FC = () => {
                 </p>
               </div>
               <button
-                className="text-xl text-orange-500 absolute top-6 left-4 hover:text-orange-600 transition"
+                className={`text-xl text-${themeColor}-500 absolute top-6 left-4 hover:text-${themeColor}-600 transition`}
                 onClick={() => handleUpdatePackage(pkg)}
               >
                 <FaPencil />

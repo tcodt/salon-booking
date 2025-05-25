@@ -21,6 +21,7 @@ import { useAddService } from "../../hooks/services/useAddService";
 import TimeInput from "../../components/TimeInput/TimeInput";
 import { useUpdateService } from "../../hooks/services/useUpdateService";
 import PageTitle from "../../components/PageTitle/PageTitle";
+import { useThemeColor } from "../../context/ThemeColor";
 
 const ManageServices: React.FC = () => {
   const {
@@ -47,6 +48,7 @@ const ManageServices: React.FC = () => {
   const removeServiceMutation = useRemoveService();
   const addServiceMutation = useAddService();
   const updateServiceMutation = useUpdateService();
+  const { themeColor } = useThemeColor();
 
   if (isError) {
     toast.error("مشکلی پیش آمد!");
@@ -209,7 +211,7 @@ const ManageServices: React.FC = () => {
           {services.map((ser) => (
             <div
               key={ser.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-orange-500 rounded-xl border border-gray-200 p-2"
+              className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-xl border border-gray-200 p-2`}
             >
               <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
                 {ser?.employee?.user.image ? (
@@ -228,7 +230,7 @@ const ManageServices: React.FC = () => {
               </div>
 
               <button
-                className="text-xl text-orange-500 absolute top-7 left-4 hover:text-orange-600 transition"
+                className={`text-xl text-${themeColor}-500 absolute top-7 left-4 hover:text-${themeColor}-600 transition`}
                 onClick={() => handleUpdateService(ser)}
               >
                 <FaPencil />
@@ -354,7 +356,9 @@ const ManageServices: React.FC = () => {
           className="p-4 border rounded-xl shadow-sm bg-white"
           key={service?.id}
         >
-          <div className="text-xl font-semibold text-gray-800 bg-orange-100 p-1 border-s-4 border-orange-500">
+          <div
+            className={`text-xl font-semibold text-gray-800 bg-${themeColor}-100 p-1 border-s-4 border-${themeColor}-500`}
+          >
             <h4>
               {service?.employee?.user.first_name}{" "}
               {service?.employee?.user.last_name}
@@ -363,7 +367,11 @@ const ManageServices: React.FC = () => {
           <div className="flex flex-col gap-4 mt-4">
             <div className="flex items-center gap-2">
               <span className="text-base font-normal text-gray-700 flex items-center gap-1">
-                <MdOutlineRoomService size={24} color="orange" /> سرویس:
+                <MdOutlineRoomService
+                  size={24}
+                  className={`text-${themeColor}-500`}
+                />{" "}
+                سرویس:
               </span>
               <span className="text-base font-normal text-gray-500">
                 {service?.name}
@@ -372,7 +380,11 @@ const ManageServices: React.FC = () => {
             <div className="flex items-center gap-2">
               <span className="text-base font-normal text-gray-700 flex items-center gap-1">
                 {" "}
-                <PiTimerBold size={24} color="orange" /> زمان:
+                <PiTimerBold
+                  size={24}
+                  className={`text-${themeColor}-500`}
+                />{" "}
+                زمان:
               </span>
               <span className="text-base font-normal text-gray-500">
                 {service?.duration}
@@ -380,7 +392,8 @@ const ManageServices: React.FC = () => {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-base font-normal text-gray-700 flex items-center gap-1">
-                <MdAttachMoney size={24} color="orange" /> هزینه:
+                <MdAttachMoney size={24} className={`text-${themeColor}-500`} />{" "}
+                هزینه:
               </span>
               <span className="text-base font-normal text-gray-500">
                 {service?.price} هزار تومان
