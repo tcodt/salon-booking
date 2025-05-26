@@ -79,7 +79,7 @@ const Sidebar: React.FC = () => {
 
       <div
         id="sidebar"
-        className={`fixed top-0 right-0 z-[2000] h-screen w-64 bg-white border 
+        className={`fixed top-0 right-0 z-[2000] h-screen w-64 bg-white dark:bg-gray-800 border-e border-gray-300 dark:border-e-gray-500 
           overflow-y-auto -webkit-overflow-scrolling-touch
           [&::-webkit-scrollbar]:w-2
           [&::-webkit-scrollbar-track]:rounded-full
@@ -94,7 +94,7 @@ const Sidebar: React.FC = () => {
             <div className={`bg-${themeColor}-600 text-white rounded-lg p-2`}>
               <MdOutlineSpaceDashboard size={28} />
             </div>
-            <span className="mr-3 text-xl font-bold whitespace-nowrap">
+            <span className="mr-3 text-xl font-bold whitespace-nowrap text-gray-800 dark:text-white">
               آرایشگاه من
             </span>
           </div>
@@ -104,7 +104,7 @@ const Sidebar: React.FC = () => {
                 <li key={item.label}>
                   <Link
                     to={item.path}
-                    className={`flex items-center p-3 rounded-lg hover:bg-${themeColor}-50 text-gray-700 hover:text-${themeColor}-600 transition-colors duration-200`}
+                    className={`flex items-center p-3 rounded-lg hover:bg-${themeColor}-50 text-gray-700 hover:text-${themeColor}-600 transition-colors duration-200 dark:text-gray-300 dark:hover:text-${themeColor}-500 dark:hover:bg-transparent`}
                   >
                     <span className={`text-${themeColor}-600`}>
                       {item.icon}
@@ -116,13 +116,13 @@ const Sidebar: React.FC = () => {
             </ul>
           </nav>
 
-          <div className="mt-auto mb-2 p-3 rounded-lg bg-red-100 flex items-center">
+          <div className="mt-auto mb-2 p-3 rounded-lg bg-red-100 dark:bg-red-500 flex items-center">
             <div className="w-8 h-8 rounded-full bg-red-200 flex items-center justify-center">
               <IoLogOut className="text-red-600" size={20} />
             </div>
             <div className="mr-3 overflow-hidden">
               <button
-                className="cursor-pointer text-sm font-medium"
+                className="cursor-pointer text-sm font-medium text-gray-700 dark:text-white"
                 onClick={() => navigate("/logout")}
               >
                 خروج
@@ -130,13 +130,15 @@ const Sidebar: React.FC = () => {
             </div>
           </div>
 
-          <div className="mt-auto p-3 rounded-lg bg-gray-100 flex items-center">
+          <div className="mt-auto p-3 rounded-lg bg-gray-100 dark:bg-gray-500 flex items-center">
             <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
               <MdOutlineAccountCircle className="text-gray-600" size={20} />
             </div>
             <div className="mr-3 overflow-hidden">
-              <p className="text-sm font-medium">{user?.first_name}</p>
-              <p className="text-xs text-gray-500 truncate">
+              <p className="text-sm font-medium text-gray-700 dark:text-white">
+                {user?.first_name}
+              </p>
+              <p className="text-xs text-gray-500 truncate dark:text-gray-200">
                 {user?.phone_number}
               </p>
             </div>

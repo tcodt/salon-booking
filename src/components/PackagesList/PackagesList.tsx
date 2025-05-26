@@ -41,7 +41,7 @@ const PackagesList: React.FC = () => {
       {packages?.map((item) => (
         <SwiperSlide key={item?.id}>
           <div>
-            <div className="bg-white border border-slate-300 h-auto w-full rounded-xl shadow-md flex flex-col gap-8">
+            <div className="bg-white dark:bg-gray-700 dark:border-none border border-slate-300 h-auto w-full rounded-xl shadow-md flex flex-col gap-8">
               <div className="space-y-4">
                 <Link to={`/packages/${item?.id}`} className="block">
                   <img
@@ -57,28 +57,28 @@ const PackagesList: React.FC = () => {
                 <div className="space-y-4 p-4">
                   <Link
                     to={`/packages/${item?.id}`}
-                    className="text-lg font-semibold block"
+                    className="text-gray-700 dark:text-white text-lg font-semibold block"
                   >
                     {item?.name}
                   </Link>
-                  <p className="text-gray-600 line-clamp-2 text-sm">
+                  <p className="text-gray-600 dark:text-gray-300 line-clamp-2 text-sm">
                     {item?.desc}
                   </p>
                   <div className="flex flex-row items-center gap-4 flex-wrap">
                     <div className="flex items-center gap-2">
                       <HiOutlineBuildingOffice
-                        className={`text-2xl text-${themeColor}-500`}
+                        className={`text-2xl text-${themeColor}-500 dark:text-${themeColor}-400`}
                       />
-                      <p className="text-sm font-medium text-gray-500">
+                      <p className="text-sm font-medium text-gray-500 dark:text-gray-300">
                         {item?.business?.name}
                       </p>
                     </div>
                     {item?.business?.is_coffee_shop && (
                       <div className="flex items-center gap-2">
                         <GiCoffeeCup
-                          className={`text-2xl text-${themeColor}-500`}
+                          className={`text-2xl text-${themeColor}-500 dark:text-${themeColor}-400`}
                         />
-                        <p className="text-sm font-medium text-gray-500">
+                        <p className="text-sm font-medium text-gray-500 dark:text-gray-300">
                           کافی شاپ
                         </p>
                       </div>
@@ -86,16 +86,16 @@ const PackagesList: React.FC = () => {
                     {item?.business?.is_parking && (
                       <div className="flex items-center gap-2">
                         <LuCircleParking
-                          className={`text-2xl text-${themeColor}-500`}
+                          className={`text-2xl text-${themeColor}-500 dark:text-${themeColor}-400`}
                         />
-                        <p className="text-sm font-medium text-gray-500">
+                        <p className="text-sm font-medium text-gray-500 dark:text-gray-300">
                           پارکینگ
                         </p>
                       </div>
                     )}
                   </div>
                   <p
-                    className={`text-${themeColor}-600 line-clamp-2 text-left text-base`}
+                    className={`text-${themeColor}-600 dark:text-${themeColor}-400 line-clamp-2 text-left text-base`}
                   >
                     {item?.total_price} تومان
                   </p>

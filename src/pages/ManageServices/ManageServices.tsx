@@ -22,6 +22,7 @@ import TimeInput from "../../components/TimeInput/TimeInput";
 import { useUpdateService } from "../../hooks/services/useUpdateService";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
+import OptionsBox from "../../components/OptionsBox/OptionsBox";
 
 const ManageServices: React.FC = () => {
   const {
@@ -143,24 +144,24 @@ const ManageServices: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-row flex-wrap items-center gap-2">
-        <button
-          className="bg-sky-100 text-sky-500 hover:bg-sky-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-sky-300"
+        <OptionsBox
+          color="sky"
           onClick={() => setIsAddOpen(true)}
-        >
-          افزودن <IoPersonAdd />
-        </button>
-        <button
-          className="bg-green-100 text-green-500 hover:bg-green-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-green-300"
+          icon={<IoPersonAdd />}
+          title="افزودن"
+        />
+        <OptionsBox
+          color="green"
           onClick={() => setIsUpdateOpen(true)}
-        >
-          بروزرسانی <RxUpdate />
-        </button>
-        <button
-          className="bg-red-100 text-red-500 hover:bg-red-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-red-300"
+          icon={<RxUpdate />}
+          title="بروزرسانی"
+        />
+        <OptionsBox
+          color="red"
           onClick={() => setIsDeleteOpen(true)}
-        >
-          حذف <FaTrashCan />
-        </button>
+          icon={<FaTrashCan />}
+          title="حذف"
+        />
       </div>
 
       {/* Delete services modal */}
@@ -173,7 +174,7 @@ const ManageServices: React.FC = () => {
           {services.map((ser) => (
             <div
               key={ser.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-red-500 rounded-xl border border-gray-200 p-2"
+              className="flex items-center gap-4 relative border-s-2 border-s-red-500 rounded-e-xl p-2 bg-slate-100 dark:bg-gray-700 shadow-md"
             >
               <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
                 {ser?.employee?.user.image ? (
@@ -183,10 +184,10 @@ const ManageServices: React.FC = () => {
                 )}
               </div>
               <div className="flex flex-col gap-1">
-                <h4 className="text-base text-gray-800 font-normal">
+                <h4 className="text-base text-gray-800 font-normal dark:text-white">
                   {ser?.employee?.user.first_name}
                 </h4>
-                <span className="text-sm text-gray-500 font-thin">
+                <span className="text-sm text-gray-500 font-thin dark:text-gray-300">
                   {ser?.name}
                 </span>
               </div>
@@ -211,7 +212,7 @@ const ManageServices: React.FC = () => {
           {services.map((ser) => (
             <div
               key={ser.id}
-              className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-xl border border-gray-200 p-2`}
+              className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-e-xl p-2 bg-slate-100 dark:bg-gray-700 shadow-md`}
             >
               <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
                 {ser?.employee?.user.image ? (
@@ -221,10 +222,10 @@ const ManageServices: React.FC = () => {
                 )}
               </div>
               <div className="flex flex-col gap-1">
-                <h4 className="text-base text-gray-800 font-normal">
+                <h4 className="text-base text-gray-800 font-normal dark:text-white">
                   {ser?.employee?.user.first_name}
                 </h4>
-                <span className="text-sm text-gray-500 font-thin">
+                <span className="text-sm text-gray-500 font-thin dark:text-gray-300">
                   {ser?.name}
                 </span>
               </div>
@@ -353,11 +354,11 @@ const ManageServices: React.FC = () => {
 
       {services?.map((service) => (
         <div
-          className="p-4 border rounded-xl shadow-sm bg-white"
+          className="p-4 rounded-xl bg-white shadow-md dark:bg-gray-700"
           key={service?.id}
         >
           <div
-            className={`text-xl font-semibold text-gray-800 bg-${themeColor}-100 p-1 border-s-4 border-${themeColor}-500`}
+            className={`text-xl font-semibold text-${themeColor}-800 bg-${themeColor}-100 p-1 border-s-4 border-${themeColor}-500`}
           >
             <h4>
               {service?.employee?.user.first_name}{" "}
@@ -366,19 +367,19 @@ const ManageServices: React.FC = () => {
           </div>
           <div className="flex flex-col gap-4 mt-4">
             <div className="flex items-center gap-2">
-              <span className="text-base font-normal text-gray-700 flex items-center gap-1">
+              <span className="text-base font-normal text-gray-700 flex items-center gap-1 dark:text-gray-200">
                 <MdOutlineRoomService
                   size={24}
                   className={`text-${themeColor}-500`}
                 />{" "}
                 سرویس:
               </span>
-              <span className="text-base font-normal text-gray-500">
+              <span className="text-base font-normal text-gray-500 dark:text-gray-400">
                 {service?.name}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-base font-normal text-gray-700 flex items-center gap-1">
+              <span className="text-base font-normal text-gray-700 flex items-center gap-1 dark:text-gray-200">
                 {" "}
                 <PiTimerBold
                   size={24}
@@ -386,16 +387,16 @@ const ManageServices: React.FC = () => {
                 />{" "}
                 زمان:
               </span>
-              <span className="text-base font-normal text-gray-500">
+              <span className="text-base font-normal text-gray-500 dark:text-gray-400">
                 {service?.duration}
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-base font-normal text-gray-700 flex items-center gap-1">
+              <span className="text-base font-normal text-gray-700 flex items-center gap-1 dark:text-gray-200">
                 <MdAttachMoney size={24} className={`text-${themeColor}-500`} />{" "}
                 هزینه:
               </span>
-              <span className="text-base font-normal text-gray-500">
+              <span className="text-base font-normal text-gray-500 dark:text-gray-400">
                 {service?.price} هزار تومان
               </span>
             </div>

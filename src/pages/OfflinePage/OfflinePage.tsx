@@ -24,10 +24,10 @@ const OfflinePage: React.FC = () => {
         className="w-full object-cover"
       />
       <div className="max-w-md w-full p-6 text-center">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">
+        <h1 className="text-2xl font-bold text-gray-800 mb-4 dark:text-white">
           شما آفلاین هستید
         </h1>
-        <p className="text-gray-600 mb-6">
+        <p className="text-gray-600 mb-6 dark:text-gray-300">
           به نظر می‌رسد اتصال اینترنت شما قطع شده است. لطفاً اتصال خود را بررسی
           کنید و دوباره تلاش کنید.
         </p>

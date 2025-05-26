@@ -56,7 +56,7 @@ const Navigation: React.FC = () => {
 
   return (
     <div
-      className={`fixed bottom-0 left-2 right-2 z-50 bg-slate-100 px-3 py-1 transition-transform duration-300 rounded-t-3xl shadow-xl border border-slate-200 ${
+      className={`fixed bottom-0 left-2 right-2 z-50 bg-slate-100 dark:bg-gray-800 dark:border-gray-500 px-3 py-1 transition-transform duration-300 rounded-t-3xl shadow-xl border border-slate-200 ${
         isVisible ? "translate-y-0" : "translate-y-full"
       } bg-white shadow-lg`}
     >
@@ -67,7 +67,9 @@ const Navigation: React.FC = () => {
             navigate("/dashboard");
           }}
           className={`flex flex-col items-center ${
-            value === 0 ? `text-${themeColor}-500` : "text-gray-500"
+            value === 0
+              ? `text-${themeColor}-500`
+              : "text-gray-500 dark:text-white"
           }`}
         >
           <FaRegUser size={20} />
@@ -79,7 +81,9 @@ const Navigation: React.FC = () => {
             navigate("/working-time");
           }}
           className={`flex flex-col items-center ${
-            value === 3 ? `text-${themeColor}-500` : "text-gray-500"
+            value === 3
+              ? `text-${themeColor}-500`
+              : "text-gray-500 dark:text-white"
           }`}
         >
           <MdTimer size={20} />
@@ -91,7 +95,9 @@ const Navigation: React.FC = () => {
             navigate("/home");
           }}
           className={`flex flex-col items-center ${
-            value === 1 ? `text-${themeColor}-500` : "text-gray-500"
+            value === 1
+              ? `text-${themeColor}-500`
+              : "text-gray-500 dark:text-white"
           }`}
         >
           <GrHomeRounded size={20} />
@@ -103,7 +109,9 @@ const Navigation: React.FC = () => {
             navigate("/reserve");
           }}
           className={`flex flex-col items-center ${
-            value === 2 ? `text-${themeColor}-500` : "text-gray-500"
+            value === 2
+              ? `text-${themeColor}-500`
+              : "text-gray-500 dark:text-white"
           }`}
         >
           <LuNotebookText size={20} />

@@ -7,6 +7,8 @@ import Button from "../../components/Button/Button";
 import { DatePicker, TimePicker } from "zaman";
 import { FaRegCalendarAlt, FaRegClock } from "react-icons/fa";
 import { useAppointmentById } from "../../hooks/appointments/useAppointmentById";
+import PageTitle from "../../components/PageTitle/PageTitle";
+import { useThemeColor } from "../../context/ThemeColor";
 
 const UpdateAppointment: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -22,6 +24,7 @@ const UpdateAppointment: React.FC = () => {
   const [time, setTime] = useState<{ hour: number; minute: number } | null>(
     null
   );
+  const { themeColor } = useThemeColor();
 
   // Initialize date and time when appointment data is loaded
   useEffect(() => {
@@ -75,23 +78,21 @@ const UpdateAppointment: React.FC = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-gray-800 mb-6">
-        بروزرسانی رزرو
-      </h1>
-      <div className="space-y-6">
+      <PageTitle title="ویرایش رزرو" />
+      <div className="space-y-6 mt-8">
         <div className="flex flex-col gap-4">
-          <label className="flex items-center gap-2 text-base font-semibold text-gray-700">
-            <FaRegCalendarAlt size={25} color="gray" />
+          <label className="flex items-center gap-2 text-base font-semibold text-gray-700 dark:text-white">
+            <FaRegCalendarAlt size={25} className={`text-${themeColor}-500`} />
             انتخاب تاریخ:
           </label>
           <DatePicker
             defaultValue={date || undefined}
             onChange={(e) => setDate(e.value)}
             locale="fa"
-            inputClass="bg-slate-100 focus:border-2 focus:border-orange-500 rounded-xl h-12 px-4 focus:outline-none w-full transition"
+            inputClass="primary-input"
           />
-          <label className="flex items-center gap-2 text-base font-semibold text-gray-700">
-            <FaRegClock size={25} color="gray" />
+          <label className="flex items-center gap-2 text-base font-semibold text-gray-700 dark:text-white">
+            <FaRegClock size={25} className={`text-${themeColor}-500`} />
             انتخاب ساعت:
           </label>
           <TimePicker
@@ -100,15 +101,17 @@ const UpdateAppointment: React.FC = () => {
             }
             onChange={(e) => setTime({ hour: e.hour, minute: e.minute })}
             locale="fa"
-            inputClass="bg-slate-100 focus:border-2 focus:border-orange-500 rounded-xl h-12 px-4 focus:outline-none w-full transition"
+            inputClass="primary-input"
           />
         </div>
         <div className="flex flex-col gap-4">
           {date && (
-            <p>📅 تاریخ انتخاب شده: {date.toLocaleDateString("fa-IR")}</p>
+            <p className="text-gray-600 dark:text-gray-300 text-base">
+              📅 تاریخ انتخاب شده: {date.toLocaleDateString("fa-IR")}
+            </p>
           )}
           {time && (
-            <p>
+            <p className="text-gray-600 dark:text-gray-300 text-base">
               ⏰ ساعت انتخاب شده:{" "}
               {`${String(time.hour).padStart(2, "0")}:${String(
                 time.minute
@@ -120,7 +123,7 @@ const UpdateAppointment: React.FC = () => {
           <Button onClick={handleUpdateAppointment}>بروزرسانی</Button>
           <button
             onClick={() => navigate("/appointments-list")}
-            className="py-2 px-4 rounded-full bg-white border border-red-500 hover:bg-red-500 text-red-500 hover:text-white transition"
+            className="py-2 px-4 rounded-full bg-white border border-red-500 hover:bg-red-500 text-red-500 hover:text-white transition dark:bg-red-500 dark:text-white"
           >
             لغو
           </button>

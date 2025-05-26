@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { useThemeColor } from "../../context/ThemeColor";
 
 const SplashScreen: React.FC = () => {
   const [fadeOut, setFadeOut] = useState(false);
   const token = localStorage.getItem("accessToken");
   const navigate = useNavigate();
+  const { themeColor } = useThemeColor();
 
   useEffect(() => {
     const fadeTimer = setTimeout(() => {
@@ -27,7 +29,7 @@ const SplashScreen: React.FC = () => {
 
   return (
     <div
-      className={`flex items-center justify-center h-screen bg-gradient-to-r from-orange-300 to-orange-500 transition-opacity duration-1000 ${
+      className={`flex items-center justify-center h-screen bg-gradient-to-r from-${themeColor}-300 to-${themeColor}-500 transition-opacity duration-1000 ${
         fadeOut ? "opacity-0" : "opacity-100"
       }`}
     >

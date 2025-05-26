@@ -37,7 +37,7 @@ const Packages: React.FC = () => {
     handleSubmit,
     formState: { errors },
     reset,
-    watch,
+    // watch,
   } = useForm<AddPackage>({
     defaultValues: {
       business_id: 3,
@@ -59,7 +59,7 @@ const Packages: React.FC = () => {
   const MAX_SIZE = 5 * 1024 * 1024;
   const ALLOWED_TYPES = ["image/jpeg", "image/png"];
 
-  const selectedServiceIds = watch("service_ids");
+  // const selectedServiceIds = watch("service_ids");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -300,7 +300,7 @@ const Packages: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-white">
               سرویس‌ها
             </label>
             {servicesData.length === 0 ? (
@@ -310,7 +310,7 @@ const Packages: React.FC = () => {
                 {servicesData.map((service) => (
                   <label
                     key={service.id}
-                    className="flex items-center gap-2 text-sm cursor-pointer"
+                    className="flex items-center gap-2 text-sm cursor-pointer text-gray-600 dark:text-gray-300"
                   >
                     <input
                       type="checkbox"
@@ -319,25 +319,26 @@ const Packages: React.FC = () => {
                         validate: (value) =>
                           value.length > 0 || "حداقل یک سرویس انتخاب کنید",
                       })}
+                      className={`accent-${themeColor}-500`}
                     />
                     {service.name}
                   </label>
                 ))}
               </div>
             )}
-            {errors.service_ids && (
+            {/* {errors.service_ids && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.service_ids.message}
               </p>
             )}
             <p className="text-sm text-gray-500 mt-2">
               سرویس‌های انتخاب‌شده: {JSON.stringify(selectedServiceIds)}
-            </p>
+            </p> */}
           </div>
 
           <div>
             <label htmlFor="package-image">
-              <div className="bg-white text-gray-500 hover:bg-slate-100 border-2 border-gray-300 rounded-xl border-dashed p-4 cursor-pointer">
+              <div className="bg-white text-gray-500 hover:bg-slate-100 border-2 border-gray-300 rounded-xl border-dashed p-4 cursor-pointer dark:bg-gray-900 dark:border-gray-600">
                 <span className="flex items-center gap-2">
                   انتخاب عکس <IoCamera size={20} />
                 </span>
@@ -437,7 +438,7 @@ const Packages: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2 dark:text-white">
                 سرویس‌ها
               </label>
               {servicesData.length === 0 ? (
@@ -447,7 +448,7 @@ const Packages: React.FC = () => {
                   {servicesData.map((service) => (
                     <label
                       key={service.id}
-                      className="flex items-center gap-2 text-sm cursor-pointer"
+                      className="flex items-center gap-2 text-sm cursor-pointer text-gray-600 dark:text-gray-300"
                     >
                       <input
                         type="checkbox"
@@ -459,6 +460,7 @@ const Packages: React.FC = () => {
                         defaultChecked={selectedPackage?.service_ids?.includes(
                           service.id
                         )}
+                        className={`accent-${themeColor}-500`}
                       />
                       {service.name}
                     </label>
@@ -474,7 +476,7 @@ const Packages: React.FC = () => {
 
             <div>
               <label htmlFor="package-image">
-                <div className="bg-white text-gray-500 hover:bg-slate-100 border-2 border-gray-300 rounded-xl border-dashed p-4 cursor-pointer">
+                <div className="bg-white text-gray-500 hover:bg-slate-100 border-2 border-gray-300 rounded-xl border-dashed p-4 cursor-pointer dark:bg-gray-900 dark:border-gray-600">
                   <span className="flex items-center gap-2">
                     انتخاب عکس <IoCamera size={20} />
                   </span>
@@ -505,13 +507,13 @@ const Packages: React.FC = () => {
           {packages.map((pkg) => (
             <div
               key={pkg.id}
-              className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-xl border border-gray-200 p-2`}
+              className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-e-xl p-2 bg-slate-100 dark:bg-gray-700 shadow-md`}
             >
               <div className="space-y-2">
-                <h4 className="text-base text-gray-800 font-normal">
+                <h4 className="text-base text-gray-800 font-normal dark:text-gray-200">
                   {pkg.name}
                 </h4>
-                <p className="text-sm text-gray-500 font-thin line-clamp-1">
+                <p className="text-sm text-gray-500 font-thin line-clamp-1 dark:text-gray-400">
                   {pkg.desc}
                 </p>
               </div>
@@ -536,11 +538,13 @@ const Packages: React.FC = () => {
           {packages.map((p) => (
             <div
               key={p.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-red-500 rounded-xl border border-gray-200 p-2"
+              className="flex items-center gap-4 relative border-s-2 border-s-red-500 rounded-e-xl p-4 bg-slate-100 dark:bg-gray-700 shadow-md"
             >
-              <h4 className="text-base font-medium text-gray-800">{p.name}</h4>
+              <h4 className="text-base font-medium text-gray-800 dark:text-gray-300">
+                {p.name}
+              </h4>
               <button
-                className="text-xl text-red-500 absolute top-3 left-3 hover:text-red-600 transition"
+                className="text-xl text-red-500 absolute top-5 left-3 hover:text-red-600 transition"
                 onClick={() => handleRemovePackage(p.id)}
               >
                 <FaRegTrashAlt />
@@ -555,13 +559,13 @@ const Packages: React.FC = () => {
           <Link
             to={`/packages/${pkg.id}`}
             key={pkg.id}
-            className="bg-white shadow-md rounded-xl p-4 flex flex-row items-center justify-between"
+            className="bg-white shadow-md rounded-xl p-4 flex flex-row items-center justify-between dark:bg-gray-700"
           >
             <div className="space-y-2 flex-1">
-              <h4 className="text-base font-medium text-gray-800">
+              <h4 className="text-base font-medium text-gray-800 dark:text-white">
                 {pkg.name}
               </h4>
-              <p className="text-sm font-medium text-gray-600 line-clamp-1">
+              <p className="text-sm font-medium text-gray-600 line-clamp-1 dark:text-gray-300">
                 {pkg.desc}
               </p>
             </div>

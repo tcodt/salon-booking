@@ -17,6 +17,7 @@ import { RxUpdate } from "react-icons/rx";
 import { useUpdateSlider } from "../../hooks/sliders/useUpdateSlider";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
+import OptionsBox from "../../components/OptionsBox/OptionsBox";
 
 const Sliders: React.FC = () => {
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
@@ -120,24 +121,24 @@ const Sliders: React.FC = () => {
   return (
     <div>
       <div className="flex flex-row flex-wrap items-center gap-2">
-        <button
-          className="bg-sky-100 text-sky-500 hover:bg-sky-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-sky-300"
+        <OptionsBox
+          color="sky"
           onClick={() => setIsAddOpen(true)}
-        >
-          افزودن <IoPersonAdd />
-        </button>
-        <button
-          className="bg-green-100 text-green-500 hover:bg-green-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-green-300"
+          icon={<IoPersonAdd />}
+          title="افزودن"
+        />
+        <OptionsBox
+          color="green"
           onClick={() => setIsUpdateOpen(true)}
-        >
-          بروزرسانی <RxUpdate />
-        </button>
-        <button
-          className="bg-red-100 text-red-500 hover:bg-red-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-red-300"
+          icon={<RxUpdate />}
+          title="بروزرسانی"
+        />
+        <OptionsBox
+          color="red"
           onClick={() => setIsDeleteOpen(true)}
-        >
-          حذف <FaTrashCan />
-        </button>
+          icon={<FaTrashCan />}
+          title="حذف"
+        />
       </div>
 
       {/* Add Slider Modal */}
@@ -151,7 +152,9 @@ const Sliders: React.FC = () => {
           className="space-y-5 mt-8"
         >
           <div>
-            <label className="block mb-1 font-medium">عنوان</label>
+            <label className="block mb-1 font-medium text-gray-700 dark:text-gray-300">
+              عنوان
+            </label>
             <input
               type="text"
               {...register("title", {
@@ -171,7 +174,9 @@ const Sliders: React.FC = () => {
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">زیرعنوان</label>
+            <label className="block mb-1 font-medium text-gray-700 dark:text-gray-300">
+              زیرعنوان
+            </label>
             <textarea
               {...register("sub_title", {
                 required: "زیرعنوان الزامی است",
@@ -194,10 +199,15 @@ const Sliders: React.FC = () => {
             <input
               type="checkbox"
               {...register("is_active")}
-              className="accent-orange-500"
+              className={`accent-${themeColor}-500`}
               id="is_active_id"
             />
-            <label htmlFor="is_active_id">فعال باشد</label>
+            <label
+              htmlFor="is_active_id"
+              className="text-gray-700 dark:text-gray-300"
+            >
+              فعال باشد
+            </label>
           </div>
 
           <Button type="submit" disabled={isSubmitting}>
@@ -242,11 +252,13 @@ const Sliders: React.FC = () => {
           {sliders?.map((slider) => (
             <div
               key={slider.id}
-              className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-xl border border-gray-200 p-2`}
+              className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-e-xl p-4 bg-slate-100 dark:bg-gray-700 shadow-md`}
             >
-              <p>{slider.title}</p>
+              <p className="text-base text-gray-600 dark:text-gray-300">
+                {slider.title}
+              </p>
               <button
-                className={`text-xl text-${themeColor}-500 absolute top-3 left-2 hover:text-${themeColor}-600 transition`}
+                className={`text-xl text-${themeColor}-500 absolute top-5 left-3 hover:text-${themeColor}-600 transition`}
                 onClick={() => handleSlider(slider)}
               >
                 <FaPencil />
@@ -266,11 +278,13 @@ const Sliders: React.FC = () => {
           {sliders?.map((slider) => (
             <div
               key={slider.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-red-500 rounded-xl border border-gray-200 p-2"
+              className="flex items-center gap-4 relative border-s-2 border-s-red-500 rounded-e-xl p-4 bg-slate-100 dark:bg-gray-700 shadow-md"
             >
-              <p>{slider.title}</p>
+              <p className="text-base text-gray-600 dark:text-gray-300">
+                {slider.title}
+              </p>
               <button
-                className="text-xl text-red-500 absolute top-3 left-2 hover:text-red-600 transition"
+                className="text-xl text-red-500 absolute top-5 left-3 hover:text-red-600 transition"
                 onClick={() => handleRemoveEmployee(slider.id)}
               >
                 <FaRegTrashAlt />
@@ -287,13 +301,13 @@ const Sliders: React.FC = () => {
             {sliders?.map((slider) => (
               <div
                 key={slider.id}
-                className="rounded-xl p-4 transition bg-white shadow-md"
+                className="rounded-xl p-4 transition bg-white shadow-md dark:bg-gray-700"
               >
-                <h4 className="text-lg font-semibold text-gray-700 mb-2">
+                <h4 className="text-lg font-semibold text-gray-700 mb-2 dark:text-white">
                   {slider.title}
                 </h4>
                 <p
-                  className="text-sm text-gray-500 mb-4 line-clamp-2 cursor-pointer"
+                  className="text-sm text-gray-500 mb-4 line-clamp-2 cursor-pointer dark:text-gray-300"
                   onClick={(e) => {
                     const target = e.target as HTMLElement;
                     target.classList.toggle("line-clamp-2");
@@ -304,8 +318,8 @@ const Sliders: React.FC = () => {
                 <span
                   className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${
                     slider.is_active
-                      ? "bg-green-100 text-green-600"
-                      : "bg-red-100 text-red-600"
+                      ? "bg-green-100 text-green-600 dark:bg-green-500 dark:text-white"
+                      : "bg-red-100 text-red-600 dark:bg-red-500 dark:text-white"
                   }`}
                 >
                   {slider.is_active ? "فعال" : "غیرفعال"}

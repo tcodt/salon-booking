@@ -4,6 +4,7 @@ import SidebarToggleButton from "../SidebarToggleButton/SidebarToggleButton";
 import CustomModal from "../CustomModal/CustomModal";
 import ColorPicker from "../ColorPicker/ColorPicker";
 import { useThemeColor } from "../../context/ThemeColor";
+import DarkModeToggle from "../DarkModeToggle/DarkModeToggle";
 
 const TopBar: React.FC = () => {
   const [isSettingOpen, setIsSettingOpen] = useState<boolean>(false);
@@ -14,7 +15,7 @@ const TopBar: React.FC = () => {
       <div className="flex items-center gap-4">
         <SidebarToggleButton />
         <button
-          className={`text-gray-500 text-3xl hover:text-${themeColor}-500 transition`}
+          className={`text-gray-500 dark:text-white dark:hover:text-${themeColor}-500 text-3xl hover:text-${themeColor}-500 transition`}
           onClick={() => setIsSettingOpen(true)}
         >
           <IoSettingsOutline />
@@ -25,11 +26,12 @@ const TopBar: React.FC = () => {
           onClose={() => setIsSettingOpen(false)}
           title="تنظیمات"
         >
+          <DarkModeToggle />
           <ColorPicker />
         </CustomModal>
 
         <button
-          className={`text-gray-500 text-3xl hover:text-${themeColor}-500 transition`}
+          className={`text-gray-500 dark:text-white dark:hover:text-${themeColor}-500 text-3xl hover:text-${themeColor}-500 transition`}
         >
           <IoNotificationsOutline />
         </button>

@@ -11,6 +11,7 @@ import { AxiosError } from "axios";
 import Loading from "../../components/Loading/Loading";
 import toast from "react-hot-toast";
 import { LoginType } from "../../types/login";
+import { useThemeColor } from "../../context/ThemeColor";
 
 const Login: React.FC = () => {
   const {
@@ -21,6 +22,7 @@ const Login: React.FC = () => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const navigate = useNavigate();
   const loginMutation = useLogin();
+  const { themeColor } = useThemeColor();
 
   const toggle = () => {
     setIsVisible(!isVisible);
@@ -56,7 +58,9 @@ const Login: React.FC = () => {
 
       <div className="mt-6 flex flex-col gap-4 items-center">
         <div className="md:w-2/4 w-full text-center">
-          <h3 className="text-3xl text-orange-500 font-semibold">خوش آمدید</h3>
+          <h3 className={`text-3xl text-${themeColor}-500 font-semibold`}>
+            خوش آمدید
+          </h3>
           <p className="text-base font-medium text-gray-500 mt-4">
             لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با
             استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در
@@ -135,7 +139,7 @@ const Login: React.FC = () => {
             <Button type="submit">ورود</Button>
             <button
               type="button"
-              className="text-sm font-medium text-gray-600 cursor-pointer hover:text-orange-500 transition"
+              className={`text-sm font-medium text-gray-600 cursor-pointer hover:text-${themeColor}-500 transition`}
               onClick={() => navigate("/forgot-password")}
             >
               رمز عبور خود را فراموش کرده اید؟
@@ -146,7 +150,7 @@ const Login: React.FC = () => {
             <div>
               <span className="text-base text-gray-700 font-medium">
                 حساب کاربری ندارید؟{" "}
-                <Link to="/register" className="text-orange-500">
+                <Link to="/register" className={`text-${themeColor}-500`}>
                   ثبت نام
                 </Link>
               </span>

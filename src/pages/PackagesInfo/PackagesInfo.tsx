@@ -23,7 +23,7 @@ const PackagesInfo: React.FC = () => {
   return (
     <section>
       <div className="space-y-4">
-        <div className="bg-white p-4 rounded-xl shadow-md space-y-4">
+        <div className="bg-white p-4 rounded-xl shadow-md space-y-4 dark:bg-gray-700">
           <div>
             <img
               src={
@@ -35,17 +35,17 @@ const PackagesInfo: React.FC = () => {
               className="rounded-xl h-48 w-full object-cover"
             />
           </div>
-          <h3 className="text-lg font-semibold text-gray-800">
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
             {packageData?.name}
           </h3>
-          <p className="text-sm font-medium text-gray-600">
+          <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
             {packageData?.desc}
           </p>
           <ul className={`list-disc marker:text-${themeColor}-500 ms-4`}>
             {packageData?.services.map((service) => (
               <li
                 key={service.id}
-                className="text-sm font-medium text-gray-700"
+                className="text-sm font-medium text-gray-700 dark:text-gray-400"
               >
                 {service.name}
               </li>
@@ -53,16 +53,16 @@ const PackagesInfo: React.FC = () => {
           </ul>
         </div>
         <hr />
-        <div className="bg-white p-4 rounded-xl shadow-md space-y-4">
+        <div className="bg-white p-4 rounded-xl shadow-md space-y-4 dark:bg-gray-700">
           <div className="space-y-4">
-            <p className="text-base font-medium text-gray-800 flex items-center gap-2">
+            <p className="text-base font-medium text-gray-800 flex items-center gap-2 dark:text-white">
               <HiOutlineBuildingOffice
                 className={`text-2xl text-${themeColor}-500`}
               />{" "}
               {packageData?.business.name}
             </p>
-            <p className="text-sm font-medium text-gray-600">
-              <span className="text-gray-800">آدرس:</span>{" "}
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+              <span className="text-gray-800 dark:text-white">آدرس:</span>{" "}
               {packageData?.business.address}
             </p>
           </div>
@@ -70,7 +70,9 @@ const PackagesInfo: React.FC = () => {
             {packageData?.business?.is_coffee_shop && (
               <div className="flex items-center gap-2">
                 <GiCoffeeCup className={`text-2xl text-${themeColor}-500`} />
-                <p className="text-sm font-medium text-gray-600">کافی شاپ</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                  کافی شاپ
+                </p>
               </div>
             )}
             {packageData?.business?.is_parking && (
@@ -78,7 +80,9 @@ const PackagesInfo: React.FC = () => {
                 <LuCircleParking
                   className={`text-2xl text-${themeColor}-500`}
                 />
-                <p className="text-sm font-medium text-gray-600">پارکینگ</p>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                  پارکینگ
+                </p>
               </div>
             )}
             <a
@@ -88,7 +92,9 @@ const PackagesInfo: React.FC = () => {
               className="flex items-center gap-2"
             >
               <FaInstagram className={`text-2xl text-${themeColor}-500`} />
-              <p className="text-sm font-medium text-gray-600">اینستاگرام</p>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                اینستاگرام
+              </p>
             </a>
             <a
               href={`tel:${packageData?.business.phone_number}`}
@@ -97,7 +103,7 @@ const PackagesInfo: React.FC = () => {
               <HiMiniDevicePhoneMobile
                 className={`text-2xl text-${themeColor}-500`}
               />
-              <p className="text-sm font-medium text-gray-600">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
                 تماس: {packageData?.business.phone_number}
               </p>
             </a>
@@ -106,7 +112,7 @@ const PackagesInfo: React.FC = () => {
               className="flex items-center gap-2"
             >
               <GiRotaryPhone className={`text-2xl text-${themeColor}-500`} />
-              <p className="text-sm font-medium text-gray-600">
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
                 تلفن: {packageData?.business.telephone_number}
               </p>
             </a>

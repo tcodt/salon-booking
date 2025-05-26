@@ -10,7 +10,7 @@ const SidebarToggleButton: React.FC = () => {
   return (
     <button
       onClick={toggleSidebar}
-      className={`text-3xl text-gray-500 hover:text-${themeColor}-500 transition-colors`}
+      className={`text-3xl text-gray-500 hover:text-${themeColor}-500 dark:text-white dark:hover:text-${themeColor}-500 transition-colors`}
       aria-label={isSidebarOpen ? "بستن منو" : "باز کردن منو"}
     >
       {isSidebarOpen ? <MdClose /> : <MdMenu />}

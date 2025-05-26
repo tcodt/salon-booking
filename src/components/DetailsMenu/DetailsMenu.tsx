@@ -34,7 +34,10 @@ const DetailsMenu: React.FC<DetailsMenuProps> = ({ menuItems }) => {
         onClick={handleClick}
         sx={{ direction: "flex", justifyContent: "end" }}
       >
-        <BsThreeDotsVertical size={20} color="gray" />
+        <BsThreeDotsVertical
+          size={20}
+          className="text-gray-500 dark:text-white"
+        />
       </Button>
       <Menu
         id="basic-menu"
@@ -43,6 +46,9 @@ const DetailsMenu: React.FC<DetailsMenuProps> = ({ menuItems }) => {
         onClose={handleClose}
         MenuListProps={{
           "aria-labelledby": "basic-button",
+        }}
+        PaperProps={{
+          className: "bg-white dark:bg-gray-800",
         }}
       >
         {menuItems.map((item, index) => (
@@ -57,6 +63,7 @@ const DetailsMenu: React.FC<DetailsMenuProps> = ({ menuItems }) => {
               direction: "flex",
               gap: "5px",
             }}
+            className="dark:text-white"
           >
             {item.icon && <span style={{ fontSize: "20px" }}>{item.icon}</span>}
             {item.label}

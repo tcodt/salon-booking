@@ -21,10 +21,10 @@ const ViewAppointment: React.FC = () => {
 
   return (
     <div className="mt-8">
-      <div className="p-4 bg-white rounded-xl shadow-md space-y-6">
+      <div className="p-4 bg-white rounded-xl shadow-md space-y-6 dark:bg-gray-700">
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-800">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
               {appointmentData?.service?.name}
             </h3>
             <div className="flex items-center gap-2">
@@ -37,24 +37,24 @@ const ViewAppointment: React.FC = () => {
               </span>
             </div>
           </div>
-          <p className="text-gray-500 text-sm">
+          <p className="text-gray-500 text-sm dark:text-gray-300">
             {appointmentData?.service?.description}
           </p>
           <div className="flex items-center justify-between text-base">
-            <span className="text-gray-700 flex items-center gap-2">
+            <span className="text-gray-700 flex items-center gap-2 dark:text-gray-200">
               <LuAlarmClock className={`text-xl text-${themeColor}-500`} />{" "}
               زمان:
             </span>{" "}
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               {appointmentData?.service?.duration}
             </p>
           </div>
           <div className="flex items-center justify-between text-base">
-            <span className="text-gray-700 flex items-center gap-2">
+            <span className="text-gray-700 flex items-center gap-2 dark:text-gray-200">
               <MdAttachMoney className={`text-xl text-${themeColor}-500`} />{" "}
               قیمت:
             </span>{" "}
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               {appointmentData?.service?.price} هزارتومان
             </p>
           </div>
@@ -62,54 +62,56 @@ const ViewAppointment: React.FC = () => {
         <hr />
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between text-base">
-            <span className="text-gray-700 flex items-center gap-2">
+            <span className="text-gray-700 flex items-center gap-2 dark:text-gray-200">
               <FiUser className={`text-xl text-${themeColor}-500`} /> نام
               آرایشگر:
             </span>{" "}
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               {appointmentData?.employee?.user?.first_name}{" "}
               {appointmentData?.employee?.user?.last_name}
             </p>
           </div>
           <div className="flex items-center justify-between text-base">
-            <span className="text-gray-700 flex items-center gap-2">
+            <span className="text-gray-700 flex items-center gap-2 dark:text-gray-200">
               <RiScissors2Line className={`text-xl text-${themeColor}-500`} />{" "}
               مهارت:
             </span>{" "}
-            <p className="text-gray-500">{appointmentData?.employee?.skill}</p>
+            <p className="text-gray-500 dark:text-gray-400">
+              {appointmentData?.employee?.skill}
+            </p>
           </div>
           <div className="flex items-center justify-between text-base">
-            <span className="text-gray-700 flex items-center gap-2">
+            <span className="text-gray-700 flex items-center gap-2 dark:text-gray-200">
               <TbDeviceMobile className={`text-xl text-${themeColor}-500`} />{" "}
               شماره موبایل:
             </span>{" "}
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               {appointmentData?.employee?.user?.phone_number}
             </p>
           </div>
         </div>
         <hr />
         <div className="flex flex-col gap-4">
-          <h4 className="text-base font-semibold text-gray-800">
+          <h4 className="text-base font-semibold text-gray-800 dark:text-white">
             {appointmentData?.service?.business?.name}
           </h4>
-          <p className="text-gray-500 text-sm">
+          <p className="text-gray-500 text-sm dark:text-gray-300">
             {appointmentData?.service?.business?.address}
           </p>
           <div className="flex items-center justify-between text-base">
-            <span className="text-gray-700 flex items-center gap-2">
+            <span className="text-gray-700 flex items-center gap-2 dark:text-gray-200">
               <TbDeviceMobile className={`text-xl text-${themeColor}-500`} />{" "}
               شماره موبایل:
             </span>{" "}
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               {appointmentData?.service?.business?.phone_number}
             </p>
           </div>
           <div className="flex items-center justify-between text-base">
-            <span className="text-gray-700 flex items-center gap-2">
+            <span className="text-gray-700 flex items-center gap-2 dark:text-gray-200">
               <BsTelephone className={`text-xl text-${themeColor}-500`} /> تلفن:
             </span>{" "}
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               {appointmentData?.service?.business?.telephone_number}
             </p>
           </div>

@@ -52,14 +52,16 @@ const CustomModal: React.FC<ModalProps> = ({
       {/* Modal with slide-in animation */}
       <div
         ref={modalRef}
-        className="relative bg-white rounded-lg shadow-xl w-full max-w-md max-h-[75%] overflow-hidden overflow-y-auto transform transition-all duration-300"
+        className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md max-h-[75%] overflow-hidden overflow-y-auto transform transition-all duration-300"
         style={{
           animation: "modalEnter 0.3s forwards",
         }}
       >
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+              {title}
+            </h3>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-500 transition-colors"

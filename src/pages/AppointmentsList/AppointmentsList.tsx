@@ -54,11 +54,11 @@ const AppointmentsList: React.FC = () => {
           {appointments?.map((appointment) => (
             <div
               key={appointment.id}
-              className="bg-white shadow-md rounded-xl p-4"
+              className="bg-white shadow-md rounded-xl p-4 dark:bg-gray-700"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <h3 className="text-lg font-semibold mb-2 text-gray-800">
+                  <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white">
                     رزور {appointment?.service?.name}
                   </h3>
                   {/* <span className="text-yellow-500">{service?.get_status}</span> */}
@@ -95,14 +95,18 @@ const AppointmentsList: React.FC = () => {
                 </div>
               </div>
               <div className="flex items-center gap-6 mt-4">
-                <p className="text-sm mb-1 text-gray-500">
-                  <span className="font-medium text-gray-700">در تاریخ: </span>{" "}
+                <p className="text-sm mb-1 text-gray-500 dark:text-gray-400">
+                  <span className="font-medium text-gray-700 dark:text-gray-200">
+                    در تاریخ:{" "}
+                  </span>{" "}
                   {new Intl.DateTimeFormat("fa-IR", {
                     calendar: "persian",
                   }).format(new Date(appointment?.date))}
                 </p>
-                <p className="text-sm mb-1 text-gray-500">
-                  <span className="font-medium text-gray-700">ساعت: </span>{" "}
+                <p className="text-sm mb-1 text-gray-500 dark:text-gray-400">
+                  <span className="font-medium text-gray-700 dark:text-gray-200">
+                    ساعت:{" "}
+                  </span>{" "}
                   {appointment?.time} دقیقه
                 </p>
               </div>
@@ -111,7 +115,7 @@ const AppointmentsList: React.FC = () => {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center h-[80vh] gap-6">
-          <h1 className="text-2xl font-semibold text-gray-800">
+          <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-300">
             هیچ رزوری یافت نشد!
           </h1>
           <Button variant="secondary" onClick={() => navigate("/reserve")}>

@@ -16,20 +16,25 @@ const HomePage: React.FC = () => {
   return (
     <section className="space-y-6">
       {/* User Name */}
-      <h3 className="text-2xl font-bold text-gray-800 my-3">{greetingUser}</h3>
+      <h3 className="text-2xl font-bold text-gray-800 my-3 dark:text-white">
+        {greetingUser}
+      </h3>
       {/* Search Bar */}
       <div className="relative mb-3">
         <input
           type="text"
           placeholder="جستجو"
-          className={`py-2 px-4 h-11 bg-white w-full rounded-xl border-2 focus:border-${themeColor}-500 transition outline-none`}
+          className={`py-2 px-4 h-11 bg-white dark:bg-gray-700 dark:border-gray-500 dark:focus:border-${themeColor}-500 dark:text-white w-full rounded-xl border-2 focus:border-${themeColor}-500 transition outline-none font-medium`}
         />
-        <CiSearch size={25} className="absolute top-2 left-2 text-gray-500" />
+        <CiSearch
+          size={25}
+          className={`absolute top-2 left-2 text-${themeColor}-500`}
+        />
       </div>
       {/* Offer Box */}
       <OfferCarousel />
       {/* Booking */}
-      <div className="mt-4 p-4 rounded-xl bg-gradient-to-r z-10 from-blue-500 to-violet-500 relative after:absolute after:content-[''] after:top-2 after:-left-4 after:w-40 after:h-40 after:bg-white after:rounded-full after:bg-opacity-30 after:-z-10 before:absolute before:content-[''] before:bottom-2 before:-right-4 before:w-40 before:h-40 before:bg-white before:rounded-full before:bg-opacity-30 before:-z-10">
+      <div className="mt-4 p-4 rounded-xl bg-gradient-to-r z-10 from-blue-500 to-violet-500 relative after:absolute after:content-[''] after:top-2 after:-left-4 after:w-40 after:h-40 after:bg-white after:rounded-full after:bg-opacity-30 after:-z-10 before:absolute before:content-[''] before:bottom-2 before:-right-4 before:w-40 before:h-40 before:bg-white before:rounded-full before:bg-opacity-30 before:-z-10 overflow-hidden">
         <h3 className="text-xl font-bold text-white mb-2">رزرو نوبت</h3>
         <p className="text-white text-sm font-light mb-4">
           همین حالا نوبت خود را رزرو کنید و از خدمات ویژه ما بهره‌مند شوید.

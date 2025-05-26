@@ -1,20 +1,20 @@
 import React from "react";
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
+import Button from "../../components/Button/Button";
 
 const NotFound: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div>
       <img src="/images/not-found.svg" alt="Not Found" className="w-full" />
-      <div className="p-4 text-center">
-        <h4 className="text-xl text-gray-700 font-medium mt-4">
+      <div className="p-4 text-center space-y-8">
+        <h4 className="text-xl text-gray-700 font-medium mt-4 dark:text-white">
           صفحه مورد نظر یافت نشد!
         </h4>
-        <Link
-          to="/home"
-          className="inline-block bg-orange-500 rounded-xl text-white hover:bg-orange-600 transition text-base py-2 px-4 mt-12"
-        >
+        <Button variant="primary" onClick={() => navigate("/home")}>
           برگشت به خانه
-        </Link>
+        </Button>
       </div>
     </div>
   );

@@ -14,6 +14,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
+import OptionsBox from "../../components/OptionsBox/OptionsBox";
 
 const WorkingTime: React.FC = () => {
   const { data: workingTimes, isPending, isError, error } = useGetWorkingTime();
@@ -55,40 +56,40 @@ const WorkingTime: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-row flex-wrap items-center gap-2">
-        <button
-          className="bg-sky-100 text-sky-500 hover:bg-sky-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-sky-300"
+        <OptionsBox
+          color="sky"
           onClick={() => navigate("/add-working-time")}
-        >
-          افزودن <IoPersonAdd />
-        </button>
-        <button
-          className="bg-green-100 text-green-500 hover:bg-green-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-green-300"
+          icon={<IoPersonAdd />}
+          title="افزودن"
+        />
+        <OptionsBox
+          color="green"
           onClick={() => setIsUpdateOpen(true)}
-        >
-          بروزرسانی <RxUpdate />
-        </button>
-        <button
-          className="bg-red-100 text-red-500 hover:bg-red-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-red-300"
+          icon={<RxUpdate />}
+          title="بروزرسانی"
+        />
+        <OptionsBox
+          color="red"
           onClick={() => setIsDeleteOpen(true)}
-        >
-          حذف <FaTrashCan />
-        </button>
+          icon={<FaTrashCan />}
+          title="حذف"
+        />
       </div>
 
       {/* Delete working time modal */}
       <CustomModal
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
-        title="حذف سرویس"
+        title="حذف ساعت کاری"
       >
         <div className="flex flex-col gap-6">
           {workingTimes?.map((time) => (
             <div
               key={time.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-red-500 rounded-xl border border-gray-200 p-2"
+              className="flex items-center gap-4 relative border-s-2 border-s-red-500 rounded-e-xl p-2 bg-slate-100 dark:bg-gray-700 shadow-md"
             >
               <div className="flex items-center gap-2">
-                <span className="text-base text-gray-800 font-medium">
+                <span className="text-base text-gray-800 font-medium dark:text-white">
                   {time.day}
                 </span>
               </div>
@@ -98,13 +99,17 @@ const WorkingTime: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <BiSolidCalendarCheck className="text-green-500 text-base" />
                   </div>
-                  <span className="text-gray-500">{time.opening_time}</span>
+                  <span className="text-gray-500 dark:text-gray-300">
+                    {time.opening_time}
+                  </span>
                 </div>
                 <div className="text-sm text-gray-700 font-normal flex items-center gap-2">
                   <div className="flex items-center gap-2">
                     <BiSolidCalendarX className="text-red-500 text-base" />
                   </div>
-                  <span className="text-gray-500">{time.closing_time}</span>
+                  <span className="text-gray-500 dark:text-gray-300">
+                    {time.closing_time}
+                  </span>
                 </div>
               </div>
 
@@ -129,10 +134,10 @@ const WorkingTime: React.FC = () => {
           {workingTimes?.map((time) => (
             <div
               key={time.id}
-              className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-xl border border-gray-200 p-2`}
+              className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-e-xl p-2 bg-slate-100 dark:bg-gray-700 shadow-md`}
             >
               <div className="flex items-center gap-2">
-                <span className="text-base text-gray-800 font-medium">
+                <span className="text-base text-gray-800 font-medium dark:text-white">
                   {time.day}
                 </span>
               </div>
@@ -142,13 +147,17 @@ const WorkingTime: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <BiSolidCalendarCheck className="text-green-500 text-base" />
                   </div>
-                  <span className="text-gray-500">{time.opening_time}</span>
+                  <span className="text-gray-500 dark:text-gray-300">
+                    {time.opening_time}
+                  </span>
                 </div>
                 <div className="text-sm text-gray-700 font-normal flex items-center gap-2">
                   <div className="flex items-center gap-2">
                     <BiSolidCalendarX className="text-red-500 text-base" />
                   </div>
-                  <span className="text-gray-500">{time.closing_time}</span>
+                  <span className="text-gray-500 dark:text-gray-300">
+                    {time.closing_time}
+                  </span>
                 </div>
               </div>
 
@@ -173,7 +182,10 @@ const WorkingTime: React.FC = () => {
       <div className="mt-8">
         <div className="grid grid-cols-1 gap-6">
           {workingTimes?.map((time) => (
-            <div key={time.id} className="p-4 rounded-xl bg-white shadow-md">
+            <div
+              key={time.id}
+              className="p-4 rounded-xl bg-white shadow-md dark:bg-gray-700"
+            >
               <div className="flex items-center justify-between mb-4">
                 <h3 className={`text-lg font-semibold text-${themeColor}-500`}>
                   {time.day}
@@ -182,13 +194,13 @@ const WorkingTime: React.FC = () => {
               <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-2">
                   <BiSolidCalendarCheck className="text-green-500 text-xl" />
-                  <span className="text-gray-700 font-medium">
+                  <span className="text-gray-700 font-medium dark:text-gray-300">
                     باز شدن: {time.opening_time}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <BiSolidCalendarX className="text-red-500 text-xl" />
-                  <span className="text-gray-700 font-medium">
+                  <span className="text-gray-700 font-medium dark:text-gray-300">
                     بسته شدن: {time.closing_time}
                   </span>
                 </div>

@@ -13,6 +13,7 @@ import Loading from "../../components/Loading/Loading";
 import { RegisterType } from "../../types/register";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../context/AuthContext";
+import { useThemeColor } from "../../context/ThemeColor";
 
 const Register: React.FC = () => {
   const {
@@ -25,6 +26,7 @@ const Register: React.FC = () => {
   const registerMutation = useRegister();
   const queryClient = useQueryClient();
   const { login: loginContext } = useAuth();
+  const { themeColor } = useThemeColor();
 
   const toggle = () => {
     setIsVisible(!isVisible);
@@ -60,7 +62,7 @@ const Register: React.FC = () => {
 
       <div className="mt-6 flex flex-col gap-4 items-center">
         <div className="md:w-2/4 w-full text-start">
-          <h3 className="text-3xl text-orange-500 font-semibold">
+          <h3 className={`text-3xl text-${themeColor}-500 font-semibold`}>
             ایجاد حساب کاربری
           </h3>
         </div>
@@ -201,7 +203,7 @@ const Register: React.FC = () => {
             <div>
               <span className="text-base text-gray-600 font-medium">
                 حساب کاربری دارید؟{" "}
-                <Link to="/login" className="text-orange-500">
+                <Link to="/login" className={`text-${themeColor}-500`}>
                   ورود
                 </Link>
               </span>

@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
-import { ThemeProvider } from "./context/ThemeContext.tsx";
+// import { ThemeProvider } from "./context/ThemeContext.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeColorProvider } from "./context/ThemeColor.tsx";
 
@@ -20,11 +20,11 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={client}>
       <AuthProvider>
-        <ThemeProvider>
-          <ThemeColorProvider>
-            <App />
-          </ThemeColorProvider>
-        </ThemeProvider>
+        {/* <ThemeProvider> */}
+        <ThemeColorProvider>
+          <App />
+        </ThemeColorProvider>
+        {/* </ThemeProvider> */}
       </AuthProvider>
     </QueryClientProvider>
   </StrictMode>

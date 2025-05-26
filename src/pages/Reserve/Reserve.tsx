@@ -10,6 +10,7 @@ import { useGetServices } from "../../hooks/services/useGetServices";
 import { useGetEmployees } from "../../hooks/employees/useGetEmployees";
 import { useNavigate } from "react-router";
 import PageTitle from "../../components/PageTitle/PageTitle";
+import { useThemeColor } from "../../context/ThemeColor";
 
 const Reserve: React.FC = () => {
   const [date, setDate] = useState<Date | null>(new Date());
@@ -28,6 +29,7 @@ const Reserve: React.FC = () => {
 
   const currentUser = getUserFromStorage();
   const addAppointmentMutation = useAddAppointment();
+  const { themeColor } = useThemeColor();
 
   const handleBooking = () => {
     if (!date || !time || !services) {
@@ -70,8 +72,8 @@ const Reserve: React.FC = () => {
         <PageTitle title="همین حالا رزرو کن!" />
         <hr />
         <div className="flex flex-col gap-4">
-          <label className="flex items-center gap-2 text-base font-semibold text-gray-700">
-            <FaRegCalendarAlt size={25} color="gray" />
+          <label className="flex items-center gap-2 text-base font-semibold text-gray-700 dark:text-white">
+            <FaRegCalendarAlt size={25} className={`text-${themeColor}-500`} />
             انتخاب تاریخ:
           </label>
           <DatePicker
@@ -80,8 +82,8 @@ const Reserve: React.FC = () => {
             locale="fa"
             inputClass="primary-input"
           />
-          <label className="flex items-center gap-2 text-base font-semibold text-gray-700">
-            <FaRegClock size={25} color="gray" />
+          <label className="flex items-center gap-2 text-base font-semibold text-gray-700 dark:text-white">
+            <FaRegClock size={25} className={`text-${themeColor}-500`} />
             انتخاب ساعت:
           </label>
           <TimePicker
@@ -93,10 +95,12 @@ const Reserve: React.FC = () => {
         </div>
         <div className="flex flex-col gap-4">
           {date && (
-            <p>📅 تاریخ انتخاب شده: {date.toLocaleDateString("fa-IR")}</p>
+            <p className="text-gray-600 dark:text-gray-300 text-base">
+              📅 تاریخ انتخاب شده: {date.toLocaleDateString("fa-IR")}
+            </p>
           )}
           {time && (
-            <p>
+            <p className="text-gray-600 dark:text-gray-300 text-base">
               ⏰ ساعت انتخاب شده:{" "}
               {`${String(time.hour).padStart(2, "0")}:${String(
                 time.minute

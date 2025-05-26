@@ -101,18 +101,18 @@ const UserProfile: React.FC = () => {
 
   return (
     <section>
-      <div className="bg-white p-4 rounded-xl shadow-md">
+      <div className="bg-white p-4 rounded-xl shadow-md dark:bg-gray-700">
         <div className="flex items-start justify-between">
           <ul
             className={`space-y-4 list-disc marker:text-${themeColor}-500 ms-4`}
           >
-            <li className="text-gray-700 font-medium">
+            <li className="text-gray-700 font-medium dark:text-gray-300">
               نام: <span>{userProfile?.first_name}</span>
             </li>
-            <li className="text-gray-700 font-medium">
+            <li className="text-gray-700 font-medium dark:text-gray-300">
               خانوادگی: <span>{userProfile?.last_name}</span>
             </li>
-            <li className="text-gray-700 font-medium">
+            <li className="text-gray-700 font-medium dark:text-gray-300">
               نقش: <span>{userProfile?.is_owner ? "ادمین" : "کاربر"}</span>
             </li>
           </ul>
@@ -208,7 +208,7 @@ const UserProfile: React.FC = () => {
           </div>
           <div>
             <label htmlFor="package-image">
-              <div className="bg-white text-gray-500 hover:bg-slate-100 border-2 border-gray-300 rounded-xl border-dashed p-4 cursor-pointer">
+              <div className="bg-white text-gray-500 hover:bg-slate-100 border-2 border-gray-300 rounded-xl border-dashed p-4 cursor-pointer dark:bg-gray-900 dark:border-gray-600">
                 <span className="flex items-center gap-2">
                   انتخاب عکس <IoCamera size={20} />
                 </span>
@@ -234,28 +234,43 @@ const UserProfile: React.FC = () => {
               <Checkbox
                 {...register("is_owner")}
                 defaultChecked={userProfile?.is_owner}
-                color="default"
+                color="info"
                 id="owner"
               />
-              <label htmlFor="owner">مالک</label>
+              <label
+                htmlFor="owner"
+                className="text-gray-600 dark:text-gray-300 font-medium"
+              >
+                مالک
+              </label>
             </div>
             <div className="flex flex-row items-center">
               <Checkbox
                 {...register("is_superuser")}
                 defaultChecked={userProfile?.is_superuser}
-                color="default"
+                color="info"
                 id="super_user"
               />
-              <label htmlFor="super_user">کارمند</label>
+              <label
+                htmlFor="super_user"
+                className="text-gray-600 dark:text-gray-300 font-medium"
+              >
+                کارمند
+              </label>
             </div>
             <div className="flex flex-row items-center">
               <Checkbox
                 {...register("is_staff")}
                 defaultChecked={!userProfile?.is_staff}
-                color="default"
+                color="info"
                 id="user"
               />
-              <label htmlFor="user">کاربر</label>
+              <label
+                htmlFor="user"
+                className="text-gray-600 dark:text-gray-300 font-medium"
+              >
+                کاربر
+              </label>
             </div>
           </div>
           <Button variant="primary" type="submit">

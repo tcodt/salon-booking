@@ -16,6 +16,7 @@ import { useAddEmployee } from "../../hooks/employees/useAddEmployee";
 import { useUpdateEmployee } from "../../hooks/employees/useUpdateEmployee";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
+import OptionsBox from "../../components/OptionsBox/OptionsBox";
 
 const ManageEmployees: React.FC = () => {
   const {
@@ -155,27 +156,24 @@ const ManageEmployees: React.FC = () => {
   return (
     <section className="space-y-6">
       <div className="flex flex-row flex-wrap items-center gap-2">
-        <button
-          type="button"
-          className="bg-sky-100 text-sky-500 hover:bg-sky-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-sky-300"
+        <OptionsBox
+          color="sky"
           onClick={() => setIsAddOpen(true)}
-        >
-          افزودن <IoPersonAdd />
-        </button>
-        <button
-          type="button"
-          className="bg-green-100 text-green-500 hover:bg-green-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-green-300"
+          icon={<IoPersonAdd />}
+          title="افزودن"
+        />
+        <OptionsBox
+          color="green"
           onClick={() => setIsUpdateOpen(true)}
-        >
-          بروزرسانی <RxUpdate />
-        </button>
-        <button
-          type="button"
-          className="bg-red-100 text-red-500 hover:bg-red-200 transition rounded-xl py-1 px-3 flex items-center gap-2 border border-red-300"
+          icon={<RxUpdate />}
+          title="بروزرسانی"
+        />
+        <OptionsBox
+          color="red"
           onClick={() => setIsDeleteOpen(true)}
-        >
-          حذف <FaTrashCan />
-        </button>
+          icon={<FaTrashCan />}
+          title="حذف"
+        />
       </div>
 
       {/* Delete employees modal */}
@@ -188,7 +186,7 @@ const ManageEmployees: React.FC = () => {
           {employees.map((emp) => (
             <div
               key={emp.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-red-500 rounded-xl border border-gray-200 p-2"
+              className="flex items-center gap-4 relative border-s-2 border-s-red-500 rounded-e-xl bg-slate-100 dark:bg-gray-700 shadow-md p-2"
             >
               <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
                 {emp.user.image ? (
@@ -198,10 +196,10 @@ const ManageEmployees: React.FC = () => {
                 )}
               </div>
               <div className="flex flex-col gap-1">
-                <h4 className="text-base text-gray-800 font-normal">
+                <h4 className="text-base text-gray-800 font-normal dark:text-white">
                   {emp.user.first_name}
                 </h4>
-                <span className="text-sm text-gray-500 font-thin">
+                <span className="text-sm text-gray-500 font-thin dark:text-gray-300">
                   {emp.skill}
                 </span>
               </div>
@@ -229,11 +227,11 @@ const ManageEmployees: React.FC = () => {
             placeholder="کارمند انتخاب شده..."
             value={selectedUserUpdate}
             readOnly
-            className={`py-2 px-4 h-11 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-${themeColor}-500 text-gray-700 text-base transition`}
+            className={`py-2 px-4 h-11 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-${themeColor}-500 text-gray-700 text-base transition dark:bg-gray-700 dark:border-gray-500 dark:text-white dark:focus:border-${themeColor}-500`}
           />
           <textarea
             rows={2}
-            className={`p-4 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-${themeColor}-500 text-gray-700 text-base transition`}
+            className={`p-4 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-${themeColor}-500 text-gray-700 text-base transition dark:bg-gray-700 dark:border-gray-500 dark:text-white dark:focus:border-${themeColor}-500`}
             placeholder="مهارت ها..."
             defaultValue={skillUpdate}
             onChange={(e) => setSkillUpdate(e.target.value)}
@@ -245,7 +243,7 @@ const ManageEmployees: React.FC = () => {
             {employees.map((emp) => (
               <div
                 key={emp.id}
-                className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-xl border border-gray-200 p-2`}
+                className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-e-xl p-2 bg-slate-100 dark:bg-gray-700 shadow-md`}
               >
                 <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
                   {emp.user.image ? (
@@ -255,10 +253,10 @@ const ManageEmployees: React.FC = () => {
                   )}
                 </div>
                 <div className="flex flex-col gap-1">
-                  <h4 className="text-base text-gray-800 font-normal">
+                  <h4 className="text-base text-gray-800 font-normal dark:text-white">
                     {emp.user.first_name}
                   </h4>
-                  <span className="text-sm text-gray-500 font-thin">
+                  <span className="text-sm text-gray-500 font-thin dark:text-gray-300">
                     {emp.skill}
                   </span>
                 </div>
@@ -294,11 +292,11 @@ const ManageEmployees: React.FC = () => {
             placeholder="کاربر را اضافه کنید"
             value={selectedUser}
             readOnly
-            className={`py-2 px-4 h-11 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-${themeColor}-500 text-gray-700 text-base transition`}
+            className={`py-2 px-4 h-11 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-${themeColor}-500 text-gray-700 text-base transition dark:bg-gray-700 dark:border-gray-500 dark:text-white dark:focus:border-${themeColor}-500`}
           />
           <textarea
             rows={2}
-            className={`p-4 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-${themeColor}-500 text-gray-700 text-base transition`}
+            className={`p-4 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-${themeColor}-500 text-gray-700 text-base transition dark:bg-gray-700 dark:border-gray-500 dark:text-white dark:focus:border-${themeColor}-500`}
             placeholder="مهارت ها..."
             value={skill}
             onChange={(e) => setSkill(e.target.value)}
@@ -309,7 +307,7 @@ const ManageEmployees: React.FC = () => {
           {users.map((user) => (
             <div
               key={user.id}
-              className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-xl border border-gray-200 p-2`}
+              className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-e-xl bg-slate-100 dark:bg-gray-700 shadow-md p-2`}
             >
               <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
                 {user.image ? (
@@ -323,10 +321,10 @@ const ManageEmployees: React.FC = () => {
                 )}
               </div>
               <div className="flex flex-col gap-1">
-                <h4 className="text-base text-gray-800 font-normal">
+                <h4 className="text-base text-gray-800 font-normal dark:text-white">
                   {user.first_name}
                 </h4>
-                <span className="text-sm text-gray-500 font-thin">
+                <span className="text-sm text-gray-500 font-thin dark:text-gray-300">
                   {user.phone_number}
                 </span>
               </div>
@@ -350,21 +348,23 @@ const ManageEmployees: React.FC = () => {
           return (
             <div
               key={employee.id}
-              className="bg-white shadow-sm rounded-lg p-6 mb-4 border border-gray-200"
+              className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-4"
             >
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-16 h-16 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
                   <FaUser size={24} />
                 </div>
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-800">
+                  <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
                     {employee.user.first_name} {employee.user.last_name}
                   </h2>
-                  <p className="text-gray-600">{employee.skill}</p>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">
+                    {employee.skill}
+                  </p>
                 </div>
               </div>
 
-              <table className="table-auto w-full text-sm text-gray-600">
+              <table className="table-auto w-full text-sm text-gray-600 dark:text-gray-300">
                 <tbody>
                   <tr>
                     <td className="font-medium py-2">شماره تلفن:</td>
@@ -378,8 +378,8 @@ const ManageEmployees: React.FC = () => {
                       <span
                         className={`px-2 py-1 rounded text-xs ${
                           employee.user.is_active
-                            ? "bg-green-100 text-green-500"
-                            : "bg-red-100 text-red-500"
+                            ? "bg-green-100 text-green-500 dark:bg-green-500 dark:text-white"
+                            : "bg-red-100 text-red-500 dark:bg-red-500 dark:text-white"
                         }`}
                       >
                         {employee.user.is_active ? "فعال" : "غیرفعال"}
