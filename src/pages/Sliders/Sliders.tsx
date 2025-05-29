@@ -248,7 +248,11 @@ const Sliders: React.FC = () => {
               )
             }
           ></textarea>
-          <Button onClick={handleUpdateSlider}>بروزرسانی اسلایدر</Button>
+          <Button onClick={handleUpdateSlider}>
+            {updateSliderMutation.isPending
+              ? "درحال بروزرسانی..."
+              : "بروزرسانی اسلایدر"}
+          </Button>
           {sliders?.map((slider) => (
             <div
               key={slider.id}
