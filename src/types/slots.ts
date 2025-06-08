@@ -1,0 +1,7 @@
+export interface SlotsResponse {
+  id: number;
+  date: string;
+  start_time: string;
+  is_available: boolean;
+  service: number;
+}

@@ -117,14 +117,14 @@ const UserProfile: React.FC = () => {
             </li>
           </ul>
           <div
-            className={`border-2 border-${themeColor}-500 rounded-full bg-${themeColor}-50 p-1 w-20 h-20 flex items-center justify-center`}
+            className={`border-2 border-${themeColor}-500 rounded-full bg-${themeColor}-50 w-20 h-20 flex items-center justify-center overflow-hidden`}
             id="rotation_profile"
           >
             {userProfile?.image ? (
               <img
                 src={userProfile.image}
                 alt="User"
-                className="rounded-full object-cover"
+                className="w-20 h-20 rounded-full object-cover"
               />
             ) : (
               <FaUser className="text-gray-500 text-4xl" />
@@ -274,7 +274,9 @@ const UserProfile: React.FC = () => {
             </div>
           </div>
           <Button variant="primary" type="submit">
-            بروزرسانی
+            {updateProfileMutation.isPending
+              ? "درحال بروزرسانی..."
+              : "بروزرسانی"}
           </Button>
         </form>
       </CustomModal>

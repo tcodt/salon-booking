@@ -29,6 +29,7 @@ import UpdateWorkingTime from "../pages/UpdateWorkingTime/UpdateWorkingTime";
 import Packages from "../pages/Packages/Packages";
 import PackagesInfo from "../pages/PackagesInfo/PackagesInfo";
 import Logout from "../pages/Logout/Logout";
+import AclManager from "../components/AclManager/AclManager";
 
 // Wrapper component for offline detection
 const NetworkStatusWrapper: React.FC<{ children: React.ReactNode }> = ({
@@ -55,6 +56,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/receive-code" element={<ForgotPasswordCode />} />
         <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/acl" element={<AclManager />} />
 
         {/* Network Status Route */}
         <Route path="/offline" element={<OfflinePage />} />

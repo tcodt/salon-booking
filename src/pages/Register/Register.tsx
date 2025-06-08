@@ -2,17 +2,14 @@ import React, { useState } from "react";
 import { FaPhoneAlt, FaUser } from "react-icons/fa";
 import { IoIosLock } from "react-icons/io";
 import { IoEye, IoEyeOff } from "react-icons/io5";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import Button from "../../components/Button/Button";
 import PageBar from "../../components/PageBar/PageBar";
-import { MdEmail } from "react-icons/md";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRegister } from "../../hooks/accounts/register/useRegister";
 import toast from "react-hot-toast";
 import Loading from "../../components/Loading/Loading";
 import { RegisterType } from "../../types/register";
-import { useQueryClient } from "@tanstack/react-query";
-import { useAuth } from "../../context/AuthContext";
 import { useThemeColor } from "../../context/ThemeColor";
 
 const Register: React.FC = () => {
@@ -22,10 +19,8 @@ const Register: React.FC = () => {
     formState: { errors },
   } = useForm<RegisterType>();
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const navigate = useNavigate();
+
   const registerMutation = useRegister();
-  const queryClient = useQueryClient();
-  const { login: loginContext } = useAuth();
   const { themeColor } = useThemeColor();
 
   const toggle = () => {
@@ -37,17 +32,10 @@ const Register: React.FC = () => {
       first_name: data.first_name,
       last_name: data.last_name,
       phone_number: data.phone_number,
-      email: data.email,
       password: data.password,
     };
 
-    registerMutation.mutate(transformedData, {
-      onSuccess: (data) => {
-        queryClient.setQueryData(["userProfile"], data.user); // Put user data in cache
-        loginContext({ access: data.access, refresh: data.refresh }, data.user);
-        navigate("/home"); // Redirect to /login when have SMS panel
-      },
-    });
+    registerMutation.mutate(transformedData);
 
     if (errors.phone_number) {
       toast.error("شماره تلفن صحیح نیست!");
@@ -146,27 +134,6 @@ const Register: React.FC = () => {
               </div>
             </label>
             <label className="md:w-2/4 w-full relative">
-              <input
-                type="email"
-                placeholder={errors?.email?.message || "ایمیل"}
-                className={`primary-input px-8 text-left ${
-                  errors?.email?.message
-                    ? "text-sm placeholder:text-red-500"
-                    : "text-base"
-                }`}
-                {...register("email", {
-                  required: "ایمیل اجباری است!",
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "ایمیل نا معتبر است!",
-                  },
-                })}
-              />
-              <div className="absolute top-4 left-2 text-gray-500 text-lg">
-                <MdEmail />
-              </div>
-            </label>
-            <label className="md:w-2/4 w-full relative">
               <span
                 className="absolute top-4 right-2 text-gray-500 text-lg"
                 onClick={toggle}
@@ -201,7 +168,7 @@ const Register: React.FC = () => {
               ...
             </span>
             <div>
-              <span className="text-base text-gray-600 font-medium">
+              <span className="text-base text-gray-600 font-medium dark:text-gray-300 ">
                 حساب کاربری دارید؟{" "}
                 <Link to="/login" className={`text-${themeColor}-500`}>
                   ورود

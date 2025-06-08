@@ -1,6 +1,12 @@
 import { GetEmployeesItem } from "./employees";
 import { GetServicesItem } from "./services";
 
+export interface ReservationRequest {
+  status: string;
+  service_id: number;
+  employee_id: number;
+  time_slot_id: number;
+}
 export interface AppointmentDataType {
   date: string;
   time: string;
@@ -20,13 +26,14 @@ export enum AppointmentStatus {
 
 export interface Appointment {
   id: number;
-  date: string;
-  time: string;
+  // date: string;
+  // time: string;
   status: AppointmentStatus;
   user: number;
   service: GetServicesItem;
   employee: GetEmployeesItem;
   get_status: string;
+  employee_name: string;
 }
 
 export type Appointments = Appointment[];

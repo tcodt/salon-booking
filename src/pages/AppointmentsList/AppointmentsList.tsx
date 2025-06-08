@@ -58,7 +58,7 @@ const AppointmentsList: React.FC = () => {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white">
+                  <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">
                     رزور {appointment?.service?.name}
                   </h3>
                   {/* <span className="text-yellow-500">{service?.get_status}</span> */}
@@ -94,22 +94,24 @@ const AppointmentsList: React.FC = () => {
                   />
                 </div>
               </div>
-              <div className="flex items-center gap-6 mt-4">
+              {/* <div className="flex items-center gap-6 mt-4">
                 <p className="text-sm mb-1 text-gray-500 dark:text-gray-400">
                   <span className="font-medium text-gray-700 dark:text-gray-200">
-                    در تاریخ:{" "}
+                    تاریخ:
                   </span>{" "}
-                  {new Intl.DateTimeFormat("fa-IR", {
-                    calendar: "persian",
-                  }).format(new Date(appointment?.date))}
+                  {appointment?.date
+                    ? new Intl.DateTimeFormat("fa-IR", {
+                        calendar: "persian",
+                      }).format(new Date(appointment.date))
+                    : "-"}
                 </p>
                 <p className="text-sm mb-1 text-gray-500 dark:text-gray-400">
                   <span className="font-medium text-gray-700 dark:text-gray-200">
-                    ساعت:{" "}
+                    ساعت:
                   </span>{" "}
-                  {appointment?.time} دقیقه
+                  {appointment?.time ? appointment.time : "-"}
                 </p>
-              </div>
+              </div> */}
             </div>
           ))}
         </div>

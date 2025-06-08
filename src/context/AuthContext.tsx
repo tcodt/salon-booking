@@ -1,12 +1,14 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { User } from "../types/users";
+import { AclResponse } from "../types/acl";
+import { useGetAcl } from "../hooks/acl/useGetAcl";
+// import { useGetAclById } from "../hooks/acl/useGetAclById";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
-  isStaff: boolean;
-  isOwner: boolean;
+  acl: AclResponse | null;
   login: (tokens: { access: string; refresh: string }, userData: User) => void;
   logout: () => void;
 }
@@ -20,8 +22,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const isOwner = user?.is_owner || false;
-  const isStaff = user?.is_staff || false;
+  const { data: aclArray } = useGetAcl(user?.id ?? 0);
+  const acl = aclArray && aclArray.length > 0 ? aclArray[0] : null;
+  // const { data } = useGetAclById(user?.id ?? 0);
+  // console.log("Get ACL by ID: ", data);
 
   // Check local storage for token on app load
   useEffect(() => {
@@ -58,7 +62,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, isStaff, isOwner, login, logout }}
+      value={{
+        user,
+        isAuthenticated,
+        acl,
+        login,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>

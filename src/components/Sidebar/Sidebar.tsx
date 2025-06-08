@@ -81,7 +81,7 @@ const Sidebar: React.FC = () => {
         id="sidebar"
         className={`fixed top-0 right-0 z-[2000] h-screen w-64 bg-white dark:bg-gray-800 border-e border-gray-300 dark:border-e-gray-500 
           overflow-y-auto -webkit-overflow-scrolling-touch
-          [&::-webkit-scrollbar]:w-2
+          [&::-webkit-scrollbar]:w-1
           [&::-webkit-scrollbar-track]:rounded-full
           [&::-webkit-scrollbar-track]:bg-transparent
           [&::-webkit-scrollbar-thumb]:rounded-full

@@ -32,7 +32,8 @@ const Login: React.FC = () => {
     const toastId = toast.loading("درحال ورود...");
 
     loginMutation.mutate(data, {
-      onSuccess: () => {
+      onSuccess: async (data) => {
+        console.log("User Data: ", data);
         toast.success("ورود موفقیت آمیز بود!", { id: toastId });
         navigate("/home");
       },
@@ -61,7 +62,7 @@ const Login: React.FC = () => {
           <h3 className={`text-3xl text-${themeColor}-500 font-semibold`}>
             خوش آمدید
           </h3>
-          <p className="text-base font-medium text-gray-500 mt-4">
+          <p className="text-sm font-medium text-gray-500 mt-4 dark:text-gray-300">
             لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با
             استفاده از طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در
             ستون و سطرآنچنان که لازم است
@@ -139,7 +140,7 @@ const Login: React.FC = () => {
             <Button type="submit">ورود</Button>
             <button
               type="button"
-              className={`text-sm font-medium text-gray-600 cursor-pointer hover:text-${themeColor}-500 transition`}
+              className={`text-sm font-medium text-gray-600 dark:text-gray-300 dark:hover:text-${themeColor}-500 cursor-pointer hover:text-${themeColor}-500 transition`}
               onClick={() => navigate("/forgot-password")}
             >
               رمز عبور خود را فراموش کرده اید؟
@@ -148,7 +149,7 @@ const Login: React.FC = () => {
               ...
             </span>
             <div>
-              <span className="text-base text-gray-700 font-medium">
+              <span className="text-base text-gray-700 font-medium dark:text-gray-300 ">
                 حساب کاربری ندارید؟{" "}
                 <Link to="/register" className={`text-${themeColor}-500`}>
                   ثبت نام

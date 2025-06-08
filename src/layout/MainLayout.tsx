@@ -10,7 +10,7 @@ const MainLayout: React.FC = () => {
       <div
         id="mainPageForScroll"
         className="flex-1 p-4 overflow-y-auto -webkit-overflow-scrolling-touch
-          [&::-webkit-scrollbar]:w-2
+          [&::-webkit-scrollbar]:w-1
           [&::-webkit-scrollbar-track]:rounded-full
           [&::-webkit-scrollbar-track]:bg-slate-300
           [&::-webkit-scrollbar-thumb]:rounded-full
