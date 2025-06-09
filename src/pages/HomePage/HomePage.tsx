@@ -6,15 +6,12 @@ import OfferCarousel from "../../components/OfferCarousel/OfferCarousel";
 import PackagesList from "../../components/PackagesList/PackagesList";
 import { useGetProfile } from "../../hooks/profile/useGetProfile";
 import { useThemeColor } from "../../context/ThemeColor";
-import { useAuth } from "../../context/AuthContext";
 
 const HomePage: React.FC = () => {
   const { data: userProfile } = useGetProfile();
   const username = userProfile?.first_name;
   const greetingUser = getGreeting(username);
   const { themeColor } = useThemeColor();
-  const { acl } = useAuth();
-  console.log(acl);
 
   return (
     <section className="space-y-6">
