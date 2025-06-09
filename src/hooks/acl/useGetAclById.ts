@@ -6,7 +6,5 @@ export const useGetAclById = (id: number) => {
     queryKey: ["acl", id],
     queryFn: () => getAclById(id),
     enabled: !!id,
-    staleTime: 5 * 60 * 1000, // 5 دقیقه کش
-    retry: 1,
   });
 };

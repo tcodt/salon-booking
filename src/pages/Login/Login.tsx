@@ -12,6 +12,8 @@ import Loading from "../../components/Loading/Loading";
 import toast from "react-hot-toast";
 import { LoginType } from "../../types/login";
 import { useThemeColor } from "../../context/ThemeColor";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "../../context/AuthContext";
 
 const Login: React.FC = () => {
   const {
@@ -23,6 +25,8 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const loginMutation = useLogin();
   const { themeColor } = useThemeColor();
+  const queryClient = useQueryClient();
+  const { login: loginContext } = useAuth();
 
   const toggle = () => {
     setIsVisible(!isVisible);
@@ -35,6 +39,8 @@ const Login: React.FC = () => {
       onSuccess: async (data) => {
         console.log("User Data: ", data);
         toast.success("ورود موفقیت آمیز بود!", { id: toastId });
+        queryClient.setQueryData(["userProfile"], data.user); // Put user data in cache
+        loginContext({ access: data.access, refresh: data.refresh }, data.user);
         navigate("/home");
       },
       onError: (error) => {

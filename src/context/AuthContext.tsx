@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { User } from "../types/users";
-import { AclResponse } from "../types/acl";
-import { useGetAcl } from "../hooks/acl/useGetAcl";
+// import { AclResponse } from "../types/acl";
+// import { useGetAcl } from "../hooks/acl/useGetAcl";
 // import { useGetAclById } from "../hooks/acl/useGetAclById";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
-  acl: AclResponse | null;
+  // acl: AclResponse | null;
   login: (tokens: { access: string; refresh: string }, userData: User) => void;
   logout: () => void;
 }
@@ -22,8 +22,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const { data: aclArray } = useGetAcl(user?.id ?? 0);
-  const acl = aclArray && aclArray.length > 0 ? aclArray[0] : null;
+  // const { data: aclArray } = useGetAcl(user?.id ?? 0);
+  // const acl = aclArray && aclArray.length > 0 ? aclArray[0] : null;
   // const { data } = useGetAclById(user?.id ?? 0);
   // console.log("Get ACL by ID: ", data);
 
@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       value={{
         user,
         isAuthenticated,
-        acl,
+        // acl,
         login,
         logout,
       }}

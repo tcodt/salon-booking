@@ -1,18 +1,22 @@
-export interface Permissions {
+interface Permission {
   id: number;
   name: string;
   code: string;
 }
 
-export interface AclResponse {
+export interface UserPermissions {
   id: number;
   phone_number: string;
   first_name: string;
   last_name: string;
-  permissions: Permissions[];
+  permissions: Permission[];
 }
 
-export type AclResponseArray = AclResponse[];
+export interface SingleUserPermissions {
+  user: number;
+  permissions: number[];
+  permissions_display: string;
+}
 
 export interface CreateAclRequest {
   user: number;
