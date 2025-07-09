@@ -37,7 +37,6 @@ const Login: React.FC = () => {
 
     loginMutation.mutate(data, {
       onSuccess: async (data) => {
-        console.log("User Data: ", data);
         toast.success("ورود موفقیت آمیز بود!", { id: toastId });
         queryClient.setQueryData(["userProfile"], data.user); // Put user data in cache
         loginContext({ access: data.access, refresh: data.refresh }, data.user);
@@ -47,9 +46,11 @@ const Login: React.FC = () => {
         const axiosError = error as AxiosError;
         console.error("Login failed: ", axiosError);
         if (axiosError.response?.status === 401) {
-          toast.error("شماره تلفن یا رمز عبور اشتباه است!", { id: toastId });
-        } else {
           toast.error("خطایی رخ داده است، لطفاً دوباره تلاش کنید", {
+            id: toastId,
+          });
+        } else {
+          toast.error("شماره تلفن یا رمز عبور اشتباه است!", {
             id: toastId,
           });
         }

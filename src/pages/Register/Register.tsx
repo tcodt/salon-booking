@@ -35,11 +35,10 @@ const Register: React.FC = () => {
       password: data.password,
     };
 
-    registerMutation.mutate(transformedData);
-
     if (errors.phone_number) {
       toast.error("شماره تلفن صحیح نیست!");
     }
+    registerMutation.mutate(transformedData);
   };
 
   return (

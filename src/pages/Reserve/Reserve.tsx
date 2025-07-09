@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import Button from "../../components/Button/Button";
 import toast from "react-hot-toast";
-// import { DatePicker, TimePicker } from "zaman";
-// import { FaRegCalendarAlt, FaRegClock } from "react-icons/fa";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAddAppointment } from "../../hooks/appointments/useAddAppointment";
 import { useGetServices } from "../../hooks/services/useGetServices";
@@ -14,10 +12,6 @@ import { useGetSlots } from "../../hooks/slots/useGetSlots";
 import { LuCalendarClock } from "react-icons/lu";
 
 const Reserve: React.FC = () => {
-  // const [date, setDate] = useState<Date | null>(new Date());
-  // const [time, setTime] = useState<{ hour: number; minute: number } | null>(
-  //   null
-  // );
   const [selectedSlotId, setSelectedSlotId] = useState<number | null>(null);
   const [services, setServices] = useState<number | null>(null);
   const [employee, setEmployee] = useState<number | null>(null);

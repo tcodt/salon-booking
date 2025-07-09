@@ -30,6 +30,7 @@ import Packages from "../pages/Packages/Packages";
 import PackagesInfo from "../pages/PackagesInfo/PackagesInfo";
 import Logout from "../pages/Logout/Logout";
 import AclManager from "../components/AclManager/AclManager";
+import { useAuth } from "../context/AuthContext";
 
 // Wrapper component for offline detection
 const NetworkStatusWrapper: React.FC<{ children: React.ReactNode }> = ({
@@ -40,7 +41,8 @@ const NetworkStatusWrapper: React.FC<{ children: React.ReactNode }> = ({
 };
 
 const AppRoutes: React.FC = () => {
-  const token = localStorage.getItem("accessToken");
+  // const token = localStorage.getItem("accessToken");
+  const { isAuthenticated } = useAuth();
 
   return (
     <Router>
@@ -49,7 +51,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/" element={<SplashScreen />} />
         <Route
           path="/auth"
-          element={token ? <Navigate to="/dashboard" /> : <Auth />}
+          element={isAuthenticated ? <Navigate to="/dashboard" /> : <Auth />}
         />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

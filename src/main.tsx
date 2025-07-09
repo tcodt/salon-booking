@@ -6,6 +6,9 @@ import { AuthProvider } from "./context/AuthContext.tsx";
 // import { ThemeProvider } from "./context/ThemeContext.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeColorProvider } from "./context/ThemeColor.tsx";
+// import { AclProvider } from "./context/AclContext.tsx";
+// import { useGetUserPermissions } from "./hooks/permissions/useGetUserPermissions.ts";
+// import { useGetProfile } from "./hooks/profile/useGetProfile.ts";
 
 const client = new QueryClient({
   defaultOptions: {
@@ -20,10 +23,11 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={client}>
       <AuthProvider>
-        {/* <ThemeProvider> */}
         <ThemeColorProvider>
           <App />
         </ThemeColorProvider>
+        {/* <ThemeProvider> */}
+        {/* <Providers /> */}
         {/* </ThemeProvider> */}
       </AuthProvider>
     </QueryClientProvider>

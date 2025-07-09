@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { FaUsers, FaUserTie } from "react-icons/fa";
+import { FaUsers, FaUserTie, FaWallet } from "react-icons/fa";
 import { GiBeard } from "react-icons/gi";
 import {
   MdHome,
@@ -66,6 +66,7 @@ const Sidebar: React.FC = () => {
     { icon: <FaUserTie size={20} />, label: "آرایشگران", path: "/stylists" },
     { icon: <MdPerson size={20} />, label: "پروفایل", path: "/user-profile" },
     { icon: <MdSettings size={20} />, label: "تنظیمات", path: "/settings" },
+    { icon: <FaWallet size={20} />, label: "کیف پول", path: "/wallet" },
   ];
 
   return (

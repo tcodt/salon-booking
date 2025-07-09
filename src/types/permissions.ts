@@ -1,32 +1,47 @@
-interface Permission {
+export interface PermissionsResponse {
+  id: number;
+  name: string;
+  code: string;
+  description: string;
+}
+
+export interface PermissionsRequest {
+  name: string;
+  code: string;
+  description: string;
+}
+
+interface PermissionOptions {
   id: number;
   name: string;
   code: string;
 }
 
-export interface UserPermissions {
+export interface UsersPermissionResponse {
   id: number;
   phone_number: string;
   first_name: string;
   last_name: string;
-  permissions: Permission[];
+  permissions: PermissionOptions[];
 }
 
-export interface SingleUserPermissions {
+// export interface SingleUserPermissionsResponse {
+//   id: number;
+//   user: number;
+//   permissions: number[];
+//   permissions_display: string[];
+// }
+
+export interface UserPermissionRequest {
   user: number;
   permissions: number[];
-  permissions_display: string;
 }
 
-export interface CreateAclRequest {
+export interface UserPermissionResponse {
+  id: number;
   user: number;
   permissions: number[];
-}
-
-export interface CreateAclResponse {
-  user: number;
-  permissions: number[];
-  permissions_display: string;
+  permissions_display: { name: string; code: string }[];
 }
 
 export enum PermissionsList {

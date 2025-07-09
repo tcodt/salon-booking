@@ -17,6 +17,7 @@ import { useUpdateEmployee } from "../../hooks/employees/useUpdateEmployee";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
 import OptionsBox from "../../components/OptionsBox/OptionsBox";
+import { useAcl } from "../../context/AclContext";
 
 const ManageEmployees: React.FC = () => {
   const {
@@ -57,6 +58,9 @@ const ManageEmployees: React.FC = () => {
   const queryClient = useQueryClient();
   const removeEmployeeMutation = useRemoveEmployee();
   const { themeColor } = useThemeColor();
+  const { hasPermission, userPermissions } = useAcl();
+
+  console.log("User permissions: ", userPermissions);
 
   if (isPending) return <Loading />;
 
@@ -344,6 +348,7 @@ const ManageEmployees: React.FC = () => {
       {employees?.length === 0 ? (
         <p className="text-gray-600">کارمندی یافت نشد.</p>
       ) : (
+        hasPermission("employee_list") &&
         employees?.map((employee: GetEmployeesItem) => {
           return (
             <div

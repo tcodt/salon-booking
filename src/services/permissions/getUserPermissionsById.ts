@@ -1,7 +1,9 @@
-import { CreateAclResponse } from "../../types/acl";
+import { UserPermissionResponse } from "../../types/permissions";
 import api from "../../utils/api";
 
-export const getAclById = async (id: number): Promise<CreateAclResponse> => {
+export const getUserPermissionsById = async (
+  id: number
+): Promise<UserPermissionResponse> => {
   try {
     const response = await api.get(`/acl/user-permissions/${id}/`);
     return response.data;
