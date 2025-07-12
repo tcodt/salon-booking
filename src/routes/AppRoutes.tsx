@@ -31,6 +31,7 @@ import PackagesInfo from "../pages/PackagesInfo/PackagesInfo";
 import Logout from "../pages/Logout/Logout";
 import AclManager from "../components/AclManager/AclManager";
 import { useAuth } from "../context/AuthContext";
+import Wallet from "../pages/Wallet/Wallet";
 
 // Wrapper component for offline detection
 const NetworkStatusWrapper: React.FC<{ children: React.ReactNode }> = ({
@@ -84,6 +85,7 @@ const AppRoutes: React.FC = () => {
           <Route path="/manage-employees" element={<ManageEmployees />} />
           <Route path="/manage-services" element={<ManageServices />} />
           <Route path="/view-appointment/:id" element={<ViewAppointment />} />
+          <Route path="/wallet" element={<Wallet />} />
           <Route
             path="/update-appointment/:id"
             element={<UpdateAppointment />}
