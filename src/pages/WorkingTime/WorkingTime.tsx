@@ -174,7 +174,7 @@ const WorkingTime: React.FC = () => {
 
       <PageTitle title="ساعات کاری" />
       {!workingTimes?.length && (
-        <p className="text-base text-red-500 font-normal">
+        <p className="text-center p-6 text-gray-500">
           هیچ ساعت کاری تنظیم نشده است!
         </p>
       )}

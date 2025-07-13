@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router";
 import Loading from "../../components/Loading/Loading";
-import { LuAlarmClock } from "react-icons/lu";
+import { LuAlarmClock, LuDownload } from "react-icons/lu";
 import { FiUser } from "react-icons/fi";
 import { MdAttachMoney } from "react-icons/md";
 import { RiScissors2Line } from "react-icons/ri";
@@ -9,6 +9,7 @@ import { TbDeviceMobile } from "react-icons/tb";
 import { BsTelephone } from "react-icons/bs";
 import { useAppointmentById } from "../../hooks/appointments/useAppointmentById";
 import { useThemeColor } from "../../context/ThemeColor";
+import Button from "../../components/Button/Button";
 
 const ViewAppointment: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -117,14 +118,15 @@ const ViewAppointment: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="flex justify-start mt-4">
+      <div className="flex justify-start gap-4 mt-4">
+        <Button>تکمیل خرید</Button>
         <button
-          className={`px-4 py-2 bg-${themeColor}-500 text-white rounded-xl hover:bg-${themeColor}-600 transition`}
+          className="px-4 py-2 bg-gray-300 text-gray-600 rounded-xl hover:bg-gray-400 hover:text-white transition flex items-center gap-2"
           onClick={() => {
             const appointment = appointmentData;
             const lines = [
-              "جزئیات نوبت",
-              "",
+              "رسید نوبت",
+              "-----------------------------",
               `سرویس: ${appointment?.service?.name ?? ""}`,
               `توضیحات: ${appointment?.service?.description ?? ""}`,
               `مدت زمان: ${appointment?.service?.duration ?? ""}`,
@@ -148,20 +150,22 @@ const ViewAppointment: React.FC = () => {
               }`,
               "",
               `وضعیت: ${appointment?.get_status ?? ""}`,
+              "-----------------------------",
+              "با تشکر از انتخاب شما",
             ];
             const text = lines.join("\n");
             const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-            a.download = "appointment.txt";
+            a.download = "appointment-receipt.txt";
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
           }}
         >
-          دانلود PDF
+          <LuDownload size={20} />
         </button>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { useGetUserPermissionsById } from "../hooks/permissions/useGetUserPermis
 interface AclContextType {
   userPermissions: string[];
   hasPermission: (permission: string) => boolean;
+  role: string;
 }
 
 interface AclProviderProps {
@@ -20,43 +21,43 @@ export const AclProvider: React.FC<AclProviderProps> = ({
   const { data: userPermissionsData, error: permissionsError } =
     useGetUserPermissionsById(userId ?? 0);
 
-  console.log(userPermissionsData);
-
   const userPermissions = useMemo<string[]>(() => {
     return userId && userPermissionsData?.permissions_display
       ? userPermissionsData?.permissions_display.map((p) => p.code)
       : [];
   }, [userId, userPermissionsData?.permissions_display]);
 
+  const role = useMemo(() => {
+    if (!userId || userPermissions.length === 0) return "normal-user";
+    if (
+      userPermissions.includes("user_edit") ||
+      userPermissions.includes("role_edit")
+    )
+      return "admin";
+    return "employee";
+  }, [userId, userPermissions]);
+
   const hasPermission = (permission: string) => {
     return userPermissions.includes(permission);
   };
 
-  // لاگ کردن نقش کاربر
   useEffect(() => {
     if (userId) {
       console.log(`User ID: ${userId}`);
       console.log("User Permissions:", userPermissions);
-      const role =
-        userPermissions.length > 0
-          ? userPermissions.includes("user_edit") ||
-            userPermissions.includes("role_edit")
-            ? "مدیر"
-            : "کاربر معمولی"
-          : "بدون نقش";
       console.log(`نقش کاربر (${userId}): ${role}`);
     }
     if (permissionsError) {
       console.error("Error fetching permissions:", permissionsError);
     }
-  }, [userId, userPermissions, permissionsError]);
+  }, [userId, userPermissions, permissionsError, role]);
 
   if (userId === null) {
     return <>{children}</>;
   }
 
   return (
-    <AclContext.Provider value={{ userPermissions, hasPermission }}>
+    <AclContext.Provider value={{ userPermissions, hasPermission, role }}>
       {children}
     </AclContext.Provider>
   );

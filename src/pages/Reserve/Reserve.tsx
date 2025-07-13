@@ -10,6 +10,7 @@ import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
 import { useGetSlots } from "../../hooks/slots/useGetSlots";
 import { LuCalendarClock } from "react-icons/lu";
+import Dots from "../../components/Dots/Dots";
 
 const Reserve: React.FC = () => {
   const [selectedSlotId, setSelectedSlotId] = useState<number | null>(null);
@@ -20,7 +21,7 @@ const Reserve: React.FC = () => {
 
   const { data: servicesData = [] } = useGetServices();
   const { data: employeesData = [] } = useGetEmployees();
-  const { data: slots } = useGetSlots();
+  const { data: slots, isPending: slotPending } = useGetSlots();
   const queryClient = useQueryClient();
 
   const addAppointmentMutation = useAddAppointment();
@@ -101,6 +102,9 @@ const Reserve: React.FC = () => {
             زمان های در دسترس
           </span>
           <div className="flex flex-col gap-2">
+            {slotPending && (
+              <div className="mt-4">{slotPending && <Dots />}</div>
+            )}
             {slots &&
               slots.map((slot) => (
                 <div

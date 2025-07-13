@@ -13,6 +13,7 @@ import { useUpdateProfile } from "../../hooks/profile/useUpdateProfile";
 import { AxiosError } from "axios";
 import { FaPencil } from "react-icons/fa6";
 import { useThemeColor } from "../../context/ThemeColor";
+import { useAcl } from "../../context/AclContext";
 
 const UserProfile: React.FC = () => {
   const [isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
@@ -38,6 +39,7 @@ const UserProfile: React.FC = () => {
     },
   });
   const { themeColor } = useThemeColor();
+  const { role } = useAcl();
 
   const MAX_SIZE = 5 * 1024 * 1024;
   const ALLOWED_TYPES = ["image/jpeg", "image/png"];
@@ -113,7 +115,14 @@ const UserProfile: React.FC = () => {
               خانوادگی: <span>{userProfile?.last_name}</span>
             </li>
             <li className="text-gray-700 font-medium dark:text-gray-300">
-              نقش: <span>{userProfile?.is_owner ? "ادمین" : "کاربر"}</span>
+              نقش:{" "}
+              <span>
+                {role === "admin"
+                  ? "مدیر"
+                  : role === "employee"
+                  ? "کارمند"
+                  : "کاربر معمولی"}
+              </span>
             </li>
           </ul>
           <div
