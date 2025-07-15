@@ -1,4 +1,5 @@
 import axios from "axios";
+import { clearAuthTokens } from "./tokenHelper";
 
 const api = axios.create({
   baseURL: "https://queuingprojectapi.pythonanywhere.com",
@@ -15,12 +16,21 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Handle 401 Unauthorized errors globally
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
+      clearAuthTokens();
       window.location.href = "/login";
+    }
+
+    if (
+      error.response.status === 400 &&
+      error.config.url &&
+      (error.config.url.includes("/register") ||
+        error.config.url.includes("/login"))
+    ) {
+      clearAuthTokens();
     }
     return Promise.reject(error);
   }

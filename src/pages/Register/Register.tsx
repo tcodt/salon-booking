@@ -7,7 +7,6 @@ import Button from "../../components/Button/Button";
 import PageBar from "../../components/PageBar/PageBar";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRegister } from "../../hooks/accounts/register/useRegister";
-import toast from "react-hot-toast";
 import Loading from "../../components/Loading/Loading";
 import { RegisterType } from "../../types/register";
 import { useThemeColor } from "../../context/ThemeColor";
@@ -35,9 +34,6 @@ const Register: React.FC = () => {
       password: data.password,
     };
 
-    if (errors.phone_number) {
-      toast.error("شماره تلفن صحیح نیست!");
-    }
     registerMutation.mutate(transformedData);
   };
 
@@ -133,12 +129,13 @@ const Register: React.FC = () => {
               </div>
             </label>
             <label className="md:w-2/4 w-full relative">
-              <span
+              <button
+                type="button"
                 className="absolute top-4 right-2 text-gray-500 text-lg"
                 onClick={toggle}
               >
                 {isVisible ? <IoEye /> : <IoEyeOff />}
-              </span>
+              </button>
               <input
                 type={!isVisible ? "password" : "text"}
                 placeholder={errors?.password?.message || "رمز عبور"}

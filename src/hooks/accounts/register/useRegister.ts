@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../../context/AuthContext";
 import { registerFn } from "../../../services/accounts/register/registerFn";
-import { storeAuthTokens } from "../../../utils/tokenHelper";
+import { clearAuthTokens, storeAuthTokens } from "../../../utils/tokenHelper";
 import { useNavigate } from "react-router";
 import { AxiosError } from "axios";
 import toast from "react-hot-toast";
@@ -23,6 +23,7 @@ export const useRegister = () => {
       const axiosError = error as AxiosError;
       console.log(axiosError);
       toast.error("خطایی رخ داد! دوباره تلاش کنید");
+      clearAuthTokens();
     },
   });
 };

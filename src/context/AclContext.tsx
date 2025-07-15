@@ -42,11 +42,11 @@ export const AclProvider: React.FC<AclProviderProps> = ({
   };
 
   useEffect(() => {
-    if (userId) {
-      console.log(`User ID: ${userId}`);
-      console.log("User Permissions:", userPermissions);
-      console.log(`نقش کاربر (${userId}): ${role}`);
-    }
+    // if (userId) {
+    //   console.log(`User ID: ${userId}`);
+    //   console.log("User Permissions:", userPermissions);
+    //   console.log(`نقش کاربر (${userId}): ${role}`);
+    // }
     if (permissionsError) {
       console.error("Error fetching permissions:", permissionsError);
     }
