@@ -1,5 +1,5 @@
-import React from "react";
-import { useParams } from "react-router";
+import React, { useState } from "react";
+import { Link, useNavigate, useParams } from "react-router";
 import Loading from "../../components/Loading/Loading";
 import { LuAlarmClock, LuDownload } from "react-icons/lu";
 import { FiUser } from "react-icons/fi";
@@ -10,15 +10,25 @@ import { BsTelephone } from "react-icons/bs";
 import { useAppointmentById } from "../../hooks/appointments/useAppointmentById";
 import { useThemeColor } from "../../context/ThemeColor";
 import Button from "../../components/Button/Button";
+import CustomModal from "../../components/CustomModal/CustomModal";
+import { useWallet } from "../../context/WalletContext";
 
 const ViewAppointment: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isDone, setIsDone] = useState<boolean>(false);
   const { id } = useParams<{ id: string }>();
   const appointmentId = Number(id);
   const { data: appointmentData, isPending } =
     useAppointmentById(appointmentId);
   const { themeColor } = useThemeColor();
+  const { spend, balance } = useWallet();
+  const navigate = useNavigate();
 
   if (isPending) return <Loading />;
+
+  const handleRedirectToWallet = () => {
+    navigate("/wallet");
+  };
 
   return (
     <div className="mt-8">
@@ -118,8 +128,101 @@ const ViewAppointment: React.FC = () => {
           </div>
         </div>
       </div>
+
+      <CustomModal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setIsDone(false);
+        }}
+        title="تکمیل پرداخت"
+      >
+        <div className="space-y-6">
+          {isDone ? (
+            <img
+              src="/images/tick-payment.png"
+              alt="Tick Payment"
+              className="h-[250px] w-[250px] object-contain mx-auto"
+            />
+          ) : (
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-4">
+                <span
+                  className={`bg-${themeColor}-100 text-${themeColor}-600 rounded-full p-3 mr-3`}
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M17 9V7a5 5 0 00-10 0v2" />
+                    <rect width="20" height="13" x="2" y="9" rx="2" />
+                    <path d="M16 13a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </span>
+                <div
+                  className={`${
+                    Number(appointmentData?.service?.price ?? 0) > balance
+                      ? "text-red-500"
+                      : "text-green-500"
+                  } font-bold text-base`}
+                >
+                  <span className="text-gray-800 dark:text-gray-200">
+                    موجودی :{" "}
+                  </span>
+                  {balance.toLocaleString()} تومان
+                </div>
+              </div>
+              <div>
+                <span className="text-gray-700 dark:text-gray-300 text-base font-medium">
+                  قیمت:{" "}
+                  <span className="text-gray-500 dark:text-gray-400">
+                    {appointmentData?.service?.price}
+                  </span>{" "}
+                  تومان
+                </span>
+              </div>
+            </div>
+          )}
+          <div className="space-y-2">
+            {!isDone ? (
+              <Button
+                onClick={() => {
+                  setIsDone(true);
+                  spend(Number(appointmentData?.service?.price));
+                }}
+                disabled={
+                  Number(appointmentData?.service?.price ?? 0) > balance
+                }
+              >
+                اتمام پرداخت
+              </Button>
+            ) : (
+              <div className="text-center">
+                <p className="text-base font-semibold text-gray-700 block mb-4 dark:text-white">
+                  پرداخت با موفقیت انجام شد!
+                </p>
+                <Link
+                  to="/home"
+                  className={`text-${themeColor}-500 text-base font-semibold underline`}
+                >
+                  صفحه اصلی
+                </Link>
+              </div>
+            )}
+
+            {Number(appointmentData?.service?.price ?? 0) > balance &&
+              !isDone && (
+                <Button onClick={handleRedirectToWallet}>شارژ کیف پول</Button>
+              )}
+          </div>
+        </div>
+      </CustomModal>
+
       <div className="flex justify-start gap-4 mt-4">
-        <Button>تکمیل خرید</Button>
+        <Button onClick={() => setIsModalOpen(true)}>تکمیل پرداخت</Button>
         <button
           className="px-4 py-2 bg-gray-300 text-gray-600 rounded-xl hover:bg-gray-400 hover:text-white transition flex items-center gap-2"
           onClick={() => {

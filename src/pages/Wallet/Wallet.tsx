@@ -1,13 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { useThemeColor } from "../../context/ThemeColor";
-import { useGetWallet } from "../../hooks/wallet/useGetWallet";
+import { useWallet } from "../../context/WalletContext";
+import { GrPowerReset } from "react-icons/gr";
+// import { useGetWallet } from "../../hooks/wallet/useGetWallet";
 
 const Wallet: React.FC = () => {
+  const { balance, recharge, spend } = useWallet();
+  const [rechargeAmount, setRechargeAmount] = useState<number>(0);
+  const [isRechargeOpen, setIsRechargeOpen] = useState<boolean>(false);
   const { themeColor } = useThemeColor();
+  // const { data: walletData, error, isError, isPending } = useGetWallet();
 
-  const { data: walletData, error, isError, isPending } = useGetWallet();
+  // if (isError) return <div>{error.message}</div>;
 
-  if (isError) return <div>{error.message}</div>;
+  const handleRecharge = () => {
+    setIsRechargeOpen(!isRechargeOpen);
+    if (rechargeAmount > 0) {
+      recharge(rechargeAmount);
+      setRechargeAmount(0);
+    }
+  };
 
   return (
     <div className="flex flex-col p-4">
@@ -38,17 +50,40 @@ const Wallet: React.FC = () => {
           </div>
         </div>
         <div className="text-2xl font-extrabold text-gray-800 dark:text-white text-center mb-4">
-          {isPending ? (
+          {/* {isPending ? (
             <div>درحال بارگذاری...</div>
           ) : (
             `${walletData?.balance} تومان`
-          )}
+          )} */}
+          {balance.toLocaleString()} تومان
         </div>
-        <button
-          className={`w-full bg-${themeColor}-500 hover:bg-${themeColor}-600 text-white py-2 rounded-lg transition`}
-        >
-          افزایش موجودی
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            className={`w-full bg-${themeColor}-500 hover:bg-${themeColor}-600 text-white py-2 rounded-lg transition`}
+            onClick={handleRecharge}
+          >
+            افزایش موجودی
+          </button>
+          <button
+            className="bg-red-100 rounded-full p-2 hover:bg-red-200 transition"
+            type="button"
+            onClick={() => spend(balance)}
+          >
+            <GrPowerReset size={25} className="text-red-500" />
+          </button>
+        </div>
+
+        <div className={`${isRechargeOpen ? "block" : "hidden"} mt-4`}>
+          <input
+            type="text"
+            min={1}
+            className="primary-input w-full"
+            placeholder="مبلغ مورد نظر (تومان)"
+            value={rechargeAmount > 0 ? rechargeAmount : ""}
+            onChange={(e) => setRechargeAmount(Number(e.target.value))}
+          />
+        </div>
       </div>
 
       <div className="bg-white dark:bg-gray-700 rounded-xl shadow p-4 w-full max-w-md">

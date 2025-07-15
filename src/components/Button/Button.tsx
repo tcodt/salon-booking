@@ -20,7 +20,8 @@ const Button: React.FC<ButtonProps> = ({
   ...rest
 }) => {
   const { themeColor } = useThemeColor();
-  const baseClasses = "px-4 h-12 py-2 font-medium transition-colors w-full";
+  const baseClasses =
+    "px-4 h-12 py-2 font-medium transition-colors w-full disabled:opacity-50 disabled:cursor-not-allowed";
 
   const variantClasses = {
     primary: `w-full h-12 bg-${themeColor}-500 text-white text-base font-medium rounded-full px-4 py-2 cursor-pointer transition-colors duration-300 hover:bg-${themeColor}-600`,
