@@ -16,6 +16,8 @@ import { HiClipboardList } from "react-icons/hi";
 import { IoLogOut } from "react-icons/io5";
 import { FaSliders } from "react-icons/fa6";
 import { useThemeColor } from "../../context/ThemeColor";
+import { TbCalendarTime } from "react-icons/tb";
+import { useAcl } from "../../context/AclContext";
 
 const Sidebar: React.FC = () => {
   const { user } = useAuth();
@@ -23,6 +25,9 @@ const Sidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { themeColor } = useThemeColor();
+  const { role } = useAcl();
+
+  console.log(role);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -64,6 +69,11 @@ const Sidebar: React.FC = () => {
     },
     { icon: <GiBeard size={20} />, label: "پکیج ها", path: "/packages" },
     { icon: <FaUserTie size={20} />, label: "آرایشگران", path: "/stylists" },
+    {
+      icon: <TbCalendarTime size={20} />,
+      label: "زمان های در دسترس",
+      path: "/available-times",
+    },
     { icon: <MdPerson size={20} />, label: "پروفایل", path: "/user-profile" },
     { icon: <MdSettings size={20} />, label: "تنظیمات", path: "/settings" },
     { icon: <FaWallet size={20} />, label: "کیف پول", path: "/wallet" },

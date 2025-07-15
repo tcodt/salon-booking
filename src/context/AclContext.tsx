@@ -52,10 +52,6 @@ export const AclProvider: React.FC<AclProviderProps> = ({
     }
   }, [userId, userPermissions, permissionsError, role]);
 
-  if (userId === null) {
-    return <>{children}</>;
-  }
-
   return (
     <AclContext.Provider value={{ userPermissions, hasPermission, role }}>
       {children}

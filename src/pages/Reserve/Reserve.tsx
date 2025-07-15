@@ -103,7 +103,9 @@ const Reserve: React.FC = () => {
           </span>
           <div className="flex flex-col gap-2">
             {slotPending && (
-              <div className="mt-4">{slotPending && <Dots />}</div>
+              <div className="mt-4">
+                <Dots />
+              </div>
             )}
             {slots &&
               slots.map((slot) => (
