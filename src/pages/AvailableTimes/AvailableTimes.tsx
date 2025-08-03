@@ -7,12 +7,35 @@ import { IoPersonAdd } from "react-icons/io5";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import toast from "react-hot-toast";
 import Dots from "../../components/Dots/Dots";
+import { useAddSlots } from "../../hooks/slots/useAddSlots";
+import { useGetServices } from "../../hooks/services/useGetServices";
+import { GetServicesItem } from "../../types/services";
+import PersianDayPicker from "../../components/PersianDayPicker/PersianDayPicker";
+import Button from "../../components/Button/Button";
+import DatePicker from "react-multi-date-picker";
+import persian from "react-date-object/calendars/persian";
+import persian_fa from "react-date-object/locales/persian_fa";
+import TimePicker from "react-multi-date-picker/plugins/time_picker";
+import DateObject from "react-date-object";
+import { useThemeColor } from "../../context/ThemeColor";
+import { AxiosError } from "axios";
 
 const AvailableTimes: React.FC = () => {
+  const [dateValue, setDateValue] = useState<DateObject | null>(null);
+  const [startTimeValue, setStartTimeValue] = useState<DateObject | null>(
+    new DateObject({ calendar: persian, locale: persian_fa })
+  );
+  const [selectedService, setSelectedService] = useState<number>(0);
+
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
   const [isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
+  const [isAvailable, setIsAvailable] = useState<boolean>(false);
+
   const { data: slots, isPending, error, isError } = useGetSlots();
+  const addSlotMutation = useAddSlots();
+  const { data: services } = useGetServices();
+  const { themeColor } = useThemeColor();
 
   if (isError) {
     toast.error("خطا در بارگذاری زمان های در دسترس!");
@@ -23,6 +46,62 @@ const AvailableTimes: React.FC = () => {
   const toPersianDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString("fa-IR");
+  };
+
+  const handleChangeDate = (
+    val: DateObject | null,
+    weekDay: string,
+    day: number,
+    month: string
+  ) => {
+    setDateValue(val);
+    console.log(
+      `Value: ${val} \n Week Day: ${weekDay} \n Day: ${day} \n Month: ${month}`
+    );
+  };
+
+  const handleChangeTime = (
+    date: DateObject | null,
+    options: {
+      validatedValue: string | string[];
+      input: HTMLElement;
+      isTyping: boolean;
+    }
+  ) => {
+    setStartTimeValue(date);
+    console.log(
+      `Value: ${date?.format?.("HH:mm")} \n validatedValue: ${
+        options.validatedValue
+      }`
+    );
+  };
+
+  const handleAddSlot = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Convert dateValue and startTimeValue to correct formats
+    const dateStr = dateValue?.format?.("YYYY-MM-DD") || "";
+    const startTimeStr = `${startTimeValue?.hour
+      .toString()
+      .padStart(2, "0")}:${startTimeValue?.minute.toString().padStart(2, "0")}`;
+
+    const newSlotData = {
+      date: dateStr,
+      start_time: startTimeStr,
+      is_available: isAvailable,
+      service: selectedService,
+    };
+    console.log(newSlotData);
+
+    addSlotMutation.mutate(newSlotData, {
+      onSuccess: (data) => {
+        console.log("New slot added successfully: ", data);
+      },
+      onError: (error) => {
+        const axiosError = error as AxiosError;
+        console.log("Faild to add new slot: ", axiosError);
+      },
+    });
   };
 
   return (
@@ -54,7 +133,86 @@ const AvailableTimes: React.FC = () => {
         onClose={() => setIsAddOpen(false)}
         title="افزودن زمان در دسترس"
       >
-        Add Slot
+        <form onSubmit={handleAddSlot} className="space-y-4">
+          <div>
+            <label className="block mb-1">تاریخ</label>
+            <PersianDayPicker
+              value={dateValue}
+              onChange={handleChangeDate}
+              buttonLabel={dateValue ? String(dateValue) : "انتخاب تاریخ"}
+              bgColor="bg-white"
+              textColor="gray-700"
+            />
+          </div>
+          <div>
+            <label className="block mb-1">ساعت شروع</label>
+
+            {/* Manual Time Picker */}
+            <DatePicker
+              calendar={persian}
+              format="HH:mm"
+              render={
+                <button className="flex items-center gap-2 py-2 px-4 rounded-xl bg-white text-gray-600 text-base font-medium border border-gray-200">
+                  {startTimeValue ? String(startTimeValue) : "انتخاب ساعت"}
+                </button>
+              }
+              locale={persian_fa}
+              value={startTimeValue}
+              disableDayPicker
+              plugins={[<TimePicker hideSeconds />]}
+              calendarPosition="bottom-left"
+              onChange={handleChangeTime}
+            >
+              <div className="p-2">
+                <button
+                  className={`bg-${themeColor}-500 text-white py-2 px-4 rounded-xl text-base font-medium w-full`}
+                >
+                  انتخاب
+                </button>
+              </div>
+            </DatePicker>
+            {/* Manual Time Picker */}
+
+            {/* <PersianTimePicker
+              value={startTimeValue}
+              onChange={handleChangeTime}
+              buttonLabel={startTimeValue?.format?.("HH:mm") || "انتخاب ساعت"}
+              bgColor="bg-white"
+              textColor="gray-700"
+            /> */}
+          </div>
+          <div>
+            <label className="block mb-1">سرویس</label>
+            <select
+              name="service"
+              className="primary-input"
+              required
+              value={selectedService}
+              onChange={(e) => setSelectedService(Number(e.target.value))}
+            >
+              <option value={0}>انتخاب سرویس</option>
+              {services &&
+                services.map((s: GetServicesItem) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              name="is_available"
+              id="is_available"
+              checked={isAvailable}
+              onChange={() => setIsAvailable(!isAvailable)}
+            />
+            <label htmlFor="is_available">در دسترس</label>
+          </div>
+          <Button type="submit" disabled={addSlotMutation.isPending}>
+            {addSlotMutation.isPending ? "در حال افزودن..." : "افزودن"}
+          </Button>
+        </form>
       </CustomModal>
 
       {/* Update Slots */}

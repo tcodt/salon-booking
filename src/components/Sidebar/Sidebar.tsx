@@ -48,7 +48,7 @@ const Sidebar: React.FC = () => {
     { icon: <MdHome size={20} />, label: "صفحه اصلی", path: "/" },
     {
       icon: <FaUsers size={20} />,
-      label: "مدیریت کارمندان",
+      label: "مدیریت آرایشگران",
       path: "/manage-employees",
     },
     {
@@ -69,6 +69,7 @@ const Sidebar: React.FC = () => {
     },
     { icon: <GiBeard size={20} />, label: "پکیج ها", path: "/packages" },
     { icon: <FaUserTie size={20} />, label: "آرایشگران", path: "/stylists" },
+    { icon: <FaWallet size={20} />, label: "کیف پول", path: "/wallet" },
     {
       icon: <TbCalendarTime size={20} />,
       label: "زمان های در دسترس",
@@ -76,7 +77,6 @@ const Sidebar: React.FC = () => {
     },
     { icon: <MdPerson size={20} />, label: "پروفایل", path: "/user-profile" },
     { icon: <MdSettings size={20} />, label: "تنظیمات", path: "/settings" },
-    { icon: <FaWallet size={20} />, label: "کیف پول", path: "/wallet" },
   ];
 
   return (

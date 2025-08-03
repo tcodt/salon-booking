@@ -8,7 +8,7 @@ import { useGetAppointments } from "../../hooks/appointments/useGetAppointments"
 import { useRemoveAppointment } from "../../hooks/appointments/useRemoveAppointment";
 import { useQueryClient } from "@tanstack/react-query";
 import Button from "../../components/Button/Button";
-import { FaPencil } from "react-icons/fa6";
+// import { FaPencil } from "react-icons/fa6";
 import PageTitle from "../../components/PageTitle/PageTitle";
 
 const AppointmentsList: React.FC = () => {
@@ -79,12 +79,12 @@ const AppointmentsList: React.FC = () => {
                           navigate(`/view-appointment/${appointment.id}`),
                         icon: <FaEye color="gray" />,
                       },
-                      {
-                        label: "ویرایش",
-                        onClick: () =>
-                          navigate(`/update-appointment/${appointment.id}`),
-                        icon: <FaPencil color="gray" />,
-                      },
+                      // {
+                      //   label: "ویرایش",
+                      //   onClick: () =>
+                      //     navigate(`/update-appointment/${appointment.id}`),
+                      //   icon: <FaPencil color="gray" />,
+                      // },
                       {
                         label: "حذف",
                         onClick: () => handleRemoveAppointment(appointment.id),

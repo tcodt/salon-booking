@@ -1,5 +1,5 @@
-import React from "react";
-import { useParams } from "react-router";
+import React, { useState } from "react";
+import { Link, useNavigate, useParams } from "react-router";
 import { useGetPackageById } from "../../hooks/packages/useGetPackageById";
 import Loading from "../../components/Loading/Loading";
 import {
@@ -11,14 +11,24 @@ import { LuCircleParking } from "react-icons/lu";
 import { FaInstagram } from "react-icons/fa";
 import Button from "../../components/Button/Button";
 import { useThemeColor } from "../../context/ThemeColor";
+import CustomModal from "../../components/CustomModal/CustomModal";
+import { useWallet } from "../../context/WalletContext";
 
 const PackagesInfo: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isDone, setIsDone] = useState<boolean>(false);
   const { id } = useParams<{ id: string }>();
   const packageId = Number(id);
   const { data: packageData, isPending } = useGetPackageById(packageId);
   const { themeColor } = useThemeColor();
+  const { balance, spend } = useWallet();
+  const navigate = useNavigate();
 
   if (isPending) return <Loading />;
+
+  const handleRedirectToWallet = () => {
+    navigate("/wallet");
+  };
 
   return (
     <section>
@@ -123,7 +133,97 @@ const PackagesInfo: React.FC = () => {
           <span className={`text-base font-medium text-${themeColor}-500`}>
             {packageData?.total_price.toLocaleString()} تومان
           </span>
-          <Button>خرید پکیج</Button>
+
+          <CustomModal
+            isOpen={isModalOpen}
+            onClose={() => {
+              setIsModalOpen(false);
+              setIsDone(false);
+            }}
+            title="تکمیل پرداخت"
+          >
+            <div className="space-y-6">
+              {isDone ? (
+                <img
+                  src="/images/tick-payment.png"
+                  alt="Tick Payment"
+                  className="h-[250px] w-[250px] object-contain mx-auto"
+                />
+              ) : (
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-4">
+                    <span
+                      className={`bg-${themeColor}-100 text-${themeColor}-600 rounded-full p-3 mr-3`}
+                    >
+                      <svg
+                        className="w-6 h-6"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M17 9V7a5 5 0 00-10 0v2" />
+                        <rect width="20" height="13" x="2" y="9" rx="2" />
+                        <path d="M16 13a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </span>
+                    <div
+                      className={`${
+                        Number(packageData?.total_price ?? 0) > balance
+                          ? "text-red-500"
+                          : "text-green-500"
+                      } font-bold text-base`}
+                    >
+                      <span className="text-gray-800 dark:text-gray-200">
+                        موجودی :{" "}
+                      </span>
+                      {balance.toLocaleString()} تومان
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-gray-700 dark:text-gray-300 text-base font-medium">
+                      قیمت:{" "}
+                      <span className="text-gray-500 dark:text-gray-400">
+                        {packageData?.total_price}
+                      </span>{" "}
+                      تومان
+                    </span>
+                  </div>
+                </div>
+              )}
+              <div className="space-y-2">
+                {!isDone ? (
+                  <Button
+                    onClick={() => {
+                      setIsDone(true);
+                      spend(Number(packageData?.total_price));
+                    }}
+                    disabled={Number(packageData?.total_price ?? 0) > balance}
+                  >
+                    اتمام پرداخت
+                  </Button>
+                ) : (
+                  <div className="text-center">
+                    <p className="text-base font-semibold text-gray-700 block mb-4 dark:text-white">
+                      پرداخت با موفقیت انجام شد!
+                    </p>
+                    <Link
+                      to="/home"
+                      className={`text-${themeColor}-500 text-base font-semibold underline`}
+                    >
+                      صفحه اصلی
+                    </Link>
+                  </div>
+                )}
+
+                {Number(packageData?.total_price ?? 0) > balance && !isDone && (
+                  <Button onClick={handleRedirectToWallet}>شارژ کیف پول</Button>
+                )}
+              </div>
+            </div>
+          </CustomModal>
+
+          <Button onClick={() => setIsModalOpen(true)}>خرید پکیج</Button>
         </div>
       </div>
     </section>

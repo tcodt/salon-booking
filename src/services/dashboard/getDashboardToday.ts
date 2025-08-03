@@ -3,7 +3,7 @@ import api from "../../utils/api";
 
 export const getDashboardToday = async (): Promise<DashboardResponse> => {
   try {
-    const response = await api.get("/dashboard/today-appointments/");
+    const response = await api.get("/dashboard/");
     return response.data;
   } catch (error) {
     console.log("An Error Occured!", error);
