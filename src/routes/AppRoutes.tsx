@@ -33,6 +33,7 @@ import AclManager from "../components/AclManager/AclManager";
 import { useAuth } from "../context/AuthContext";
 import Wallet from "../pages/Wallet/Wallet";
 import AvailableTimes from "../pages/AvailableTimes/AvailableTimes";
+import UserProfileDetail from "../pages/UserProfileDetail/UserProfileDetail";
 
 // Wrapper component for offline detection
 const NetworkStatusWrapper: React.FC<{ children: React.ReactNode }> = ({
@@ -81,6 +82,10 @@ const AppRoutes: React.FC = () => {
 
           {/* Shared authenticated routes */}
           <Route path="/user-profile" element={<UserProfile />} />
+          <Route
+            path="/user-profile-detail/:id"
+            element={<UserProfileDetail />}
+          />
           <Route path="/appointments-list" element={<AppointmentsList />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/manage-employees" element={<ManageEmployees />} />

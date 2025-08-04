@@ -5,7 +5,7 @@ export const addSlots = async (
   newSlot: SlotsRequest
 ): Promise<SlotsResponse> => {
   try {
-    const response = await api.post("/business/slots/", newSlot);
+    const response = await api.post("/business/slots/create/", newSlot);
     return response.data;
   } catch (error) {
     console.log("Error while adding the slots: ", error);
