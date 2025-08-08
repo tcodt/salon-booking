@@ -38,6 +38,11 @@ export const AclProvider: React.FC<AclProviderProps> = ({
   }, [userId, userPermissions]);
 
   const hasPermission = (permission: string) => {
+    // if (userPermissions.includes(permission)) {
+    //   console.log("User has the permission");
+    // } else {
+    //   console.log("User doesn't has the permission");
+    // }
     return userPermissions.includes(permission);
   };
 

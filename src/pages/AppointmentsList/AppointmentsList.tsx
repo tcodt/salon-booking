@@ -10,6 +10,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import Button from "../../components/Button/Button";
 // import { FaPencil } from "react-icons/fa6";
 import PageTitle from "../../components/PageTitle/PageTitle";
+import { PiFilesDuotone } from "react-icons/pi";
 
 const AppointmentsList: React.FC = () => {
   const {
@@ -116,7 +117,8 @@ const AppointmentsList: React.FC = () => {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center h-[80vh] gap-6">
+        <div className="flex flex-col items-center justify-start gap-6 pt-16">
+          <PiFilesDuotone size={60} color="gray" />
           <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-300">
             هیچ رزوری یافت نشد!
           </h1>

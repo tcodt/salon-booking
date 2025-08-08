@@ -27,6 +27,8 @@ const Reserve: React.FC = () => {
   const addAppointmentMutation = useAddAppointment();
   const { themeColor } = useThemeColor();
 
+  const availableSlots = slots?.filter((s) => s.is_available);
+
   const handleBooking = () => {
     if (!selectedSlotId || !services || !employee) {
       toast.error("لطفا تمام فیلد ها را پر کنید!");
@@ -46,6 +48,7 @@ const Reserve: React.FC = () => {
         queryClient.invalidateQueries({
           queryKey: ["appointments"],
         });
+        queryClient.invalidateQueries({ queryKey: ["slots"] });
         navigate("/appointments-list");
       },
       onError: (error) => {
@@ -101,54 +104,66 @@ const Reserve: React.FC = () => {
             <LuCalendarClock size={25} className={`text-${themeColor}-500`} />{" "}
             زمان های در دسترس
           </span>
+
+          {availableSlots && availableSlots?.length < 1 && (
+            <div className="mt-4">
+              <p className="text-base font-medium text-gray-500 text-center">
+                درحال حاضر هیچ تایمی در دسترس نمیباشد!
+              </p>
+            </div>
+          )}
+
           <div className="flex flex-col gap-2">
             {slotPending && (
               <div className="mt-4">
                 <Dots />
               </div>
             )}
+
             {slots &&
-              slots.map((slot) => (
-                <div
-                  className={`bg-white p-4 rounded-xl shadow-md dark:bg-gray-700 mt-4 ${
-                    selectedSlotId === slot.id
-                      ? `border-2 border-${themeColor}-500 transition`
-                      : ""
-                  }`}
-                  key={slot.id}
-                >
-                  <div className="flex flex-col gap-6">
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-700 dark:text-gray-200 font-medium text-base flex items-center gap-1">
-                        زمان شروع:
-                        <span className="text-gray-500 dark:text-gray-400">
-                          {slot.start_time}
+              slots
+                .filter((sl) => sl.is_available)
+                .map((slot) => (
+                  <div
+                    className={`bg-white p-4 rounded-xl shadow-md dark:bg-gray-700 mt-4 ${
+                      selectedSlotId === slot.id
+                        ? `border-2 border-${themeColor}-500 transition`
+                        : ""
+                    }`}
+                    key={slot.id}
+                  >
+                    <div className="flex flex-col gap-6">
+                      <div className="flex items-center justify-between">
+                        <span className="text-gray-700 dark:text-gray-200 font-medium text-base flex items-center gap-1">
+                          زمان شروع:
+                          <span className="text-gray-500 dark:text-gray-400">
+                            {slot.start_time}
+                          </span>
                         </span>
-                      </span>
-                      <span className="text-gray-700 dark:text-gray-200 font-medium text-base flex items-center gap-1">
-                        تاریخ:
-                        <span className="text-gray-500 dark:text-gray-400">
-                          {new Date(slot.date).toLocaleDateString("fa-IR")}
+                        <span className="text-gray-700 dark:text-gray-200 font-medium text-base flex items-center gap-1">
+                          تاریخ:
+                          <span className="text-gray-500 dark:text-gray-400">
+                            {new Date(slot.date).toLocaleDateString("fa-IR")}
+                          </span>
                         </span>
-                      </span>
-                    </div>
-                    <label
-                      className={`flex items-center gap-2 cursor-pointer select-none ${
-                        selectedSlotId === slot.id
-                          ? `bg-${themeColor}-100 dark:bg-${themeColor}-500`
-                          : ""
-                      } p-2 rounded transition-colors duration-200`}
-                      onClick={() => setSelectedSlotId(slot.id)}
-                    >
-                      <input
-                        type="radio"
-                        name="slot"
-                        className="hidden peer"
-                        checked={selectedSlotId === slot.id}
-                        onChange={() => setSelectedSlotId(slot.id)}
-                      />
-                      <span
-                        className={`
+                      </div>
+                      <label
+                        className={`flex items-center gap-2 cursor-pointer select-none ${
+                          selectedSlotId === slot.id
+                            ? `bg-${themeColor}-100 dark:bg-${themeColor}-500`
+                            : ""
+                        } p-2 rounded transition-colors duration-200`}
+                        onClick={() => setSelectedSlotId(slot.id)}
+                      >
+                        <input
+                          type="radio"
+                          name="slot"
+                          className="hidden peer"
+                          checked={selectedSlotId === slot.id}
+                          onChange={() => setSelectedSlotId(slot.id)}
+                        />
+                        <span
+                          className={`
                           w-5 h-5 inline-block rounded-full border-2
                           border-${themeColor}-500
                           ${
@@ -159,14 +174,14 @@ const Reserve: React.FC = () => {
                           transition-colors duration-200
                           bg-white dark:bg-gray-800
                         `}
-                      ></span>
-                      <span className="text-gray-700 dark:text-gray-200 text-sm">
-                        انتخاب این زمان
-                      </span>
-                    </label>
+                        ></span>
+                        <span className="text-gray-700 dark:text-gray-200 text-sm">
+                          انتخاب این زمان
+                        </span>
+                      </label>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
           </div>
         </div>
 
@@ -174,7 +189,10 @@ const Reserve: React.FC = () => {
           type="submit"
           variant="primary"
           onClick={handleBooking}
-          disabled={addAppointmentMutation.isPending}
+          disabled={
+            addAppointmentMutation.isPending ||
+            (availableSlots && availableSlots?.length < 1)
+          }
         >
           {addAppointmentMutation.isPending ? "درحال ارسال..." : "ثبت رزرو"}
         </Button>

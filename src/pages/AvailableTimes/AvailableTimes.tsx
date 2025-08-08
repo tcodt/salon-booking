@@ -19,6 +19,7 @@ import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import DateObject from "react-date-object";
 import { useThemeColor } from "../../context/ThemeColor";
 import { AxiosError } from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 
 const AvailableTimes: React.FC = () => {
   const [dateValue, setDateValue] = useState<DateObject | null>(null);
@@ -36,6 +37,7 @@ const AvailableTimes: React.FC = () => {
   const addSlotMutation = useAddSlots();
   const { data: services } = useGetServices();
   const { themeColor } = useThemeColor();
+  const queryClient = useQueryClient();
 
   if (isError) {
     toast.error("خطا در بارگذاری زمان های در دسترس!");
@@ -49,31 +51,31 @@ const AvailableTimes: React.FC = () => {
   };
 
   const handleChangeDate = (
-    val: DateObject | null,
-    weekDay: string,
-    day: number,
-    month: string
+    val: DateObject | null
+    // weekDay: string,
+    // day: number,
+    // month: string
   ) => {
     setDateValue(val);
-    console.log(
-      `Value: ${val} \n Week Day: ${weekDay} \n Day: ${day} \n Month: ${month}`
-    );
+    // console.log(
+    //   `Value: ${val} \n Week Day: ${weekDay} \n Day: ${day} \n Month: ${month}`
+    // );
   };
 
   const handleChangeTime = (
-    date: DateObject | null,
-    options: {
-      validatedValue: string | string[];
-      input: HTMLElement;
-      isTyping: boolean;
-    }
+    date: DateObject | null
+    // options: {
+    //   validatedValue: string | string[];
+    //   input: HTMLElement;
+    //   isTyping: boolean;
+    // }
   ) => {
     setStartTimeValue(date);
-    console.log(
-      `Value: ${date?.format?.("HH:mm")} \n validatedValue: ${
-        options.validatedValue
-      }`
-    );
+    // console.log(
+    //   `Value: ${date?.format?.("HH:mm")} \n validatedValue: ${
+    //     options.validatedValue
+    //   }`
+    // );
   };
 
   const handleAddSlot = (e: React.FormEvent) => {
@@ -91,11 +93,11 @@ const AvailableTimes: React.FC = () => {
       is_available: isAvailable,
       service: selectedService,
     };
-    console.log(newSlotData);
 
     addSlotMutation.mutate(newSlotData, {
-      onSuccess: (data) => {
-        console.log("New slot added successfully: ", data);
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["slots"] });
+        setIsAddOpen(false);
       },
       onError: (error) => {
         const axiosError = error as AxiosError;

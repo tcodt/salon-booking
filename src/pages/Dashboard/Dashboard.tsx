@@ -15,9 +15,11 @@ const Dashboard: React.FC = () => {
   const { data: usersData } = useGetUsers();
   const { themeColor } = useThemeColor();
 
-  const newUserIds = dashboardData?.new_users.map((nw) => nw?.id);
-  const matchedUsers = usersData?.filter((user) =>
-    newUserIds?.includes(user.id)
+  const newUserIds =
+    dashboardData?.type === "admin" &&
+    dashboardData?.new_users.map((nw) => nw?.id);
+  const matchedUsers = usersData?.filter(
+    (user) => newUserIds && newUserIds?.includes(user.id)
   );
 
   if (isError) return <div>{error.message}</div>;
@@ -42,7 +44,9 @@ const Dashboard: React.FC = () => {
         </div>
         <div className="p-4 bg-white dark:bg-gray-700 rounded-xl shadow-sm col-span-9 relative overflow-hidden">
           <div className="absolute top-2 left-2">
-            {dashboardData && dashboardData?.today_appointments > 0 ? (
+            {dashboardData &&
+            dashboardData?.type === "admin" &&
+            dashboardData?.today_appointments > 0 ? (
               <MdOutlineBookmarkAdded
                 size={25}
                 className={`text-${themeColor}-500 opacity-50`}
@@ -57,69 +61,85 @@ const Dashboard: React.FC = () => {
           <span className="text-base font-medium text-gray-700 dark:text-gray-200">
             امروز{" "}
             <span className="text-gray-500 dark:text-gray-300">
-              {dashboardData?.today_appointments}
+              {dashboardData?.type === "admin" &&
+                dashboardData?.today_appointments}
+              {dashboardData?.type === "user" &&
+                dashboardData?.last_appointments.length}
             </span>{" "}
             رزرو
           </span>
         </div>
-        <div className="p-4 bg-white dark:bg-gray-700 rounded-xl shadow-sm col-span-full grid grid-cols-12 gap-2 relative overflow-hidden">
-          <div className="absolute top-2 left-0">
-            <GrLineChart
-              size={25}
-              className={`text-${themeColor}-500 opacity-50`}
-            />
+        {dashboardData?.type === "admin" && (
+          <div className="p-4 bg-white dark:bg-gray-700 rounded-xl shadow-sm col-span-full grid grid-cols-12 gap-2 relative overflow-hidden">
+            <div className="absolute top-2 left-0">
+              <GrLineChart
+                size={25}
+                className={`text-${themeColor}-500 opacity-50`}
+              />
+            </div>
+            <span className="text-gray-800 font-semibold text-lg col-span-full dark:text-gray-100">
+              درآمد
+            </span>
+            <span className="text-gray-700 font-medium text-base col-span-4 dark:text-gray-300">
+              ماه:{" "}
+              <span className="text-gray-500 dark:text-gray-200">
+                {dashboardData?.income?.month} تومان
+              </span>
+            </span>
+            <span className="text-gray-700 font-medium text-base col-span-4 dark:text-gray-300">
+              هفته:{" "}
+              <span className="text-gray-500 dark:text-gray-200">
+                {dashboardData?.income?.week} تومان
+              </span>
+            </span>
+            <span className="text-gray-700 font-medium text-base col-span-4 dark:text-gray-300">
+              امروز:{" "}
+              <span className="text-gray-500 dark:text-gray-200">
+                {dashboardData?.income?.today} تومان
+              </span>
+            </span>
           </div>
-          <span className="text-gray-800 font-semibold text-lg col-span-full dark:text-gray-100">
-            درآمد
-          </span>
-          <span className="text-gray-700 font-medium text-base col-span-4 dark:text-gray-300">
-            ماه:{" "}
-            <span className="text-gray-500 dark:text-gray-200">
-              {dashboardData?.income?.month} تومان
-            </span>
-          </span>
-          <span className="text-gray-700 font-medium text-base col-span-4 dark:text-gray-300">
-            هفته:{" "}
-            <span className="text-gray-500 dark:text-gray-200">
-              {dashboardData?.income?.week} تومان
-            </span>
-          </span>
-          <span className="text-gray-700 font-medium text-base col-span-4 dark:text-gray-300">
-            امروز:{" "}
-            <span className="text-gray-500 dark:text-gray-200">
-              {dashboardData?.income?.today} تومان
-            </span>
-          </span>
-        </div>
+        )}
 
         <h3 className="primary-title col-span-full mt-4 dark:text-white">
           رزرو ها
         </h3>
 
-        {dashboardData?.appointments.map((appointment) => (
-          <Link
-            to={`/view-appointment/${appointment?.id}`}
-            key={appointment?.id}
-            className="hover:opacity-50 transition-opacity p-4 bg-white dark:bg-gray-700 rounded-xl shadow-sm col-span-full relative overflow-hidden"
-          >
-            <h4 className="text-base text-gray-700 dark:text-gray-300 font-semibold flex items-center justify-between">
-              {appointment?.service?.name}
-              <span
-                className={`${
-                  appointment?.status === "pending"
-                    ? "text-yellow-500"
-                    : "text-green-500"
-                } text-sm font-medium`}
-              >
-                {appointment?.get_status}
-              </span>
-            </h4>
-          </Link>
-        ))}
+        {dashboardData && dashboardData?.total_appointments < 1 && (
+          <div className="col-span-full">
+            <p className="text-base font-medium text-gray-500 text-center">
+              هیچ رزوری یافت نشد!
+            </p>
+          </div>
+        )}
 
-        <h3 className="primary-title col-span-full mt-4 dark:text-white">
-          کاربران جدید
-        </h3>
+        {dashboardData?.type === "admin" &&
+          dashboardData?.appointments.map((appointment) => (
+            <Link
+              to={`/view-appointment/${appointment?.id}`}
+              key={appointment?.id}
+              className="hover:opacity-50 transition-opacity p-4 bg-white dark:bg-gray-700 rounded-xl shadow-sm col-span-full relative overflow-hidden"
+            >
+              <h4 className="text-base text-gray-700 dark:text-gray-300 font-semibold flex items-center justify-between">
+                {appointment?.service?.name}
+                <span
+                  className={`${
+                    appointment?.status === "pending"
+                      ? "text-yellow-500"
+                      : "text-green-500"
+                  } text-sm font-medium`}
+                >
+                  {appointment?.get_status}
+                </span>
+              </h4>
+            </Link>
+          ))}
+
+        {dashboardData?.type === "admin" && (
+          <h3 className="primary-title col-span-full mt-4 dark:text-white">
+            کاربران جدید
+          </h3>
+        )}
 
         {matchedUsers?.map((user) => (
           <Link

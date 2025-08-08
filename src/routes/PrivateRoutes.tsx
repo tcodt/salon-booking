@@ -19,7 +19,7 @@ const PrivateRoutes: React.FC<PrivateRoutesProps> = ({ children }) => {
 
   if (permissionLoading || profileLoading) return <Dots />;
 
-  if (!isAuthenticated) return <Navigate to="/auth" />;
+  if (!isAuthenticated) return <Navigate to="/auth" replace />;
 
   const matchedPermission = userPermissionId?.find(
     (item) => item.users.phone_number === userInfo?.phone_number

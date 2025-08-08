@@ -96,14 +96,22 @@ const TopBar: React.FC = () => {
           </div>
         </CustomModal>
       </div>
-      <div
-        className={`p-2 bg-white shadow-md border-2 border-${themeColor}-500 rounded-full`}
-      >
-        <img
-          src="/logo.png"
-          alt="Home Logo"
-          className="w-10 h-10 object-contain"
-        />
+      <div className="flex items-center gap-2">
+        <h3
+          className={`text-4xl font-bold text-${themeColor}-500`}
+          style={{ fontFamily: "IranNastaliq" }}
+        >
+          نارژین
+        </h3>
+        <div
+          className={` bg-white shadow-md border-2 border-${themeColor}-500 rounded-full w-14 h-14`}
+        >
+          <img
+            src="/images/logo-main.png"
+            alt="Home Logo"
+            className="w-full h-full object-cover rounded-full"
+          />
+        </div>
       </div>
     </div>
   );

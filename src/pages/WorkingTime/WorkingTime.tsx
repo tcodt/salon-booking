@@ -15,6 +15,7 @@ import { useNavigate } from "react-router";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
 import OptionsBox from "../../components/OptionsBox/OptionsBox";
+import { useAcl } from "../../context/AclContext";
 
 const WorkingTime: React.FC = () => {
   const { data: workingTimes, isPending, isError, error } = useGetWorkingTime();
@@ -24,6 +25,12 @@ const WorkingTime: React.FC = () => {
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
   const navigate = useNavigate();
   const { themeColor } = useThemeColor();
+  const { hasPermission } = useAcl();
+
+  const canManageWorkingTime =
+    hasPermission("working_hours_edit") ||
+    hasPermission("working_hours_create") ||
+    hasPermission("working_hours_delete");
 
   if (isPending) return <Loading />;
 
@@ -55,26 +62,28 @@ const WorkingTime: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-row flex-wrap items-center gap-2">
-        <OptionsBox
-          color="sky"
-          onClick={() => navigate("/add-working-time")}
-          icon={<IoPersonAdd />}
-          title="افزودن"
-        />
-        <OptionsBox
-          color="green"
-          onClick={() => setIsUpdateOpen(true)}
-          icon={<RxUpdate />}
-          title="بروزرسانی"
-        />
-        <OptionsBox
-          color="red"
-          onClick={() => setIsDeleteOpen(true)}
-          icon={<FaTrashCan />}
-          title="حذف"
-        />
-      </div>
+      {canManageWorkingTime && (
+        <div className="flex flex-row flex-wrap items-center gap-2">
+          <OptionsBox
+            color="sky"
+            onClick={() => navigate("/add-working-time")}
+            icon={<IoPersonAdd />}
+            title="افزودن"
+          />
+          <OptionsBox
+            color="green"
+            onClick={() => setIsUpdateOpen(true)}
+            icon={<RxUpdate />}
+            title="بروزرسانی"
+          />
+          <OptionsBox
+            color="red"
+            onClick={() => setIsDeleteOpen(true)}
+            icon={<FaTrashCan />}
+            title="حذف"
+          />
+        </div>
+      )}
 
       {/* Delete working time modal */}
       <CustomModal

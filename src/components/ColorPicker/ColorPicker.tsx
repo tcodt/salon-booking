@@ -3,7 +3,15 @@ import { useState } from "react";
 import { useThemeColor } from "../../context/ThemeColor";
 import { IoIosColorPalette } from "react-icons/io";
 
-const colorOptions = ["blue", "red", "green", "purple", "yellow", "orange"];
+const colorOptions = [
+  "blue",
+  "red",
+  "green",
+  "purple",
+  "yellow",
+  "orange",
+  "primary-green",
+];
 
 const ColorPicker = () => {
   const { themeColor, setThemeColor } = useThemeColor();

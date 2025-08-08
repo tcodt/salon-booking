@@ -3,9 +3,44 @@ export default {
   darkMode: "class", // Enables class-based dark mode
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        "primary-green": {
+          100: "#d1f0e8",
+          200: "#a3e0d1",
+          300: "#75d1ba",
+          400: "#47c1a3",
+          500: "#19705D", // base color
+          600: "#14584b",
+          700: "#0f4038",
+          800: "#0a2826",
+          900: "#051013",
+        },
+      },
+    },
   },
   safelist: [
+    // primary-green
+    "bg-primary-green-500",
+    "bg-primary-green-300",
+    "bg-primary-green-600",
+    "dark:bg-primary-green-500",
+    "dark:hover:bg-primary-green-600",
+    "text-primary-green-500",
+    "dark:text-primary-green-400",
+    "dark:hover:text-primary-green-500",
+    "text-primary-green-600",
+    "border-primary-green-500",
+    "border-s-primary-green-500",
+    "dark:focus:border-primary-green-500",
+    "hover:bg-primary-green-500",
+    "hover:text-primary-green-500",
+    "hover:border-primary-green-500",
+    "focus:border-primary-green-500",
+    "marker:text-primary-green-500",
+    "accent-primary-green-500",
+    "hover:bg-primary-green-50",
+
     // background - color
     "bg-orange-500",
     "bg-blue-500",
@@ -51,12 +86,14 @@ export default {
     "from-green-300",
     "from-purple-300",
     "from-yellow-300",
+    "from-primary-green-300",
     "to-orange-500",
     "to-blue-500",
     "to-red-500",
     "to-green-500",
     "to-purple-500",
     "to-yellow-500",
+    "to-primary-green-500",
 
     // hover - background
     "hover:bg-orange-50",

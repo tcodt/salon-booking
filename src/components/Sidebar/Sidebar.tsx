@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import React, { useEffect } from "react";
 import { FaUsers, FaUserTie, FaWallet } from "react-icons/fa";
 import { GiBeard } from "react-icons/gi";
 import {
   MdHome,
   MdOutlineAccountCircle,
-  MdOutlineSpaceDashboard,
   MdPerson,
   MdSettings,
   MdSpaceDashboard,
@@ -25,9 +25,9 @@ const Sidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { themeColor } = useThemeColor();
-  const { role } = useAcl();
+  const { hasPermission } = useAcl();
 
-  console.log(role);
+  const isAdmin = user?.is_owner || user?.is_staff;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -45,39 +45,83 @@ const Sidebar: React.FC = () => {
   }, [location, setIsSidebarOpen]);
 
   const navItems = [
-    { icon: <MdHome size={20} />, label: "صفحه اصلی", path: "/" },
+    {
+      icon: <MdHome size={20} />,
+      label: "صفحه اصلی",
+      path: "/",
+      requiredPermission: null,
+    },
     {
       icon: <FaUsers size={20} />,
       label: "مدیریت آرایشگران",
       path: "/manage-employees",
+      requiredPermission: "employee_list",
     },
     {
       icon: <MdSpaceDashboard size={20} />,
       label: "خدمات آرایشگاه",
       path: "/manage-services",
+      requiredPermission: "service_list",
     },
     {
       icon: <HiClipboardList size={20} />,
       label: "لیست رزرو ها",
       path: "/appointments-list",
+      requiredPermission: null,
     },
     // { icon: <MdTimer size={20} />, label: "ساعات کاری", path: "/working-time" },
     {
       icon: <FaSliders size={20} />,
       label: "اسلایدر",
       path: "/sliders",
+      requiredPermission: "slider_list",
     },
-    { icon: <GiBeard size={20} />, label: "پکیج ها", path: "/packages" },
-    { icon: <FaUserTie size={20} />, label: "آرایشگران", path: "/stylists" },
-    { icon: <FaWallet size={20} />, label: "کیف پول", path: "/wallet" },
+    {
+      icon: <GiBeard size={20} />,
+      label: "پکیج ها",
+      path: "/packages",
+      requiredPermission: "packages_list",
+    },
+    {
+      icon: <FaUserTie size={20} />,
+      label: "آرایشگران",
+      path: "/stylists",
+      requiredPermission: null,
+    },
+    {
+      icon: <FaWallet size={20} />,
+      label: "کیف پول",
+      path: "/wallet",
+      requiredPermission: null,
+    },
     {
       icon: <TbCalendarTime size={20} />,
       label: "زمان های در دسترس",
       path: "/available-times",
+      requiredPermission: "time_slot-list",
     },
-    { icon: <MdPerson size={20} />, label: "پروفایل", path: "/user-profile" },
-    { icon: <MdSettings size={20} />, label: "تنظیمات", path: "/settings" },
+    {
+      icon: <MdPerson size={20} />,
+      label: "پروفایل",
+      path: "/user-profile",
+      requiredPermission: null,
+    },
+    {
+      icon: <MdSettings size={20} />,
+      label: "تنظیمات",
+      path: "/settings",
+      requiredPermission: null,
+    },
   ];
+
+  const filteredNavItems = navItems.filter((item) => {
+    const hasAccess =
+      !item.requiredPermission ||
+      isAdmin ||
+      hasPermission(item.requiredPermission);
+    // console.log(`Sidebar: Item "${item.label}" hasAccess: ${hasAccess}`);
+    return hasAccess;
+  });
 
   return (
     <>
@@ -102,8 +146,15 @@ const Sidebar: React.FC = () => {
       >
         <div className="flex flex-col p-4 pb-8">
           <div className="flex items-center justify-start p-4 mb-8">
-            <div className={`bg-${themeColor}-600 text-white rounded-lg p-2`}>
-              <MdOutlineSpaceDashboard size={28} />
+            <div
+              className={`bg-gray-100 rounded-full p-2 w-16 h-16 border-2 border-${themeColor}-500`}
+            >
+              {/* <MdOutlineSpaceDashboard size={28} /> */}
+              <img
+                src="/images/logo-main.png"
+                alt="Sidebar Logo"
+                className="w-full h-full object-cover"
+              />
             </div>
             <span className="mr-3 text-xl font-bold whitespace-nowrap text-gray-800 dark:text-white">
               آرایشگاه من
@@ -111,7 +162,7 @@ const Sidebar: React.FC = () => {
           </div>
           <nav className="flex-1">
             <ul className="space-y-2">
-              {navItems.map((item) => (
+              {filteredNavItems.map((item) => (
                 <li key={item.label}>
                   <Link
                     to={item.path}

@@ -1,22 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type DashboardResponse = {
-  type: "admin";
-  total_appointments: number;
-  appointments: Appointment[];
-  today_appointments: number;
-  income: {
-    today: number;
-    week: number;
-    month: number;
-  };
-  active_users: number;
-  recent_payments: any[]; // Could be more specific if payment structure is known
-  new_users: NewUser[];
-};
 
+// Common types
 type Appointment = {
   id: number;
-  status: string; // Could be more specific if possible values are known (e.g., "pending" | "completed" | etc.)
+  status: string; // Could be more specific if possible values are known
   user: number;
   service: Service;
   employee: Employee;
@@ -61,7 +48,7 @@ type User = {
   is_owner: boolean;
   is_active: boolean;
   is_staff: boolean;
-  image: null | string; // Assuming image could be a URL string when not null
+  image: null | string;
 };
 
 type NewUser = {
@@ -69,3 +56,33 @@ type NewUser = {
   phone_number: string;
   created_at: string; // ISO date string
 };
+
+type Payment = any; // Replace with proper type if payment structure is known
+
+// Dashboard response types
+type AdminDashboardResponse = {
+  type: "admin";
+  total_appointments: number;
+  appointments: Appointment[];
+  today_appointments: number;
+  income: {
+    today: number;
+    week: number;
+    month: number;
+  };
+  active_users: number;
+  recent_payments: Payment[];
+  new_users: NewUser[];
+};
+
+type UserDashboardResponse = {
+  type: "user";
+  last_appointments: Appointment[];
+  last_payments: Payment[];
+  next_appointment: Appointment | null;
+  total_appointments: number;
+  unpaid_reminder: boolean;
+};
+
+// Union type for all possible dashboard responses
+export type DashboardResponse = AdminDashboardResponse | UserDashboardResponse;
