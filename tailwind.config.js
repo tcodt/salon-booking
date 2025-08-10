@@ -21,9 +21,13 @@ export default {
   },
   safelist: [
     // primary-green
-    "bg-primary-green-500",
-    "bg-primary-green-300",
     "bg-primary-green-600",
+    "bg-primary-green-500",
+    "bg-primary-green-400",
+    "bg-primary-green-300",
+    "bg-primary-green-200",
+    "bg-primary-green-100",
+    "bg-primary-green-50",
     "dark:bg-primary-green-500",
     "dark:hover:bg-primary-green-600",
     "text-primary-green-500",
@@ -48,6 +52,13 @@ export default {
     "bg-green-500",
     "bg-purple-500",
     "bg-yellow-500",
+
+    "bg-orange-400",
+    "bg-blue-400",
+    "bg-red-400",
+    "bg-green-400",
+    "bg-purple-400",
+    "bg-yellow-400",
 
     "bg-orange-300",
     "bg-blue-300",

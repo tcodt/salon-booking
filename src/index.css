@@ -116,6 +116,10 @@ html {
   position: relative;
 }
 
+.swiper-pagination {
+  display: none;
+}
+
 #rotation_profile {
   animation: rotate-x-pause 4s linear infinite;
 }

@@ -49,6 +49,13 @@ const HomePage: React.FC = () => {
 
       {/* Packages */}
       <PackagesList />
+
+      {/* Footer */}
+      <div className="pt-10 text-center">
+        <p className="text-sm text-gray-500 font-medium dark:text-gray-400">
+          &copy; تمامی حقوق محفوض میباشد.
+        </p>
+      </div>
     </section>
   );
 };
