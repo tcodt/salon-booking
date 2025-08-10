@@ -33,7 +33,11 @@ const SplashScreen: React.FC = () => {
         fadeOut ? "opacity-0" : "opacity-100"
       }`}
     >
-      <img src="/logo.png" alt="Logo" className="w-32 h-32" />
+      <img
+        src="/images/logo-main.png"
+        alt="Logo"
+        className="w-48 h-48 object-contain"
+      />
     </div>
   );
 };
