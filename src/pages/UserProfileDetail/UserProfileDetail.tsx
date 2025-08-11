@@ -108,13 +108,13 @@ const UserProfileDetail: React.FC = () => {
               <div className="flex flex-row items-center justify-between">
                 <button
                   type="button"
-                  className="p-3 rounded-full bg-green-500 text-white hover:opacity-50 transition-opacity"
+                  className="p-3 rounded-full bg-gray-100 dark:bg-gray-800 dark:border-none text-gray-600 dark:text-gray-300 shadow-md border border-gray-200 hover:opacity-50 transition-opacity"
                 >
                   <FaPen />
                 </button>
                 <button
                   type="button"
-                  className="p-3 rounded-full bg-red-500 text-white hover:opacity-50 transition-opacity"
+                  className="p-3 rounded-full bg-gray-100 dark:bg-gray-800 dark:border-none text-red-500 shadow-md border border-gray-200 hover:opacity-50 transition-opacity"
                   onClick={() => setIsRemoveOpen(true)}
                 >
                   <FaTrash />

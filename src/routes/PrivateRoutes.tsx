@@ -17,7 +17,12 @@ const PrivateRoutes: React.FC<PrivateRoutesProps> = ({ children }) => {
   const { data: userInfo, isPending: profileLoading } = useGetProfile();
   // const token = localStorage.getItem("accessToken");
 
-  if (permissionLoading || profileLoading) return <Dots />;
+  if (permissionLoading || profileLoading)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Dots />
+      </div>
+    );
 
   if (!isAuthenticated) return <Navigate to="/auth" replace />;
 

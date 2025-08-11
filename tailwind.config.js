@@ -212,6 +212,23 @@ export default {
     "accent-green-500",
     "accent-purple-500",
     "accent-yellow-500",
+
+    // background gradient
+    "bg-gradient-to-br from-orange-500",
+    "bg-gradient-to-br from-blue-500",
+    "bg-gradient-to-br from-red-500",
+    "bg-gradient-to-br from-green-500",
+    "bg-gradient-to-br from-purple-500",
+    "bg-gradient-to-br from-yellow-500",
+    "bg-gradient-to-br from-primary-green-500",
+
+    "to-orange-600",
+    "to-blue-600",
+    "to-red-600",
+    "to-green-600",
+    "to-purple-600",
+    "to-yellow-600",
+    "to-primary-green-600",
   ],
   plugins: [],
 };
