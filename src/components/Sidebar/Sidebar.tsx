@@ -166,7 +166,7 @@ const Sidebar: React.FC = () => {
                 <li key={item.label}>
                   <Link
                     to={item.path}
-                    className={`flex items-center p-3 rounded-lg hover:bg-${themeColor}-50 text-gray-700 hover:text-${themeColor}-600 transition-colors duration-200 dark:text-gray-300 dark:hover:text-${themeColor}-500 dark:hover:bg-transparent`}
+                    className={`flex items-center p-3 rounded-lg hover:bg-${themeColor}-50 text-gray-700 hover:text-${themeColor}-600 transition-colors duration-200 dark:text-gray-300 dark:hover:text-${themeColor}-500 dark:hover:bg-${themeColor}-50`}
                   >
                     <span className={`text-${themeColor}-600`}>
                       {item.icon}

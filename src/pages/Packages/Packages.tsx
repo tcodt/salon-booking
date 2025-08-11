@@ -219,19 +219,19 @@ const Packages: React.FC = () => {
         <OptionsBox
           onClick={() => setIsAddOpen(true)}
           title="افزودن"
-          color="sky"
+          color={themeColor}
           icon={<IoPersonAdd />}
         />
         <OptionsBox
           onClick={() => setIsUpdateOpen(true)}
           title="بروزرسانی"
-          color="green"
+          color={themeColor}
           icon={<RxUpdate />}
         />
         <OptionsBox
           onClick={() => setIsDeleteOpen(true)}
           title="حذف"
-          color="red"
+          color={themeColor}
           icon={<FaTrashCan />}
         />
       </div>

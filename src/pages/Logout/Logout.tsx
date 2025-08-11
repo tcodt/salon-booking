@@ -16,8 +16,8 @@ const Logout: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center">
-      <p className="text-lg font-semibold mb-4">
+    <div className="flex flex-col items-center mt-12">
+      <p className="text-lg font-semibold mb-4 dark:text-white">
         آیا مطمئن هستید که می‌خواهید خارج شوید؟
       </p>
       <div className="flex items-center gap-4 w-full">

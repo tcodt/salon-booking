@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useGetSlots } from "../../hooks/slots/useGetSlots";
 import { SlotsResponse } from "../../types/slots";
@@ -20,6 +20,8 @@ import DateObject from "react-date-object";
 import { useThemeColor } from "../../context/ThemeColor";
 import { AxiosError } from "axios";
 import { useQueryClient } from "@tanstack/react-query";
+import { RxUpdate } from "react-icons/rx";
+import { FaTrashCan } from "react-icons/fa6";
 
 const AvailableTimes: React.FC = () => {
   const [dateValue, setDateValue] = useState<DateObject | null>(null);
@@ -32,6 +34,9 @@ const AvailableTimes: React.FC = () => {
   const [isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
   const [isAvailable, setIsAvailable] = useState<boolean>(false);
+  const [filteredSlots, setFilteredSlots] = useState<
+    "all" | "available" | "unavailable"
+  >("all");
 
   const { data: slots, isPending, error, isError } = useGetSlots();
   const addSlotMutation = useAddSlots();
@@ -106,25 +111,50 @@ const AvailableTimes: React.FC = () => {
     });
   };
 
+  const filteredSlotsArray = useMemo(() => {
+    if (!slots) return [];
+
+    switch (filteredSlots) {
+      case "available":
+        return slots.filter((slot) => slot.is_available);
+      case "unavailable":
+        return slots.filter((slot) => !slot.is_available);
+      default:
+        return slots;
+    }
+  }, [slots, filteredSlots]);
+
+  const handleAllAppointments = () => {
+    setFilteredSlots("all");
+  };
+
+  const handleAvailableAppointments = () => {
+    setFilteredSlots("available");
+  };
+
+  const handleUnAvailableAppointments = () => {
+    setFilteredSlots("unavailable");
+  };
+
   return (
     <section className="space-y-6">
       <div className="flex flex-row flex-wrap items-center gap-2">
         <OptionsBox
-          color="sky"
+          color={themeColor}
           onClick={() => setIsAddOpen(true)}
           icon={<IoPersonAdd />}
           title="افزودن"
         />
         <OptionsBox
-          color="green"
+          color={themeColor}
           onClick={() => setIsUpdateOpen(true)}
-          icon={<IoPersonAdd />}
+          icon={<RxUpdate />}
           title="بروزرسانی"
         />
         <OptionsBox
-          color="red"
+          color={themeColor}
           onClick={() => setIsDeleteOpen(true)}
-          icon={<IoPersonAdd />}
+          icon={<FaTrashCan />}
           title="حذف"
         />
       </div>
@@ -243,9 +273,42 @@ const AvailableTimes: React.FC = () => {
           </div>
         )}
 
-        {slots && slots.length > 0 ? (
+        <div className="flex items-center gap-4 mb-6">
+          <button
+            className={`${
+              filteredSlots == "all"
+                ? `text-${themeColor}-500 border-${themeColor}-500`
+                : "text-gray-500 dark:text-gray-200 border-transparent"
+            } p-1 border-b-2 text-base font-medium`}
+            onClick={handleAllAppointments}
+          >
+            همه زمان ها
+          </button>
+          <button
+            className={`${
+              filteredSlots === "available"
+                ? "text-green-500 border-green-500"
+                : "text-gray-500 dark:text-gray-200 border-transparent"
+            } p-1 border-b-2 text-base font-medium`}
+            onClick={handleAvailableAppointments}
+          >
+            در دسترس ها
+          </button>
+          <button
+            className={`${
+              filteredSlots === "unavailable"
+                ? "text-red-500 border-red-500"
+                : "text-gray-500 dark:text-gray-200 border-transparent"
+            } p-1 border-b-2 text-base font-medium`}
+            onClick={handleUnAvailableAppointments}
+          >
+            رزرو شده ها
+          </button>
+        </div>
+
+        {filteredSlotsArray && filteredSlotsArray.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
-            {slots.map((slot: SlotsResponse) => (
+            {filteredSlotsArray.map((slot: SlotsResponse) => (
               <div
                 key={slot.id}
                 className={`rounded-xl shadow-md p-4 flex flex-col items-start border-2 transition-all ${
@@ -287,7 +350,11 @@ const AvailableTimes: React.FC = () => {
           </div>
         ) : (
           <div className="text-gray-500 text-lg mt-8">
-            زمانی برای نمایش وجود ندارد.
+            {filteredSlots === "all"
+              ? "زمانی برای نمایش وجود ندارد."
+              : filteredSlots === "available"
+              ? "زمان در دسترسی یافت نشد."
+              : "زمان رزرو شده‌ای یافت نشد."}
           </div>
         )}
       </div>

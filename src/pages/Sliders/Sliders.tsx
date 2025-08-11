@@ -122,19 +122,19 @@ const Sliders: React.FC = () => {
     <div>
       <div className="flex flex-row flex-wrap items-center gap-2">
         <OptionsBox
-          color="sky"
+          color={themeColor}
           onClick={() => setIsAddOpen(true)}
           icon={<IoPersonAdd />}
           title="افزودن"
         />
         <OptionsBox
-          color="green"
+          color={themeColor}
           onClick={() => setIsUpdateOpen(true)}
           icon={<RxUpdate />}
           title="بروزرسانی"
         />
         <OptionsBox
-          color="red"
+          color={themeColor}
           onClick={() => setIsDeleteOpen(true)}
           icon={<FaTrashCan />}
           title="حذف"
