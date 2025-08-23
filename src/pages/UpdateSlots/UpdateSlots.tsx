@@ -104,7 +104,7 @@ const UpdateSlots: React.FC = () => {
 
   const handleDateChange = (
     value: any,
-    weekDay: string,
+    _weekDay: string,
     day: number,
     month: string
   ) => {
