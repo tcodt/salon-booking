@@ -28,7 +28,7 @@ const PersianTimePicker: React.FC<PersianTimePickerType> = ({
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (val: any) => {
-    console.log("Raw value from picker:", val); // <--- SHOULD see this in console
+    // console.log("Raw value from picker:", val); // <--- SHOULD see this in console
     if (
       val &&
       typeof val?.hour === "number" &&

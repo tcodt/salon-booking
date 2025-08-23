@@ -58,9 +58,7 @@ const ManageEmployees: React.FC = () => {
   const queryClient = useQueryClient();
   const removeEmployeeMutation = useRemoveEmployee();
   const { themeColor } = useThemeColor();
-  const { hasPermission, userPermissions } = useAcl();
-
-  console.log("User permissions: ", userPermissions);
+  const { hasPermission } = useAcl();
 
   if (isPending) return <Loading />;
 
@@ -77,18 +75,18 @@ const ManageEmployees: React.FC = () => {
   const handleAddUser = (id: number, firstName: string) => {
     setSelectedUser(firstName);
     setSelectedUserId(id);
-    toast.success("خوبه! حالا مهارت کارمند را وارد کنید");
+    toast.success("خوبه! حالا مهارت آرایشگر را وارد کنید");
   };
 
   const handleAddEmployee = () => {
     if (!selectedUserId || !skill) return;
-    const toastId = toast.loading("در حال افزودن کارمند...");
+    const toastId = toast.loading("در حال افزودن آرایشگر...");
 
     addEmployeeMutation.mutate(
       { user_id: selectedUserId, skill },
       {
         onSuccess: () => {
-          toast.success("کارمند با موفقیت اضافه شد!", { id: toastId });
+          toast.success("آرایشگر با موفقیت اضافه شد!", { id: toastId });
           setIsAddOpen(false);
           setSelectedUser("");
           setSelectedUserId(null);
@@ -96,7 +94,7 @@ const ManageEmployees: React.FC = () => {
           queryClient.invalidateQueries({ queryKey: ["employees"] });
         },
         onError: (error) => {
-          toast.error("خطا در افزودن کارمند!", { id: toastId });
+          toast.error("خطا در افزودن آرایشگر!", { id: toastId });
           console.error(error);
         },
       }
@@ -113,12 +111,12 @@ const ManageEmployees: React.FC = () => {
     setSelectedUserIdUpdate(userId);
     setSkillUpdate(skill);
     setSelectedUserUpdate(firstName);
-    toast.success("خوبه! حالا مهارت کارمند را بروزرسانی کنید");
+    toast.success("خوبه! حالا مهارت آرایشگر را بروزرسانی کنید");
   };
 
   const handleUpdateEmployee = () => {
     if (!updatingEmployeeId || !selectedUserIdUpdate || !skillUpdate) return;
-    const toastId = toast.loading("در حال بروزرسانی کارمند...");
+    const toastId = toast.loading("در حال بروزرسانی آرایشگر...");
 
     updateEmployeeMutation.mutate(
       {
@@ -128,7 +126,7 @@ const ManageEmployees: React.FC = () => {
       },
       {
         onSuccess: () => {
-          toast.success("کارمند با موفقیت بروزرسانی شد!", { id: toastId });
+          toast.success("آرایشگر با موفقیت بروزرسانی شد!", { id: toastId });
           setIsUpdateOpen(false);
           setSelectedUserUpdate("");
           setSelectedUserIdUpdate(null);
@@ -136,7 +134,7 @@ const ManageEmployees: React.FC = () => {
           queryClient.invalidateQueries({ queryKey: ["employees"] });
         },
         onError: (error) => {
-          toast.error("خطا در بروزرسانی کارمند!", { id: toastId });
+          toast.error("خطا در بروزرسانی آرایشگر!", { id: toastId });
           console.error(error);
         },
       }
@@ -147,11 +145,11 @@ const ManageEmployees: React.FC = () => {
     const removeEmpId = toast.loading("لطفا منتظر بمانید...");
     removeEmployeeMutation.mutate(id, {
       onSuccess: () => {
-        toast.success("کارمند مورد نظر با موفقیت حذف شد", { id: removeEmpId });
+        toast.success("آرایشگر مورد نظر با موفقیت حذف شد", { id: removeEmpId });
         queryClient.invalidateQueries({ queryKey: ["employees"] });
       },
       onError: (error) => {
-        toast.error("خطا در حذف کارمند!", { id: removeEmpId });
+        toast.error("خطا در حذف آرایشگر!", { id: removeEmpId });
         console.log(error);
       },
     });
@@ -184,7 +182,7 @@ const ManageEmployees: React.FC = () => {
       <CustomModal
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
-        title="حذف کارمند"
+        title="حذف آرایشگر"
       >
         <div className="flex flex-col gap-6">
           {employees.map((emp) => (
@@ -223,12 +221,12 @@ const ManageEmployees: React.FC = () => {
       <CustomModal
         isOpen={isUpdateOpen}
         onClose={() => setIsUpdateOpen(false)}
-        title="بروزرسانی کارمند"
+        title="بروزرسانی آرایشگران"
       >
         <div className="flex flex-col gap-6">
           <input
             type="text"
-            placeholder="کارمند انتخاب شده..."
+            placeholder="آرایشگر انتخاب شده..."
             value={selectedUserUpdate}
             readOnly
             className={`py-2 px-4 h-11 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-${themeColor}-500 text-gray-700 text-base transition dark:bg-gray-700 dark:border-gray-500 dark:text-white dark:focus:border-${themeColor}-500`}
@@ -241,7 +239,7 @@ const ManageEmployees: React.FC = () => {
             onChange={(e) => setSkillUpdate(e.target.value)}
           ></textarea>
           <Button variant="primary" onClick={handleUpdateEmployee}>
-            بروزرسانی کارمند
+            بروزرسانی آرایشگران
           </Button>
           <div className="flex flex-col gap-6">
             {employees.map((emp) => (
@@ -288,12 +286,12 @@ const ManageEmployees: React.FC = () => {
       <CustomModal
         isOpen={isAddOpen}
         onClose={() => setIsAddOpen(false)}
-        title="افزودن کارمند"
+        title="افزودن آرایشگر"
       >
         <div className="flex flex-col gap-6">
           <input
             type="text"
-            placeholder="کاربر را اضافه کنید"
+            placeholder="آرایشگر را اضافه کنید"
             value={selectedUser}
             readOnly
             className={`py-2 px-4 h-11 bg-slate-100 rounded-xl outline-none border-2 border-gray-300 focus:border-${themeColor}-500 text-gray-700 text-base transition dark:bg-gray-700 dark:border-gray-500 dark:text-white dark:focus:border-${themeColor}-500`}
@@ -306,7 +304,7 @@ const ManageEmployees: React.FC = () => {
             onChange={(e) => setSkill(e.target.value)}
           ></textarea>
           <Button variant="primary" onClick={handleAddEmployee}>
-            ثبت کارمند
+            ثبت آرایشگر
           </Button>
           {users.map((user) => (
             <div
@@ -344,9 +342,9 @@ const ManageEmployees: React.FC = () => {
         </div>
       </CustomModal>
 
-      <PageTitle title="کارمندان" />
+      <PageTitle title="آرایشگران" />
       {employees?.length === 0 ? (
-        <p className="text-gray-600">کارمندی یافت نشد.</p>
+        <p className="text-gray-600">آرایشگری یافت نشد.</p>
       ) : (
         hasPermission("employee_list") &&
         employees?.map((employee: GetEmployeesItem) => {
@@ -397,7 +395,7 @@ const ManageEmployees: React.FC = () => {
                       {employee.user.is_owner
                         ? "مالک"
                         : employee.user.is_staff
-                        ? "کارمند"
+                        ? "آرایشگر"
                         : "کاربر"}
                     </td>
                   </tr>

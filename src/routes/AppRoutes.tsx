@@ -34,6 +34,7 @@ import { useAuth } from "../context/AuthContext";
 import Wallet from "../pages/Wallet/Wallet";
 import AvailableTimes from "../pages/AvailableTimes/AvailableTimes";
 import UserProfileDetail from "../pages/UserProfileDetail/UserProfileDetail";
+import UpdateSlots from "../pages/UpdateSlots/UpdateSlots";
 
 // Wrapper component for offline detection
 const NetworkStatusWrapper: React.FC<{ children: React.ReactNode }> = ({
@@ -104,6 +105,7 @@ const AppRoutes: React.FC = () => {
             path="/update-appointment/:id"
             element={<UpdateAppointment />}
           />
+          <Route path="/update-slots/:id" element={<UpdateSlots />} />
           <Route path="/working-time" element={<WorkingTime />} />
           <Route path="/add-working-time" element={<AddWorkingTime />} />
           <Route path="/sliders" element={<Sliders />} />

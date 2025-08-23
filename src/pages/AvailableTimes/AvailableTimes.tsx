@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { FormEvent, useMemo, useState } from "react";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useGetSlots } from "../../hooks/slots/useGetSlots";
 import { SlotsResponse } from "../../types/slots";
@@ -21,7 +21,9 @@ import { useThemeColor } from "../../context/ThemeColor";
 import { AxiosError } from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 import { RxUpdate } from "react-icons/rx";
-import { FaTrashCan } from "react-icons/fa6";
+import { FaPencil, FaTrashCan } from "react-icons/fa6";
+import { useUpdateSlots } from "../../hooks/slots/useUpdateSlots";
+import { useNavigate } from "react-router";
 
 const AvailableTimes: React.FC = () => {
   const [dateValue, setDateValue] = useState<DateObject | null>(null);
@@ -29,6 +31,7 @@ const AvailableTimes: React.FC = () => {
     new DateObject({ calendar: persian, locale: persian_fa })
   );
   const [selectedService, setSelectedService] = useState<number>(0);
+  const [selectedSlot, setSelectedSlot] = useState<SlotsResponse | null>(null);
 
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
   const [isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
@@ -40,9 +43,11 @@ const AvailableTimes: React.FC = () => {
 
   const { data: slots, isPending, error, isError } = useGetSlots();
   const addSlotMutation = useAddSlots();
+  const updateSlotMutation = useUpdateSlots();
   const { data: services } = useGetServices();
   const { themeColor } = useThemeColor();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   if (isError) {
     toast.error("خطا در بارگذاری زمان های در دسترس!");
@@ -111,6 +116,45 @@ const AvailableTimes: React.FC = () => {
     });
   };
 
+  const handleUpdateSlot = (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!selectedSlot) return;
+
+    // Convert dateValue and startTimeValue to correct formats
+    const dateStr = dateValue?.format?.("YYYY-MM-DD") || selectedSlot.date;
+    const startTimeStr = startTimeValue
+      ? `${startTimeValue?.hour
+          .toString()
+          .padStart(2, "0")}:${startTimeValue?.minute
+          .toString()
+          .padStart(2, "0")}`
+      : selectedSlot.start_time;
+
+    const updatedSlotData = {
+      service: selectedService || selectedSlot.service,
+      date: dateStr,
+      start_time: startTimeStr,
+      is_available: isAvailable,
+    };
+
+    updateSlotMutation.mutate(
+      { updateSlot: updatedSlotData, id: selectedSlot.id },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["slots"] });
+          setIsUpdateOpen(false);
+          setSelectedSlot(null);
+        },
+        onError: (error) => {
+          const axiosError = error as AxiosError;
+          console.log("Failed to update slot: ", axiosError);
+          toast.error("خطا در بروزرسانی زمان!");
+        },
+      }
+    );
+  };
+
   const filteredSlotsArray = useMemo(() => {
     if (!slots) return [];
 
@@ -124,6 +168,13 @@ const AvailableTimes: React.FC = () => {
     }
   }, [slots, filteredSlots]);
 
+  // Calculate counts for each filter option
+  const allSlotsCount = slots?.length || 0;
+  const availableSlotsCount =
+    slots?.filter((slot) => slot.is_available).length || 0;
+  const unavailableSlotsCount =
+    slots?.filter((slot) => !slot.is_available).length || 0;
+
   const handleAllAppointments = () => {
     setFilteredSlots("all");
   };
@@ -135,6 +186,8 @@ const AvailableTimes: React.FC = () => {
   const handleUnAvailableAppointments = () => {
     setFilteredSlots("unavailable");
   };
+
+  const availableSlots = slots?.filter((s) => s.is_available);
 
   return (
     <section className="space-y-6">
@@ -253,7 +306,117 @@ const AvailableTimes: React.FC = () => {
         onClose={() => setIsUpdateOpen(false)}
         title="بروزرسانی زمان در دسترس"
       >
-        Update Slot
+        <div>
+          {availableSlots && availableSlots.length > 0 ? (
+            availableSlots.map((slot) => (
+              <div
+                key={slot.id}
+                className={`flex flex-col gap-2 relative border-s-2 border-s-${themeColor}-500 rounded-e-xl bg-slate-100 dark:bg-gray-700 shadow-md p-2`}
+              >
+                <div className="flex items-center gap-2 text-base font-medium">
+                  <span className="text-gray-800 dark:text-gray-100">
+                    تاریخ:{" "}
+                  </span>{" "}
+                  <span className="text-gray-600 dark:text-gray-300">
+                    {slot.date}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-base font-medium">
+                  <span className="text-gray-800 dark:text-gray-100">
+                    ساعت شروع:{" "}
+                  </span>{" "}
+                  <span className="text-gray-600 dark:text-gray-300">
+                    {slot.start_time}
+                  </span>
+                </div>
+                <button
+                  className={`text-xl text-${themeColor}-500 absolute top-7 left-4 hover:text-${themeColor}-600 transition`}
+                  onClick={() => navigate(`/update-slots/${slot.id}`)}
+                >
+                  <FaPencil />
+                </button>
+              </div>
+            ))
+          ) : (
+            <p className="text-base font-medium text-gray-600 dark:text-gray-300">
+              هیچ زمان در دسترسی برای بروزرسانی وجود ندارد!
+            </p>
+          )}
+
+          {selectedSlot && (
+            <form onSubmit={handleUpdateSlot} className="space-y-4">
+              <div>
+                <label className="block mb-1">تاریخ</label>
+                <PersianDayPicker
+                  value={dateValue}
+                  onChange={handleChangeDate}
+                  buttonLabel={dateValue ? String(dateValue) : "انتخاب تاریخ"}
+                  bgColor="bg-white"
+                  textColor="gray-700"
+                />
+              </div>
+              <div>
+                <label className="block mb-1">ساعت شروع</label>
+                <DatePicker
+                  calendar={persian}
+                  format="HH:mm"
+                  render={
+                    <button className="flex items-center gap-2 py-2 px-4 rounded-xl bg-white text-gray-600 text-base font-medium border border-gray-200">
+                      {startTimeValue ? String(startTimeValue) : "انتخاب ساعت"}
+                    </button>
+                  }
+                  locale={persian_fa}
+                  value={startTimeValue}
+                  disableDayPicker
+                  plugins={[<TimePicker hideSeconds />]}
+                  calendarPosition="bottom-left"
+                  onChange={handleChangeTime}
+                >
+                  <div className="p-2">
+                    <button
+                      className={`bg-${themeColor}-500 text-white py-2 px-4 rounded-xl text-base font-medium w-full`}
+                    >
+                      انتخاب
+                    </button>
+                  </div>
+                </DatePicker>
+              </div>
+              <div>
+                <label className="block mb-1">سرویس</label>
+                <select
+                  name="service"
+                  className="primary-input"
+                  required
+                  value={selectedService}
+                  onChange={(e) => setSelectedService(Number(e.target.value))}
+                >
+                  <option value={0}>انتخاب سرویس</option>
+                  {services &&
+                    services.map((s: GetServicesItem) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="is_available"
+                  id="is_available_update"
+                  checked={isAvailable}
+                  onChange={() => setIsAvailable(!isAvailable)}
+                />
+                <label htmlFor="is_available_update">در دسترس</label>
+              </div>
+              <Button type="submit" disabled={updateSlotMutation.isPending}>
+                {updateSlotMutation.isPending
+                  ? "در حال بروزرسانی..."
+                  : "بروزرسانی"}
+              </Button>
+            </form>
+          )}
+        </div>
       </CustomModal>
 
       {/* Remove Slots */}
@@ -279,9 +442,14 @@ const AvailableTimes: React.FC = () => {
               filteredSlots == "all"
                 ? `text-${themeColor}-500 border-${themeColor}-500`
                 : "text-gray-500 dark:text-gray-200 border-transparent"
-            } p-1 border-b-2 text-base font-medium`}
+            } p-1 border-b-2 text-base font-medium relative`}
             onClick={handleAllAppointments}
           >
+            <div
+              className={`absolute -top-3 -right-1 bg-${themeColor}-500 text-white text-xs w-6 h-4 rounded-full flex items-center justify-center`}
+            >
+              {allSlotsCount}
+            </div>
             همه زمان ها
           </button>
           <button
@@ -289,9 +457,14 @@ const AvailableTimes: React.FC = () => {
               filteredSlots === "available"
                 ? "text-green-500 border-green-500"
                 : "text-gray-500 dark:text-gray-200 border-transparent"
-            } p-1 border-b-2 text-base font-medium`}
+            } p-1 border-b-2 text-base font-medium relative`}
             onClick={handleAvailableAppointments}
           >
+            <div
+              className={`absolute -top-3 -right-1 bg-${themeColor}-500 text-white text-xs w-6 h-4 rounded-full flex items-center justify-center`}
+            >
+              {availableSlotsCount}
+            </div>
             در دسترس ها
           </button>
           <button
@@ -299,9 +472,14 @@ const AvailableTimes: React.FC = () => {
               filteredSlots === "unavailable"
                 ? "text-red-500 border-red-500"
                 : "text-gray-500 dark:text-gray-200 border-transparent"
-            } p-1 border-b-2 text-base font-medium`}
+            } p-1 border-b-2 text-base font-medium relative`}
             onClick={handleUnAvailableAppointments}
           >
+            <div
+              className={`absolute -top-3 -right-1 bg-${themeColor}-500 text-white text-xs w-6 h-4 rounded-full flex items-center justify-center`}
+            >
+              {unavailableSlotsCount}
+            </div>
             رزرو شده ها
           </button>
         </div>
