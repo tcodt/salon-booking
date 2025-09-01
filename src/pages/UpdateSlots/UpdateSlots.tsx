@@ -14,6 +14,7 @@ import Loading from "../../components/Loading/Loading";
 import PersianTimePicker from "../../components/PersianTimePicker/PersianTimePicker";
 import DateObject from "react-date-object";
 import { useThemeColor } from "../../context/ThemeColor";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface TimeSelection {
   hour: number;
@@ -54,6 +55,7 @@ const UpdateSlots: React.FC = () => {
   });
   const [selectedService, setSelectedService] = useState<number>(0);
   const [isAvailable, setIsAvailable] = useState<boolean>(false);
+  const queryClient = useQueryClient();
 
   // Update the useEffect to also set the timeValue
   useEffect(() => {
@@ -202,6 +204,7 @@ const UpdateSlots: React.FC = () => {
         onSuccess: () => {
           toast.success("زمان با موفقیت بروزرسانی شد.", { id: toastId });
           navigate("/available-times");
+          queryClient.invalidateQueries({ queryKey: ["slots"] });
         },
         onError: (error) => {
           console.error("خطا در بروزرسانی زمان:", error);

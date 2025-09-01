@@ -16,6 +16,12 @@ const PackagesList: React.FC = () => {
   const navigate = useNavigate();
   const { themeColor } = useThemeColor();
 
+  // Function to format price to Persian format
+  const formatPrice = (price: string) => {
+    if (!price) return "۰";
+    return new Intl.NumberFormat("fa-IR").format(Number(price));
+  };
+
   if (isError) {
     console.log(error);
     toast.error("خطا در دریافت پکیج ها");
@@ -97,7 +103,7 @@ const PackagesList: React.FC = () => {
                   <p
                     className={`text-${themeColor}-600 dark:text-${themeColor}-400 line-clamp-2 text-left text-base`}
                   >
-                    {item?.total_price} تومان
+                    {formatPrice(item?.total_price)} تومان
                   </p>
                   <Button onClick={() => navigate(`/packages/${item?.id}`)}>
                     نمایش بیشتر

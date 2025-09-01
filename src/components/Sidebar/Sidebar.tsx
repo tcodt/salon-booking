@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import React, { useEffect } from "react";
 import { FaUsers, FaUserTie, FaWallet } from "react-icons/fa";
 import { GiBeard } from "react-icons/gi";
@@ -14,7 +13,7 @@ import { useSidebar } from "../../context/SidebarContext";
 import { useAuth } from "../../context/AuthContext";
 import { HiClipboardList } from "react-icons/hi";
 import { IoLogOut } from "react-icons/io5";
-import { FaSliders } from "react-icons/fa6";
+import { FaSliders, FaUsersGear } from "react-icons/fa6";
 import { useThemeColor } from "../../context/ThemeColor";
 import { TbCalendarTime } from "react-icons/tb";
 import { useAcl } from "../../context/AclContext";
@@ -52,7 +51,7 @@ const Sidebar: React.FC = () => {
       requiredPermission: null,
     },
     {
-      icon: <FaUsers size={20} />,
+      icon: <FaUsersGear size={20} />,
       label: "مدیریت آرایشگران",
       path: "/manage-employees",
       requiredPermission: "employee_list",
@@ -62,6 +61,12 @@ const Sidebar: React.FC = () => {
       label: "خدمات آرایشگاه",
       path: "/manage-services",
       requiredPermission: "service_list",
+    },
+    {
+      icon: <FaUsers size={20} />,
+      label: "کاربران",
+      path: "/users",
+      requiredPermission: null,
     },
     {
       icon: <HiClipboardList size={20} />,

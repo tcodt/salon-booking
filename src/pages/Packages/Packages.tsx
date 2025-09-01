@@ -12,7 +12,11 @@ import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { AddPackage, UpdatePackage } from "../../types/packages";
+import {
+  AddPackage,
+  Packages as PackagesType,
+  UpdatePackage,
+} from "../../types/packages";
 import { Link } from "react-router";
 import { FaPencil, FaTrashCan } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -28,9 +32,11 @@ const Packages: React.FC = () => {
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
   const [isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
-  const [selectedPackage, setSelectedPackage] = useState<UpdatePackage | null>(
+  const [selectedPackage, setSelectedPackage] = useState<PackagesType | null>(
     null
   );
+
+  console.log(selectedPackage);
 
   const {
     register,
@@ -38,9 +44,9 @@ const Packages: React.FC = () => {
     formState: { errors },
     reset,
     // watch,
-  } = useForm<AddPackage>({
+  } = useForm<UpdatePackage>({
     defaultValues: {
-      business_id: 3,
+      business_id: selectedPackage?.business?.id || 1,
       name: "",
       desc: "",
       total_price: "",
@@ -126,21 +132,28 @@ const Packages: React.FC = () => {
 
   useEffect(() => {
     if (selectedPackage) {
-      // reset RHF form values to the selected package
       reset({
-        business_id: selectedPackage.business_id,
+        business_id: selectedPackage.business?.id || 0,
         name: selectedPackage.name,
         desc: selectedPackage.desc,
         total_price: selectedPackage.total_price,
-        // react-hook-form will coerce these back to numbers if needed
-        service_ids: (selectedPackage.service_ids || []).map(Number),
+        service_ids:
+          selectedPackage.services?.map((service) => service.id) || [],
       });
-      // if you want to show the existing image:
       setPreview(
         selectedPackage.image
           ? `https://queuingprojectapi.pythonanywhere.com${selectedPackage.image}`
           : null
       );
+    } else {
+      reset({
+        business_id: 0,
+        name: "",
+        desc: "",
+        total_price: "",
+        service_ids: [],
+      });
+      setPreview(null);
     }
   }, [selectedPackage, reset]);
 
@@ -173,27 +186,35 @@ const Packages: React.FC = () => {
     setSelectedPackage(pkg);
   };
 
-  const handleUpdateSubmit = (data: AddPackage) => {
-    if (!selectedPackage) return;
+  const handleUpdateSubmit = (data: UpdatePackage) => {
+    if (!selectedPackage) {
+      toast.error("هیچ پکیجی انتخاب نشده است");
+      return;
+    }
+
+    if (data.service_ids.length === 0) {
+      toast.error("لطفا حداقل یک سرویس انتخاب کنید");
+      return;
+    }
+
+    console.log(data);
 
     const toastId = toast.loading("درحال بروزرسانی پکیج...");
 
     const formDataUpdate = new FormData();
-    formDataUpdate.append("business_id", "3");
+    formDataUpdate.append("business_id", data.business_id.toString());
     formDataUpdate.append("name", data.name);
     formDataUpdate.append("desc", data.desc);
-    formDataUpdate.append("total_price", data.total_price);
-
+    formDataUpdate.append("total_price", data.total_price.replace(/,/g, ""));
     if (image) {
       formDataUpdate.append("image", image);
     }
-
-    data.service_ids.map(Number).forEach((id) => {
-      formDataUpdate.append("service_ids", id.toString());
+    data.service_ids.forEach((id: number) => {
+      formDataUpdate.append("service_ids[]", id.toString());
     });
 
     updatePackageMutation.mutate(
-      { id: selectedPackage?.id, formData: formDataUpdate },
+      { id: selectedPackage.id, formData: formDataUpdate },
       {
         onSuccess: () => {
           toast.success("پکیج با موفقیت بروزرسانی شد", { id: toastId });
@@ -206,8 +227,8 @@ const Packages: React.FC = () => {
         },
         onError: (error) => {
           const axiosError = error as AxiosError;
-          console.error("Update Package Error:", axiosError);
           toast.error("خطا در بروزرسانی پکیج!", { id: toastId });
+          console.log("An error occured: ", axiosError);
         },
       }
     );
@@ -456,10 +477,11 @@ const Packages: React.FC = () => {
                         {...register("service_ids", {
                           validate: (value) =>
                             value.length > 0 || "حداقل یک سرویس انتخاب کنید",
+                          valueAsNumber: true,
                         })}
-                        defaultChecked={selectedPackage?.service_ids?.includes(
-                          service.id
-                        )}
+                        defaultChecked={selectedPackage?.services
+                          .map((service) => service.id)
+                          ?.includes(service.id)}
                         className={`accent-${themeColor}-500`}
                       />
                       {service.name}

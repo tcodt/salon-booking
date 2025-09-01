@@ -24,6 +24,7 @@ import { RxUpdate } from "react-icons/rx";
 import { FaPencil, FaTrashCan } from "react-icons/fa6";
 import { useUpdateSlots } from "../../hooks/slots/useUpdateSlots";
 import { useNavigate } from "react-router";
+import { useRemoveSlots } from "../../hooks/slots/useRemoveSlots";
 
 const AvailableTimes: React.FC = () => {
   const [dateValue, setDateValue] = useState<DateObject | null>(null);
@@ -44,6 +45,7 @@ const AvailableTimes: React.FC = () => {
   const { data: slots, isPending, error, isError } = useGetSlots();
   const addSlotMutation = useAddSlots();
   const updateSlotMutation = useUpdateSlots();
+  const removeSlotMutation = useRemoveSlots();
   const { data: services } = useGetServices();
   const { themeColor } = useThemeColor();
   const queryClient = useQueryClient();
@@ -153,6 +155,20 @@ const AvailableTimes: React.FC = () => {
         },
       }
     );
+  };
+
+  const handleRemoveSlot = (id: number) => {
+    const slotId = toast.loading("درحال حذف زمان...");
+    removeSlotMutation.mutate(id, {
+      onSuccess: () => {
+        toast.success("زمان مورد نظر با موفقیت حذف شد", { id: slotId });
+        queryClient.invalidateQueries({ queryKey: ["slots"] });
+      },
+      onError: (error) => {
+        toast.error("خطا در حذف زمان!", { id: slotId });
+        console.log(error);
+      },
+    });
   };
 
   const filteredSlotsArray = useMemo(() => {
@@ -425,7 +441,41 @@ const AvailableTimes: React.FC = () => {
         onClose={() => setIsDeleteOpen(false)}
         title="حذف زمان در دسترس"
       >
-        Remove Slot
+        {availableSlots && availableSlots.length > 0 ? (
+          availableSlots.map((slot) => (
+            <div
+              key={slot.id}
+              className={`flex flex-col gap-2 relative border-s-2 border-s-red-500 rounded-e-xl bg-slate-100 dark:bg-gray-700 shadow-md p-2`}
+            >
+              <div className="flex items-center gap-2 text-base font-medium">
+                <span className="text-gray-800 dark:text-gray-100">
+                  تاریخ:{" "}
+                </span>{" "}
+                <span className="text-gray-600 dark:text-gray-300">
+                  {slot.date}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-base font-medium">
+                <span className="text-gray-800 dark:text-gray-100">
+                  ساعت شروع:{" "}
+                </span>{" "}
+                <span className="text-gray-600 dark:text-gray-300">
+                  {slot.start_time}
+                </span>
+              </div>
+              <button
+                className={`text-xl text-red-500 absolute top-7 left-4 hover:text-red-600 transition`}
+                onClick={() => handleRemoveSlot(slot.id)}
+              >
+                <FaTrashCan />
+              </button>
+            </div>
+          ))
+        ) : (
+          <p className="text-base font-medium text-gray-600 dark:text-gray-300">
+            هیچ زمان در دسترسی برای حذف وجود ندارد!
+          </p>
+        )}
       </CustomModal>
 
       <PageTitle title="زمان های در دسترس" />

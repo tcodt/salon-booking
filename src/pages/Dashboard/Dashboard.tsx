@@ -136,12 +136,20 @@ const Dashboard: React.FC = () => {
           ))}
 
         {dashboardData?.type === "admin" && (
-          <h3 className="primary-title col-span-full mt-4 dark:text-white">
-            کاربران جدید
-          </h3>
+          <div className="col-span-full flex flex-row items-end justify-between">
+            <h3 className="primary-title col-span-full mt-4 dark:text-white">
+              کاربران
+            </h3>
+            <Link
+              to="/users"
+              className={`text-sm font-medium text-${themeColor}-500 hover:opacity-50 transition-opacity`}
+            >
+              همه کاربران
+            </Link>
+          </div>
         )}
 
-        {matchedUsers?.map((user) => (
+        {matchedUsers?.slice(0, 4).map((user) => (
           <Link
             to={`/user-profile-detail/${user?.id}`}
             key={user?.id}

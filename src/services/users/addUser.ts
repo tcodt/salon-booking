@@ -1,7 +1,8 @@
-import { CreateUser } from "../../types/users";
 import api from "../../utils/api";
 
-export const addUser = async (newUser: CreateUser) => {
-  const response = await api.post("/dashboard/users/", newUser);
+export const addUser = async (newUser: FormData) => {
+  const response = await api.post("/dashboard/users/", newUser, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response.data;
 };

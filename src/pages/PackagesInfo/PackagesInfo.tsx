@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { useGetPackageById } from "../../hooks/packages/useGetPackageById";
@@ -17,6 +18,7 @@ import { useWallet } from "../../context/WalletContext";
 const PackagesInfo: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDone, setIsDone] = useState<boolean>(false);
+  const [showAlldesc, setShowAllDesc] = useState<boolean>(false);
   const { id } = useParams<{ id: string }>();
   const packageId = Number(id);
   const { data: packageData, isPending } = useGetPackageById(packageId);
@@ -25,6 +27,12 @@ const PackagesInfo: React.FC = () => {
   const navigate = useNavigate();
 
   if (isPending) return <Loading />;
+
+  // Function to format price to Persian format
+  const formatPrice = (price: any) => {
+    if (!price) return "۰";
+    return new Intl.NumberFormat("fa-IR").format(Number(price));
+  };
 
   const handleRedirectToWallet = () => {
     navigate("/wallet");
@@ -48,7 +56,12 @@ const PackagesInfo: React.FC = () => {
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
             {packageData?.name}
           </h3>
-          <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
+          <p
+            className={`text-sm font-medium text-gray-600 dark:text-gray-300 ${
+              showAlldesc ? "line-clamp-none" : "line-clamp-3"
+            }`}
+            onClick={() => setShowAllDesc(!showAlldesc)}
+          >
             {packageData?.desc}
           </p>
           <ul className={`list-disc marker:text-${themeColor}-500 ms-4`}>
@@ -131,7 +144,7 @@ const PackagesInfo: React.FC = () => {
         <hr />
         <div className="flex flex-row items-center justify-between">
           <span className={`text-base font-medium text-${themeColor}-500`}>
-            {packageData?.total_price.toLocaleString()} تومان
+            {formatPrice(packageData?.total_price)} تومان
           </span>
 
           <CustomModal
@@ -184,7 +197,7 @@ const PackagesInfo: React.FC = () => {
                     <span className="text-gray-700 dark:text-gray-300 text-base font-medium">
                       قیمت:{" "}
                       <span className="text-gray-500 dark:text-gray-400">
-                        {packageData?.total_price}
+                        {formatPrice(packageData?.total_price)}
                       </span>{" "}
                       تومان
                     </span>

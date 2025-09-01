@@ -1,9 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { removeSlots } from "../../services/slots/removeSlots";
 
-export const useRemoveSlots = (id: number) => {
-  return useQuery({
-    queryKey: ["slots", id],
-    queryFn: () => removeSlots(id),
+export const useRemoveSlots = () => {
+  return useMutation({
+    mutationFn: removeSlots,
   });
 };
