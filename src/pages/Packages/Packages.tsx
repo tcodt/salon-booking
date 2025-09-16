@@ -25,6 +25,7 @@ import { RxUpdate } from "react-icons/rx";
 import { useUpdatePackage } from "../../hooks/packages/useUpdatePackage";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
+import { useGetBusinesses } from "../../hooks/business/useGetBusinesses";
 
 const Packages: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
@@ -56,6 +57,7 @@ const Packages: React.FC = () => {
 
   const { data: packages, isPending, isError, error } = useGetPackages();
   const { data: servicesData = [] } = useGetServices();
+  const { data: businessData } = useGetBusinesses();
   const addPackageMutation = useAddPackage();
   const removePackageMutation = useRemovePackage();
   const updatePackageMutation = useUpdatePackage();
@@ -94,13 +96,18 @@ const Packages: React.FC = () => {
       return;
     }
 
+    if (!businessData) return;
+
     const toastId = toast.loading("درحال افزودن پکیج");
 
     const formData = new FormData();
-    formData.append("business_id", String(data.business_id));
+    formData.append(
+      "business_id",
+      businessData.map((business) => business.id).toString() || "1" //! NEED TO CHECK
+    );
     formData.append("name", data.name);
     formData.append("desc", data.desc);
-    formData.append("total_price", data.total_price);
+    formData.append("total_price", data.total_price.replace(/,/g, ""));
     formData.append("image", image);
 
     (data.service_ids || []).map(Number).forEach((id) => {

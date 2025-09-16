@@ -66,7 +66,7 @@ const Sidebar: React.FC = () => {
       icon: <FaUsers size={20} />,
       label: "کاربران",
       path: "/users",
-      requiredPermission: null,
+      requiredPermission: "user_list",
     },
     {
       icon: <HiClipboardList size={20} />,

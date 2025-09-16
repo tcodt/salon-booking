@@ -238,50 +238,52 @@ const UserProfile: React.FC = () => {
               />
             )}
           </div>
-          <div className="flex flex-row flex-wrap gap-2">
-            <div className="flex flex-row items-center">
-              <Checkbox
-                {...register("is_owner")}
-                defaultChecked={userProfile?.is_owner}
-                color="info"
-                id="owner"
-              />
-              <label
-                htmlFor="owner"
-                className="text-gray-600 dark:text-gray-300 font-medium"
-              >
-                مالک
-              </label>
+          {role === "admin" && (
+            <div className="flex flex-row flex-wrap gap-2">
+              <div className="flex flex-row items-center">
+                <Checkbox
+                  {...register("is_owner")}
+                  defaultChecked={userProfile?.is_owner}
+                  color="info"
+                  id="owner"
+                />
+                <label
+                  htmlFor="owner"
+                  className="text-gray-600 dark:text-gray-300 font-medium"
+                >
+                  مالک
+                </label>
+              </div>
+              <div className="flex flex-row items-center">
+                <Checkbox
+                  {...register("is_superuser")}
+                  defaultChecked={userProfile?.is_superuser}
+                  color="info"
+                  id="super_user"
+                />
+                <label
+                  htmlFor="super_user"
+                  className="text-gray-600 dark:text-gray-300 font-medium"
+                >
+                  کارمند
+                </label>
+              </div>
+              <div className="flex flex-row items-center">
+                <Checkbox
+                  {...register("is_staff")}
+                  defaultChecked={!userProfile?.is_staff}
+                  color="info"
+                  id="user"
+                />
+                <label
+                  htmlFor="user"
+                  className="text-gray-600 dark:text-gray-300 font-medium"
+                >
+                  کاربر
+                </label>
+              </div>
             </div>
-            <div className="flex flex-row items-center">
-              <Checkbox
-                {...register("is_superuser")}
-                defaultChecked={userProfile?.is_superuser}
-                color="info"
-                id="super_user"
-              />
-              <label
-                htmlFor="super_user"
-                className="text-gray-600 dark:text-gray-300 font-medium"
-              >
-                کارمند
-              </label>
-            </div>
-            <div className="flex flex-row items-center">
-              <Checkbox
-                {...register("is_staff")}
-                defaultChecked={!userProfile?.is_staff}
-                color="info"
-                id="user"
-              />
-              <label
-                htmlFor="user"
-                className="text-gray-600 dark:text-gray-300 font-medium"
-              >
-                کاربر
-              </label>
-            </div>
-          </div>
+          )}
           <Button variant="primary" type="submit">
             {updateProfileMutation.isPending
               ? "درحال بروزرسانی..."

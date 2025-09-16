@@ -17,7 +17,7 @@ const ThemeColorContext = createContext<ThemeColorContextType | undefined>(
 
 export const ThemeColorProvider = ({ children }: { children: ReactNode }) => {
   const [themeColor, setThemeColor] = useState<string>(() => {
-    return localStorage.getItem("themeColor") || "orange";
+    return localStorage.getItem("themeColor") || "primary-green";
   });
 
   useEffect(() => {
