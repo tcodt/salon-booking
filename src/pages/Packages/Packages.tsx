@@ -37,7 +37,7 @@ const Packages: React.FC = () => {
     null
   );
 
-  console.log(selectedPackage);
+  console.log("Selected Package: ", selectedPackage);
 
   const {
     register,
@@ -63,6 +63,8 @@ const Packages: React.FC = () => {
   const updatePackageMutation = useUpdatePackage();
   const queryClient = useQueryClient();
   const { themeColor } = useThemeColor();
+
+  // console.log(businessData);
 
   const MAX_SIZE = 5 * 1024 * 1024;
   const ALLOWED_TYPES = ["image/jpeg", "image/png"];
@@ -101,10 +103,11 @@ const Packages: React.FC = () => {
     const toastId = toast.loading("درحال افزودن پکیج");
 
     const formData = new FormData();
-    formData.append(
-      "business_id",
-      businessData.map((business) => business.id).toString() || "1" //! NEED TO CHECK
-    );
+    formData.append("business_id", data.business_id?.toString() || "1");
+    // formData.append(
+    //   "business_id",
+    //   businessData.map((business) => business.id).toString() || "1" //! NEED TO CHECK
+    // );
     formData.append("name", data.name);
     formData.append("desc", data.desc);
     formData.append("total_price", data.total_price.replace(/,/g, ""));
@@ -199,6 +202,11 @@ const Packages: React.FC = () => {
       return;
     }
 
+    if (!image && !selectedPackage.image) {
+      toast.error("لطفا یک تصویر انتخاب کنید");
+      return;
+    }
+
     if (data.service_ids.length === 0) {
       toast.error("لطفا حداقل یک سرویس انتخاب کنید");
       return;
@@ -209,16 +217,21 @@ const Packages: React.FC = () => {
     const toastId = toast.loading("درحال بروزرسانی پکیج...");
 
     const formDataUpdate = new FormData();
-    formDataUpdate.append("business_id", data.business_id.toString());
+    formDataUpdate.append("business_id", data.business_id.toString() || "1");
     formDataUpdate.append("name", data.name);
     formDataUpdate.append("desc", data.desc);
     formDataUpdate.append("total_price", data.total_price.replace(/,/g, ""));
     if (image) {
       formDataUpdate.append("image", image);
     }
-    data.service_ids.forEach((id: number) => {
-      formDataUpdate.append("service_ids[]", id.toString());
+
+    (data.service_ids || []).map(Number).forEach((id) => {
+      formDataUpdate.append("service_ids", id.toString());
     });
+
+    // data.service_ids.forEach((id: number) => {
+    //   formDataUpdate.append("service_ids", id.toString());
+    // });
 
     updatePackageMutation.mutate(
       { id: selectedPackage.id, formData: formDataUpdate },
@@ -270,7 +283,7 @@ const Packages: React.FC = () => {
         <div className="text-center p-6 text-gray-500">هیچ پکیجی یافت نشد!</div>
       )}
 
-      {/* Add Package Modal */}
+      {/* Add Package Modal  */}
       <CustomModal
         isOpen={isAddOpen}
         onClose={() => setIsAddOpen(false)}
@@ -362,6 +375,23 @@ const Packages: React.FC = () => {
             <p className="text-sm text-gray-500 mt-2">
               سرویس‌های انتخاب‌شده: {JSON.stringify(selectedServiceIds)}
             </p> */}
+          </div>
+
+          <div>
+            <select
+              className="primary-input"
+              {...register("business_id", {
+                required: true,
+                valueAsNumber: true,
+              })}
+            >
+              <option value="1">بیزینس پیش‌فرض</option>
+              {businessData?.map((business) => (
+                <option key={business.id} value={business.id}>
+                  {business.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -501,6 +531,24 @@ const Packages: React.FC = () => {
                   {errors.service_ids.message}
                 </p>
               )}
+            </div>
+
+            <div>
+              <select
+                className="primary-input"
+                {...register("business_id", {
+                  required: true,
+                  valueAsNumber: true,
+                })}
+                defaultValue={selectedPackage?.business?.id || 1}
+              >
+                <option value="1">بیزینس پیش‌فرض</option>
+                {businessData?.map((business) => (
+                  <option key={business.id} value={business.id}>
+                    {business.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>
