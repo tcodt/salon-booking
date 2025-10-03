@@ -7,17 +7,15 @@ import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import Button from "../../components/Button/Button";
 import CustomModal from "../../components/CustomModal/CustomModal";
-import { IoPersonAdd } from "react-icons/io5";
 import { useGetSliders } from "../../hooks/sliders/useGetSliders";
 import Loading from "../../components/Loading/Loading";
-import { FaPencil, FaTrashCan } from "react-icons/fa6";
+import { FaPencil } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useRemoveSlider } from "../../hooks/sliders/useRemoveSlider";
-import { RxUpdate } from "react-icons/rx";
 import { useUpdateSlider } from "../../hooks/sliders/useUpdateSlider";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
-import OptionsBox from "../../components/OptionsBox/OptionsBox";
+import Dropdown from "../../components/Dropdown/Dropdown";
 
 const Sliders: React.FC = () => {
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
@@ -120,27 +118,6 @@ const Sliders: React.FC = () => {
 
   return (
     <div>
-      <div className="flex flex-row flex-wrap items-center gap-2">
-        <OptionsBox
-          color={themeColor}
-          onClick={() => setIsAddOpen(true)}
-          icon={<IoPersonAdd />}
-          title="افزودن"
-        />
-        <OptionsBox
-          color={themeColor}
-          onClick={() => setIsUpdateOpen(true)}
-          icon={<RxUpdate />}
-          title="بروزرسانی"
-        />
-        <OptionsBox
-          color={themeColor}
-          onClick={() => setIsDeleteOpen(true)}
-          icon={<FaTrashCan />}
-          title="حذف"
-        />
-      </div>
-
       {/* Add Slider Modal */}
       <CustomModal
         isOpen={isAddOpen}
@@ -298,39 +275,51 @@ const Sliders: React.FC = () => {
         </div>
       </CustomModal>
 
-      <div className="mt-8">
+      <div className="flex flex-row justify-between items-center mt-8">
         <PageTitle title="اسلایدر ها" />
-        <div className="mt-5">
-          <div className="grid grid-cols-1 gap-4">
-            {sliders?.map((slider) => (
-              <div
-                key={slider.id}
-                className="rounded-xl p-4 transition bg-white shadow-md dark:bg-gray-700"
+        {/* Edit Box */}
+        <div className="flex flex-row flex-wrap items-center gap-2">
+          <Dropdown
+            isAddOpen={isAddOpen}
+            setIsAddOpen={setIsAddOpen}
+            isUpdateOpen={isUpdateOpen}
+            setIsUpdateOpen={setIsUpdateOpen}
+            isDeleteOpen={isDeleteOpen}
+            setIsDeleteOpen={setIsDeleteOpen}
+          />
+        </div>
+      </div>
+
+      <div className="mt-5">
+        <div className="grid grid-cols-1 gap-4">
+          {sliders?.map((slider) => (
+            <div
+              key={slider.id}
+              className="rounded-xl p-4 transition bg-white shadow-md dark:bg-gray-700"
+            >
+              <h4 className="text-lg font-semibold text-gray-700 mb-2 dark:text-white">
+                {slider.title}
+              </h4>
+              <p
+                className="text-sm text-gray-500 mb-4 line-clamp-2 cursor-pointer dark:text-gray-300"
+                onClick={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.classList.toggle("line-clamp-2");
+                }}
               >
-                <h4 className="text-lg font-semibold text-gray-700 mb-2 dark:text-white">
-                  {slider.title}
-                </h4>
-                <p
-                  className="text-sm text-gray-500 mb-4 line-clamp-2 cursor-pointer dark:text-gray-300"
-                  onClick={(e) => {
-                    const target = e.target as HTMLElement;
-                    target.classList.toggle("line-clamp-2");
-                  }}
-                >
-                  {slider.sub_title}
-                </p>
-                <span
-                  className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${
-                    slider.is_active
-                      ? "bg-green-100 text-green-600 dark:bg-green-500 dark:text-white"
-                      : "bg-red-100 text-red-600 dark:bg-red-500 dark:text-white"
-                  }`}
-                >
-                  {slider.is_active ? "فعال" : "غیرفعال"}
-                </span>
-              </div>
-            ))}
-          </div>
+                {slider.sub_title}
+              </p>
+              <span
+                className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${
+                  slider.is_active
+                    ? "bg-green-100 text-green-600 dark:bg-green-500 dark:text-white"
+                    : "bg-red-100 text-red-600 dark:bg-red-500 dark:text-white"
+                }`}
+              >
+                {slider.is_active ? "فعال" : "غیرفعال"}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     </div>

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
-import OptionsBox from "../../components/OptionsBox/OptionsBox";
-import { IoCamera, IoPersonAdd } from "react-icons/io5";
+import { IoCamera } from "react-icons/io5";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import Button from "../../components/Button/Button";
 import { useGetPackages } from "../../hooks/packages/useGetPackages";
@@ -18,14 +17,14 @@ import {
   UpdatePackage,
 } from "../../types/packages";
 import { Link } from "react-router";
-import { FaPencil, FaTrashCan } from "react-icons/fa6";
+import { FaPencil } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useRemovePackage } from "../../hooks/packages/useRemovePackage";
-import { RxUpdate } from "react-icons/rx";
 import { useUpdatePackage } from "../../hooks/packages/useUpdatePackage";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
 import { useGetBusinesses } from "../../hooks/business/useGetBusinesses";
+import Dropdown from "../../components/Dropdown/Dropdown";
 
 const Packages: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
@@ -256,29 +255,6 @@ const Packages: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-row flex-wrap items-center gap-2">
-        <OptionsBox
-          onClick={() => setIsAddOpen(true)}
-          title="افزودن"
-          color={themeColor}
-          icon={<IoPersonAdd />}
-        />
-        <OptionsBox
-          onClick={() => setIsUpdateOpen(true)}
-          title="بروزرسانی"
-          color={themeColor}
-          icon={<RxUpdate />}
-        />
-        <OptionsBox
-          onClick={() => setIsDeleteOpen(true)}
-          title="حذف"
-          color={themeColor}
-          icon={<FaTrashCan />}
-        />
-      </div>
-
-      <PageTitle title="پکیج ها" />
-
       {!packages?.length && (
         <div className="text-center p-6 text-gray-500">هیچ پکیجی یافت نشد!</div>
       )}
@@ -630,6 +606,21 @@ const Packages: React.FC = () => {
           ))}
         </div>
       </CustomModal>
+
+      <div className="flex flex-row justify-between items-center mt-8">
+        <PageTitle title="پکیج ها" />
+        {/* Edit Box */}
+        <div className="flex flex-row flex-wrap items-center gap-2">
+          <Dropdown
+            isAddOpen={isAddOpen}
+            setIsAddOpen={setIsAddOpen}
+            isUpdateOpen={isUpdateOpen}
+            setIsUpdateOpen={setIsUpdateOpen}
+            isDeleteOpen={isDeleteOpen}
+            setIsDeleteOpen={setIsDeleteOpen}
+          />
+        </div>
+      </div>
 
       <div className="space-y-4">
         {packages.map((pkg) => (

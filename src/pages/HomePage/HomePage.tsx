@@ -24,7 +24,7 @@ const HomePage: React.FC = () => {
         <input
           type="text"
           placeholder="جستجو"
-          className={`py-2 px-4 h-11 bg-white dark:bg-gray-700 dark:border-gray-500 dark:focus:border-${themeColor}-500 dark:text-white w-full rounded-xl border-2 focus:border-${themeColor}-500 transition outline-none font-medium`}
+          className={`py-2 px-4 h-11 bg-white dark:bg-gray-700 dark:focus:border-${themeColor}-500 dark:text-white w-full rounded-xl border-2 border-transparent focus:border-${themeColor}-500 transition outline-none font-medium shadow-sm`}
         />
         <CiSearch
           size={25}

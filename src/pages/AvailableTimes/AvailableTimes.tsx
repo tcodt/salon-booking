@@ -2,8 +2,6 @@ import React, { FormEvent, useMemo, useState } from "react";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useGetSlots } from "../../hooks/slots/useGetSlots";
 import { SlotsResponse } from "../../types/slots";
-import OptionsBox from "../../components/OptionsBox/OptionsBox";
-import { IoPersonAdd } from "react-icons/io5";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import toast from "react-hot-toast";
 import Dots from "../../components/Dots/Dots";
@@ -20,11 +18,11 @@ import DateObject from "react-date-object";
 import { useThemeColor } from "../../context/ThemeColor";
 import { AxiosError } from "axios";
 import { useQueryClient } from "@tanstack/react-query";
-import { RxUpdate } from "react-icons/rx";
 import { FaPencil, FaTrashCan } from "react-icons/fa6";
 import { useUpdateSlots } from "../../hooks/slots/useUpdateSlots";
 import { useNavigate } from "react-router";
 import { useRemoveSlots } from "../../hooks/slots/useRemoveSlots";
+import Dropdown from "../../components/Dropdown/Dropdown";
 
 const AvailableTimes: React.FC = () => {
   const [dateValue, setDateValue] = useState<DateObject | null>(null);
@@ -207,27 +205,6 @@ const AvailableTimes: React.FC = () => {
 
   return (
     <section className="space-y-6">
-      <div className="flex flex-row flex-wrap items-center gap-2">
-        <OptionsBox
-          color={themeColor}
-          onClick={() => setIsAddOpen(true)}
-          icon={<IoPersonAdd />}
-          title="افزودن"
-        />
-        <OptionsBox
-          color={themeColor}
-          onClick={() => setIsUpdateOpen(true)}
-          icon={<RxUpdate />}
-          title="بروزرسانی"
-        />
-        <OptionsBox
-          color={themeColor}
-          onClick={() => setIsDeleteOpen(true)}
-          icon={<FaTrashCan />}
-          title="حذف"
-        />
-      </div>
-
       {/* Add Slots */}
       <CustomModal
         isOpen={isAddOpen}
@@ -478,7 +455,21 @@ const AvailableTimes: React.FC = () => {
         )}
       </CustomModal>
 
-      <PageTitle title="زمان های در دسترس" />
+      <div className="flex flex-row justify-between items-center mt-8">
+        <PageTitle title="زمان های در دسترس" />
+        {/* Edit Box */}
+        <div className="flex flex-row flex-wrap items-center gap-2">
+          <Dropdown
+            isAddOpen={isAddOpen}
+            setIsAddOpen={setIsAddOpen}
+            isUpdateOpen={isUpdateOpen}
+            setIsUpdateOpen={setIsUpdateOpen}
+            isDeleteOpen={isDeleteOpen}
+            setIsDeleteOpen={setIsDeleteOpen}
+          />
+        </div>
+      </div>
+
       <div className="p-4 flex flex-col items-center">
         {isPending && (
           <div className="mt-4">

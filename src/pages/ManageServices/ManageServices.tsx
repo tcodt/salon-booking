@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { MdAttachMoney, MdOutlineRoomService } from "react-icons/md";
 import { PiTimerBold } from "react-icons/pi";
 import Loading from "../../components/Loading/Loading";
-import { IoPersonAdd } from "react-icons/io5";
-import { RxUpdate } from "react-icons/rx";
-import { FaPencil, FaTrashCan } from "react-icons/fa6";
+import { FaPencil } from "react-icons/fa6";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import { FaRegTrashAlt, FaUser } from "react-icons/fa";
 import toast from "react-hot-toast";
@@ -22,7 +20,7 @@ import TimeInput from "../../components/TimeInput/TimeInput";
 import { useUpdateService } from "../../hooks/services/useUpdateService";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
-import OptionsBox from "../../components/OptionsBox/OptionsBox";
+import Dropdown from "../../components/Dropdown/Dropdown";
 
 const ManageServices: React.FC = () => {
   const {
@@ -143,27 +141,6 @@ const ManageServices: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-row flex-wrap items-center gap-2">
-        <OptionsBox
-          color={themeColor}
-          onClick={() => setIsAddOpen(true)}
-          icon={<IoPersonAdd />}
-          title="افزودن"
-        />
-        <OptionsBox
-          color={themeColor}
-          onClick={() => setIsUpdateOpen(true)}
-          icon={<RxUpdate />}
-          title="بروزرسانی"
-        />
-        <OptionsBox
-          color={themeColor}
-          onClick={() => setIsDeleteOpen(true)}
-          icon={<FaTrashCan />}
-          title="حذف"
-        />
-      </div>
-
       {/* Delete services modal */}
       <CustomModal
         isOpen={isDeleteOpen}
@@ -346,7 +323,20 @@ const ManageServices: React.FC = () => {
         </div>
       </CustomModal>
 
-      <PageTitle title="سرویس ها" />
+      <div className="flex flex-row justify-between items-center mt-8">
+        <PageTitle title="سرویس ها" />
+        {/* Edit Box */}
+        <div className="flex flex-row flex-wrap items-center gap-2">
+          <Dropdown
+            isAddOpen={isAddOpen}
+            setIsAddOpen={setIsAddOpen}
+            isUpdateOpen={isUpdateOpen}
+            setIsUpdateOpen={setIsUpdateOpen}
+            isDeleteOpen={isDeleteOpen}
+            setIsDeleteOpen={setIsDeleteOpen}
+          />
+        </div>
+      </div>
 
       {!services?.length && (
         <div className="text-base text-gray-500">هیچ سرویسی وجود ندارد!</div>

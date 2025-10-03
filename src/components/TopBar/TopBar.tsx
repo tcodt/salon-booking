@@ -36,11 +36,13 @@ const TopBar: React.FC = () => {
   ];
 
   return (
-    <div className="flex items-center justify-between pb-4">
+    <div
+      className={`flex items-center justify-between mb-4 bg-${themeColor}-500 dark:bg-${themeColor}-700 p-4 rounded-3xl`}
+    >
       <div className="flex items-center gap-4">
         <SidebarToggleButton />
         <button
-          className={`text-gray-500 dark:text-white dark:hover:text-${themeColor}-500 text-3xl hover:text-${themeColor}-500 transition`}
+          className={`text-white dark:text-white text-3xl hover:opacity-50 transition`}
           onClick={() => setIsSettingOpen(true)}
         >
           <IoSettingsOutline />
@@ -56,7 +58,7 @@ const TopBar: React.FC = () => {
         </CustomModal>
 
         <button
-          className={`text-gray-500 dark:text-white dark:hover:text-${themeColor}-500 text-3xl hover:text-${themeColor}-500 transition`}
+          className={`text-white dark:text-white text-3xl hover:opacity-50 transition`}
           onClick={() => setIsNotifOpen(true)}
         >
           <IoNotificationsOutline />
@@ -98,13 +100,13 @@ const TopBar: React.FC = () => {
       </div>
       <div className="flex items-center gap-2">
         <h3
-          className={`text-4xl font-bold text-${themeColor}-500`}
+          className="text-4xl font-bold text-white"
           style={{ fontFamily: "IranNastaliq" }}
         >
           نارژین
         </h3>
         <div
-          className={` bg-white shadow-md border-2 border-${themeColor}-500 rounded-full w-14 h-14`}
+          className={` bg-white shadow-md border-2 border-${themeColor}-300 rounded-full w-14 h-14`}
         >
           <img
             src="/images/logo-main.png"

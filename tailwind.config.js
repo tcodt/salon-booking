@@ -44,7 +44,7 @@ export default {
     "focus:border-primary-green-500",
     "marker:text-primary-green-500",
     "accent-primary-green-500",
-    "hover:bg-primary-green-50",
+    "bg-primary-green-50",
 
     // background - color
     "bg-orange-500",
@@ -114,6 +114,7 @@ export default {
     "hover:bg-green-50",
     "hover:bg-purple-50",
     "hover:bg-yellow-50",
+    "hover:bg-primary-green-50",
 
     "hover:bg-orange-200",
     "hover:bg-blue-200",
@@ -121,6 +122,7 @@ export default {
     "hover:bg-green-200",
     "hover:bg-purple-200",
     "hover:bg-yellow-200",
+    "hover:bg-primary-green-200",
 
     "hover:text-orange-600",
     "hover:text-blue-600",
@@ -172,6 +174,14 @@ export default {
     "text-green-600",
     "text-purple-600",
     "text-yellow-600",
+
+    "text-orange-700",
+    "text-blue-700",
+    "text-red-700",
+    "text-green-700",
+    "text-purple-700",
+    "text-yellow-700",
+    "text-primary-green-700",
     // border - color
     "border-orange-500",
     "border-blue-500",
@@ -179,6 +189,13 @@ export default {
     "border-green-500",
     "border-purple-500",
     "border-yellow-500",
+
+    "border-orange-700",
+    "border-blue-700",
+    "border-red-700",
+    "border-green-700",
+    "border-purple-700",
+    "border-yellow-700",
 
     "border-orange-300",
     "border-blue-300",

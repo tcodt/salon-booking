@@ -4,20 +4,19 @@ import PageTitle from "../../components/PageTitle/PageTitle";
 import { useGetUsers } from "../../hooks/users/useGetUsers";
 import toast from "react-hot-toast";
 import { FaUser, FaRegTrashAlt } from "react-icons/fa";
-import { IoPersonAdd, IoCamera, IoEye, IoEyeOff } from "react-icons/io5";
-import { RxUpdate } from "react-icons/rx";
-import { FaPencil, FaTrashCan } from "react-icons/fa6";
+import { IoCamera, IoEye, IoEyeOff } from "react-icons/io5";
+import { FaPencil } from "react-icons/fa6";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import { useQueryClient } from "@tanstack/react-query";
 import Button from "../../components/Button/Button";
 import { useThemeColor } from "../../context/ThemeColor";
-import OptionsBox from "../../components/OptionsBox/OptionsBox";
 import { useAcl } from "../../context/AclContext";
 import { useAddUser } from "../../hooks/users/useAddUser";
 import { useUpdateUser } from "../../hooks/users/useUpdateUser";
 import { useRemoveUser } from "../../hooks/users/useRemoveUser";
 import { AxiosError } from "axios";
 import { User } from "../../types/users";
+import Dropdown from "../../components/Dropdown/Dropdown";
 
 // Define interfaces for form data
 interface UserFormData {
@@ -301,27 +300,6 @@ const Users: React.FC = () => {
 
   return (
     <section className="space-y-6">
-      <div className="flex flex-row flex-wrap items-center gap-2">
-        <OptionsBox
-          color={themeColor}
-          onClick={() => setIsAddOpen(true)}
-          icon={<IoPersonAdd />}
-          title="افزودن"
-        />
-        <OptionsBox
-          color={themeColor}
-          onClick={() => setIsUpdateOpen(true)}
-          icon={<RxUpdate />}
-          title="بروزرسانی"
-        />
-        <OptionsBox
-          color={themeColor}
-          onClick={() => setIsDeleteOpen(true)}
-          icon={<FaTrashCan />}
-          title="حذف"
-        />
-      </div>
-
       {/* Add User Modal */}
       <CustomModal
         isOpen={isAddOpen}
@@ -649,7 +627,21 @@ const Users: React.FC = () => {
         </div>
       </CustomModal>
 
-      <PageTitle title="کاربران" />
+      <div className="flex flex-row justify-between items-center mt-8">
+        <PageTitle title="کاربران" />
+        {/* Edit Box */}
+        <div className="flex flex-row flex-wrap items-center gap-2">
+          <Dropdown
+            isAddOpen={isAddOpen}
+            setIsAddOpen={setIsAddOpen}
+            isUpdateOpen={isUpdateOpen}
+            setIsUpdateOpen={setIsUpdateOpen}
+            isDeleteOpen={isDeleteOpen}
+            setIsDeleteOpen={setIsDeleteOpen}
+          />
+        </div>
+      </div>
+
       {usersData?.length === 0 ? (
         <p className="text-gray-600">کاربری یافت نشد.</p>
       ) : (

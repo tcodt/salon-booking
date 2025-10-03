@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
 import Loading from "../../components/Loading/Loading";
 import toast from "react-hot-toast";
 import { GetEmployeesItem } from "../../types/employees";
 import { FaRegTrashAlt, FaUser } from "react-icons/fa";
-import { IoAdd, IoPersonAdd } from "react-icons/io5";
-import { RxUpdate } from "react-icons/rx";
-import { FaPencil, FaTrashCan } from "react-icons/fa6";
+import { IoAdd } from "react-icons/io5";
+import { FaPencil } from "react-icons/fa6";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetEmployees } from "../../hooks/employees/useGetEmployees";
@@ -16,8 +16,9 @@ import { useAddEmployee } from "../../hooks/employees/useAddEmployee";
 import { useUpdateEmployee } from "../../hooks/employees/useUpdateEmployee";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
-import OptionsBox from "../../components/OptionsBox/OptionsBox";
 import { useAcl } from "../../context/AclContext";
+import Dropdown from "../../components/Dropdown/Dropdown";
+import EmployeeCard from "../../components/EmployeeCard/EmployeeCard";
 
 const ManageEmployees: React.FC = () => {
   const {
@@ -60,6 +61,10 @@ const ManageEmployees: React.FC = () => {
   const { themeColor } = useThemeColor();
   const { hasPermission } = useAcl();
 
+  if (!hasPermission("employee_list")) {
+    return <div className="text-center p-6 text-red-500">دسترسی غیرمجاز!</div>;
+  }
+
   if (isPending) return <Loading />;
 
   if (isError) {
@@ -93,9 +98,12 @@ const ManageEmployees: React.FC = () => {
           setSkill("");
           queryClient.invalidateQueries({ queryKey: ["employees"] });
         },
-        onError: (error) => {
+        onError: (error: any) => {
+          const errorMessage =
+            error.response?.data?.message || "خطا در افزودن آرایشگر!";
           toast.error("خطا در افزودن آرایشگر!", { id: toastId });
           console.error(error);
+          console.error(errorMessage);
         },
       }
     );
@@ -157,27 +165,6 @@ const ManageEmployees: React.FC = () => {
 
   return (
     <section className="space-y-6">
-      <div className="flex flex-row flex-wrap items-center gap-2">
-        <OptionsBox
-          color={themeColor}
-          onClick={() => setIsAddOpen(true)}
-          icon={<IoPersonAdd />}
-          title="افزودن"
-        />
-        <OptionsBox
-          color={themeColor}
-          onClick={() => setIsUpdateOpen(true)}
-          icon={<RxUpdate />}
-          title="بروزرسانی"
-        />
-        <OptionsBox
-          color={themeColor}
-          onClick={() => setIsDeleteOpen(true)}
-          icon={<FaTrashCan />}
-          title="حذف"
-        />
-      </div>
-
       {/* Delete employees modal */}
       <CustomModal
         isOpen={isDeleteOpen}
@@ -186,33 +173,13 @@ const ManageEmployees: React.FC = () => {
       >
         <div className="flex flex-col gap-6">
           {employees.map((emp) => (
-            <div
+            <EmployeeCard
               key={emp.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-red-500 rounded-e-xl bg-slate-100 dark:bg-gray-700 shadow-md p-2"
-            >
-              <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
-                {emp.user.image ? (
-                  <img src={emp.user.image} alt="Employee Image" />
-                ) : (
-                  <FaUser size={20} />
-                )}
-              </div>
-              <div className="flex flex-col gap-1">
-                <h4 className="text-base text-gray-800 font-normal dark:text-white">
-                  {emp.user.first_name}
-                </h4>
-                <span className="text-sm text-gray-500 font-thin dark:text-gray-300">
-                  {emp.skill}
-                </span>
-              </div>
-
-              <button
-                className="text-xl text-red-500 absolute top-7 left-4 hover:text-red-600 transition"
-                onClick={() => handleRemoveEmployee(emp.id)}
-              >
-                <FaRegTrashAlt />
-              </button>
-            </div>
+              employee={emp}
+              actionIcon={<FaRegTrashAlt />}
+              onAction={() => handleRemoveEmployee(emp.id)}
+              themeColor={themeColor}
+            />
           ))}
         </div>
       </CustomModal>
@@ -243,40 +210,20 @@ const ManageEmployees: React.FC = () => {
           </Button>
           <div className="flex flex-col gap-6">
             {employees.map((emp) => (
-              <div
+              <EmployeeCard
                 key={emp.id}
-                className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-e-xl p-2 bg-slate-100 dark:bg-gray-700 shadow-md`}
-              >
-                <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
-                  {emp.user.image ? (
-                    <img src={emp.user.image} alt="Employee Image" />
-                  ) : (
-                    <FaUser size={20} />
-                  )}
-                </div>
-                <div className="flex flex-col gap-1">
-                  <h4 className="text-base text-gray-800 font-normal dark:text-white">
-                    {emp.user.first_name}
-                  </h4>
-                  <span className="text-sm text-gray-500 font-thin dark:text-gray-300">
-                    {emp.skill}
-                  </span>
-                </div>
-
-                <button
-                  className={`text-xl text-${themeColor}-500 absolute top-7 left-4 hover:text-${themeColor}-600 transition`}
-                  onClick={() =>
-                    handleUpdateEmp(
-                      emp.id,
-                      emp.skill,
-                      emp.user.first_name,
-                      emp.user.id
-                    )
-                  }
-                >
-                  <FaPencil />
-                </button>
-              </div>
+                employee={emp}
+                actionIcon={<FaPencil />}
+                onAction={() =>
+                  handleUpdateEmp(
+                    emp.id,
+                    emp.skill,
+                    emp.user.first_name,
+                    emp.user.id
+                  )
+                }
+                themeColor={themeColor}
+              />
             ))}
           </div>
         </div>
@@ -307,42 +254,38 @@ const ManageEmployees: React.FC = () => {
             ثبت آرایشگر
           </Button>
           {users.map((user) => (
-            <div
+            <EmployeeCard
               key={user.id}
-              className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-e-xl bg-slate-100 dark:bg-gray-700 shadow-md p-2`}
-            >
-              <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
-                {user.image ? (
-                  <img
-                    src={user.image}
-                    alt="Employee Image"
-                    className="object-cover rounded-full"
-                  />
-                ) : (
-                  <FaUser size={20} />
-                )}
-              </div>
-              <div className="flex flex-col gap-1">
-                <h4 className="text-base text-gray-800 font-normal dark:text-white">
-                  {user.first_name}
-                </h4>
-                <span className="text-sm text-gray-500 font-thin dark:text-gray-300">
-                  {user.phone_number}
-                </span>
-              </div>
-
-              <button
-                className={`text-xl text-${themeColor}-500 absolute top-6 left-4 bg-${themeColor}-100 p-1 rounded-full hover:text-${themeColor}-600 transition`}
-                onClick={() => handleAddUser(user.id, user.first_name)}
-              >
-                <IoAdd />
-              </button>
-            </div>
+              employee={{
+                id: user.id,
+                user: {
+                  first_name: user.first_name,
+                  last_name: user.last_name,
+                  image: user.image,
+                },
+              }}
+              actionIcon={<IoAdd />}
+              onAction={() => handleAddUser(user.id, user.first_name)}
+              themeColor={themeColor}
+            />
           ))}
         </div>
       </CustomModal>
 
-      <PageTitle title="آرایشگران" />
+      <div className="flex items-center justify-between mt-8">
+        <PageTitle title="آرایشگران" />
+        {/* Edit Box */}
+        <div className="flex flex-row flex-wrap items-center gap-2">
+          <Dropdown
+            isAddOpen={isAddOpen}
+            setIsAddOpen={setIsAddOpen}
+            isUpdateOpen={isUpdateOpen}
+            setIsUpdateOpen={setIsUpdateOpen}
+            isDeleteOpen={isDeleteOpen}
+            setIsDeleteOpen={setIsDeleteOpen}
+          />
+        </div>
+      </div>
       {employees?.length === 0 ? (
         <p className="text-gray-600">آرایشگری یافت نشد.</p>
       ) : (

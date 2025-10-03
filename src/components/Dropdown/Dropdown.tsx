@@ -1,78 +1,98 @@
-import React, { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
-interface Option {
-  value: string;
-  label: string;
-}
+// interface DropdownProps {
+
+import React, { useEffect, useRef, useState } from "react";
+import { dropdownMenuVariant } from "../../utils/variants";
+import OptionsBox from "../OptionsBox/OptionsBox";
+import { IoPersonAdd } from "react-icons/io5";
+import { RxUpdate } from "react-icons/rx";
+import { FaTrashCan } from "react-icons/fa6";
+import { useThemeColor } from "../../context/ThemeColor";
+import { MdOutlineModeEdit } from "react-icons/md";
 
 interface DropdownProps {
-  label: string;
-  options: Option[];
-  selectedValue?: string;
-  onChange: (value: string) => void;
+  isAddOpen?: boolean;
+  setIsAddOpen: (value: boolean) => void;
+  isUpdateOpen?: boolean;
+  setIsUpdateOpen: (value: boolean) => void;
+  isDeleteOpen?: boolean;
+  setIsDeleteOpen: (value: boolean) => void;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
-  label,
-  options,
-  selectedValue,
-  onChange,
+  setIsAddOpen,
+  setIsUpdateOpen,
+  setIsDeleteOpen,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(
-    options.find((option) => option.value === selectedValue)?.label || ""
-  );
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const boxRef = useRef<HTMLDivElement | null>(null);
 
-  const handleOptionClick = (value: string, label: string) => {
-    setSelectedOption(label);
-    onChange(value);
-    setIsOpen(false);
-  };
+  const { themeColor } = useThemeColor();
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (boxRef.current && !boxRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
-    <div className="relative w-full">
-      <div className="relative">
-        <div
-          className="flex items-center justify-between h-12 w-full px-4 py-2 pr-8 text-gray-600 bg-slate-100 rounded-xl cursor-pointer focus:outline-none focus:border-orange-600 outline-2 outline-transparent hover:outline-orange-500 transition-all"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {selectedOption || label}
-          {/* Dropdown Icon */}
-          <svg
-            className="w-5 h-5 text-orange-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M19 9l-7 7-7-7"
-            ></path>
-          </svg>
-        </div>
+    <div className="relative inline-flex" ref={boxRef}>
+      <motion.button
+        type="button"
+        whileTap={{ scale: 1.1 }}
+        onClick={() => setIsOpen(!isOpen)}
+        className={`text-gray-100 dark:text-white flex items-center gap-2 cursor-pointer bg-${themeColor}-500 p-3 rounded-full`}
+      >
+        <MdOutlineModeEdit size={20} />
+      </motion.button>
 
-        {/* Dropdown Options */}
+      <AnimatePresence>
         {isOpen && (
-          <div className="absolute bottom-14 left-0 z-10 w-full mt-1 bg-white border border-orange-500 rounded-lg shadow-lg">
-            {options.map((option) => (
-              <div
-                key={option.value}
-                className={`py-2 px-4 cursor-pointer rounded-lg ${
-                  selectedOption === option.label
-                    ? "bg-orange-500 text-white"
-                    : "text-gray-700 hover:bg-orange-100"
-                }`}
-                onClick={() => handleOptionClick(option.value, option.label)}
-              >
-                {option.label}
-              </div>
-            ))}
-          </div>
+          <motion.div
+            variants={dropdownMenuVariant}
+            initial="hidden"
+            animate="visible"
+            exit="hidden"
+            transition={{ duration: 0.2 }}
+            role="menu"
+            className={`absolute end-0 top-12 z-[999] w-56 overflow-hidden shadow bg-${themeColor}-500`}
+          >
+            <div>
+              <OptionsBox
+                onClick={() => {
+                  setIsAddOpen(true);
+                  setIsOpen(false);
+                }}
+                icon={<IoPersonAdd />}
+                title="افزودن"
+              />
+              <OptionsBox
+                onClick={() => {
+                  setIsUpdateOpen(true);
+                  setIsOpen(false);
+                }}
+                icon={<RxUpdate />}
+                title="بروزرسانی"
+              />
+              <OptionsBox
+                onClick={() => {
+                  setIsDeleteOpen(true);
+                  setIsOpen(false);
+                }}
+                icon={<FaTrashCan />}
+                title="حذف"
+              />
+            </div>
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
     </div>
   );
 };
