@@ -41,8 +41,8 @@ const PackagesInfo: React.FC = () => {
   return (
     <section>
       <div className="space-y-4">
-        <div className="bg-white p-4 rounded-xl shadow-md space-y-4 dark:bg-gray-700">
-          <div>
+        <div className="p-4 space-y-4">
+          <div className="bg-white dark:bg-gray-700 rounded-xl shdaow-md">
             <img
               src={
                 packageData?.image
@@ -75,8 +75,8 @@ const PackagesInfo: React.FC = () => {
             ))}
           </ul>
         </div>
-        <hr />
-        <div className="bg-white p-4 rounded-xl shadow-md space-y-4 dark:bg-gray-700">
+        <hr className="dark:opacity-5" />
+        <div className="p-4 space-y-4">
           <div className="space-y-4">
             <p className="text-base font-medium text-gray-800 flex items-center gap-2 dark:text-white">
               <HiOutlineBuildingOffice
@@ -85,7 +85,7 @@ const PackagesInfo: React.FC = () => {
               {packageData?.business.name}
             </p>
             <p className="text-sm font-medium text-gray-600 dark:text-gray-300">
-              <span className="text-gray-800 dark:text-white">آدرس:</span>{" "}
+              <span className="text-gray-800 dark:text-gray-300">آدرس:</span>{" "}
               {packageData?.business.address}
             </p>
           </div>
@@ -141,7 +141,7 @@ const PackagesInfo: React.FC = () => {
             </a>
           </div>
         </div>
-        <hr />
+        <hr className="dark:opacity-5" />
         <div className="flex flex-row items-center justify-between">
           <span className={`text-base font-medium text-${themeColor}-500`}>
             {formatPrice(packageData?.total_price)} تومان

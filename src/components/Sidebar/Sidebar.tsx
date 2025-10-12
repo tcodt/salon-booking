@@ -17,6 +17,27 @@ import { FaSliders, FaUsersGear } from "react-icons/fa6";
 import { useThemeColor } from "../../context/ThemeColor";
 import { TbCalendarTime } from "react-icons/tb";
 import { useAcl } from "../../context/AclContext";
+import { logoMap } from "../../utils/logoMap";
+import { motion } from "framer-motion";
+
+const parentVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const childrenVariants = {
+  hidden: { opacity: 0, x: 100 },
+  visible: {
+    opacity: 1,
+    x: 0,
+  },
+};
 
 const Sidebar: React.FC = () => {
   const { user } = useAuth();
@@ -42,6 +63,8 @@ const Sidebar: React.FC = () => {
   useEffect(() => {
     setIsSidebarOpen(false);
   }, [location, setIsSidebarOpen]);
+
+  const logoSrc = logoMap[themeColor] || "/images/logo-main.jpg";
 
   const navItems = [
     {
@@ -77,7 +100,7 @@ const Sidebar: React.FC = () => {
     // { icon: <MdTimer size={20} />, label: "ساعات کاری", path: "/working-time" },
     {
       icon: <FaSliders size={20} />,
-      label: "اسلایدر",
+      label: "بنر ها",
       path: "/sliders",
       requiredPermission: "slider_list",
     },
@@ -152,13 +175,13 @@ const Sidebar: React.FC = () => {
         <div className="flex flex-col p-4 pb-8">
           <div className="flex items-center justify-start p-4 mb-8">
             <div
-              className={`bg-gray-100 rounded-full p-2 w-16 h-16 border-2 border-${themeColor}-500`}
+              className={`rounded-full p-1 w-16 h-16 border-2 border-${themeColor}-500 overflow-hidden`}
             >
               {/* <MdOutlineSpaceDashboard size={28} /> */}
               <img
-                src="/images/logo-main.png"
+                src={logoSrc}
                 alt="Sidebar Logo"
-                className="w-full h-full object-cover"
+                className="w-full h-full rounded-full object-cover"
               />
             </div>
             <span className="mr-3 text-xl font-bold whitespace-nowrap text-gray-800 dark:text-white">
@@ -166,9 +189,14 @@ const Sidebar: React.FC = () => {
             </span>
           </div>
           <nav className="flex-1">
-            <ul className="space-y-2">
+            <motion.ul
+              className="space-y-2"
+              variants={parentVariants}
+              initial="hidden"
+              animate={isSidebarOpen ? "visible" : "hidden"}
+            >
               {filteredNavItems.map((item) => (
-                <li key={item.label}>
+                <motion.li key={item.label} variants={childrenVariants}>
                   <Link
                     to={item.path}
                     className={`flex items-center p-3 rounded-lg hover:bg-${themeColor}-50 text-gray-700 hover:text-${themeColor}-600 transition-colors duration-200 dark:text-gray-300 dark:hover:text-${themeColor}-500 dark:hover:bg-${themeColor}-50`}
@@ -178,9 +206,9 @@ const Sidebar: React.FC = () => {
                     </span>
                     <span className="mr-3 whitespace-nowrap">{item.label}</span>
                   </Link>
-                </li>
+                </motion.li>
               ))}
-            </ul>
+            </motion.ul>
           </nav>
 
           <div className="mt-auto mb-2 p-3 rounded-lg bg-red-100 dark:bg-red-500 flex items-center">

@@ -2,8 +2,11 @@
 import api from "../../utils/api";
 
 export const addPackage = async (data: FormData) => {
-  const response = await api.post("/packages/create/", data, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  //! Log for bugs
+  for (const [key, value] of data.entries()) {
+    console.log(key, value); // چک کن image File باشه (نه string)
+  }
+
+  const response = await api.post("/packages/create/", data);
   return response.data;
 };

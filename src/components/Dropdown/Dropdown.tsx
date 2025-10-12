@@ -13,9 +13,9 @@ import { MdOutlineModeEdit } from "react-icons/md";
 
 interface DropdownProps {
   isAddOpen?: boolean;
-  setIsAddOpen: (value: boolean) => void;
+  setIsAddOpen?: (value: boolean) => void;
   isUpdateOpen?: boolean;
-  setIsUpdateOpen: (value: boolean) => void;
+  setIsUpdateOpen?: (value: boolean) => void;
   isDeleteOpen?: boolean;
   setIsDeleteOpen: (value: boolean) => void;
 }
@@ -67,7 +67,7 @@ const Dropdown: React.FC<DropdownProps> = ({
             <div>
               <OptionsBox
                 onClick={() => {
-                  setIsAddOpen(true);
+                  setIsAddOpen?.(true);
                   setIsOpen(false);
                 }}
                 icon={<IoPersonAdd />}
@@ -75,7 +75,7 @@ const Dropdown: React.FC<DropdownProps> = ({
               />
               <OptionsBox
                 onClick={() => {
-                  setIsUpdateOpen(true);
+                  setIsUpdateOpen?.(true);
                   setIsOpen(false);
                 }}
                 icon={<RxUpdate />}

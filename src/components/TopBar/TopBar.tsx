@@ -5,12 +5,16 @@ import CustomModal from "../CustomModal/CustomModal";
 import ColorPicker from "../ColorPicker/ColorPicker";
 import { useThemeColor } from "../../context/ThemeColor";
 import DarkModeToggle from "../DarkModeToggle/DarkModeToggle";
+import { motion } from "framer-motion";
+import { logoMap } from "../../utils/logoMap";
 
 const TopBar: React.FC = () => {
   const [isSettingOpen, setIsSettingOpen] = useState<boolean>(false);
   const [isNotifOpen, setIsNotifOpen] = useState<boolean>(false);
   const [expandedNotif, setExpandedNotif] = useState<number | null>(null);
   const { themeColor } = useThemeColor();
+
+  const logoSrc = logoMap[themeColor] || "/images/logo-main.jpg";
 
   const notifications = [
     {
@@ -36,8 +40,11 @@ const TopBar: React.FC = () => {
   ];
 
   return (
-    <div
+    <motion.div
       className={`flex items-center justify-between mb-4 bg-${themeColor}-500 dark:bg-${themeColor}-700 p-4 rounded-3xl`}
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, delay: 1 }}
     >
       <div className="flex items-center gap-4">
         <SidebarToggleButton />
@@ -105,17 +112,25 @@ const TopBar: React.FC = () => {
         >
           نارژین
         </h3>
-        <div
-          className={` bg-white shadow-md border-2 border-${themeColor}-300 rounded-full w-14 h-14`}
+        <motion.div
+          className={` bg-${themeColor}-200 shadow-md border-2 border-${themeColor}-300 rounded-full w-14 h-14`}
+          initial={{ scale: 1 }}
+          animate={{ scale: [1, 1.1, 1.1, 1] }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            delay: 5,
+            ease: "easeOut",
+          }}
         >
           <img
-            src="/images/logo-main.png"
-            alt="Home Logo"
+            src={logoSrc}
+            alt="Logo"
             className="w-full h-full object-cover rounded-full"
           />
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

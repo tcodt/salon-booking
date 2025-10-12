@@ -8,7 +8,7 @@ import Button from "../../components/Button/Button";
 import { useAddWorkingTime } from "../../hooks/working-time/useAddWorkingTime";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
+// import { useNavigate } from "react-router";
 
 const AddWorkingTime: React.FC = () => {
   const handleWorkingTimeMutation = useAddWorkingTime();
@@ -30,7 +30,7 @@ const AddWorkingTime: React.FC = () => {
   const [weekDay, setWeekDay] = useState<string | null>(null);
   const [day, setDay] = useState<number | null>(null);
   const [month, setMonth] = useState<string | null>(null);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleOpeningTimeChange = (val: any, hour: number, minute: number) => {
@@ -97,7 +97,8 @@ const AddWorkingTime: React.FC = () => {
         queryClient.invalidateQueries({
           queryKey: ["working_time"],
         });
-        navigate("/working-time");
+        // navigate("/working-time");
+        window.location.reload();
       },
       onError: (error) => {
         console.error("خطا در ثبت زمان کاری:", error);

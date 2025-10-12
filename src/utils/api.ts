@@ -3,9 +3,6 @@ import { clearAuthTokens } from "./tokenHelper";
 
 const api = axios.create({
   baseURL: "https://queuingprojectapi.pythonanywhere.com",
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 api.interceptors.request.use((config) => {

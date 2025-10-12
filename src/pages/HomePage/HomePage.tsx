@@ -6,6 +6,7 @@ import OfferCarousel from "../../components/OfferCarousel/OfferCarousel";
 import PackagesList from "../../components/PackagesList/PackagesList";
 import { useGetProfile } from "../../hooks/profile/useGetProfile";
 import { useThemeColor } from "../../context/ThemeColor";
+import { motion } from "framer-motion";
 
 const HomePage: React.FC = () => {
   const { data: userProfile } = useGetProfile();
@@ -16,11 +17,21 @@ const HomePage: React.FC = () => {
   return (
     <section className="space-y-6">
       {/* User Name */}
-      <h3 className="text-2xl font-bold text-gray-800 my-3 dark:text-white">
+      <motion.h3
+        className="text-2xl font-bold text-gray-800 my-3 dark:text-white"
+        initial={{ x: 300, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 1 }}
+      >
         {greetingUser}
-      </h3>
+      </motion.h3>
       {/* Search Bar */}
-      <div className="relative mb-3">
+      <motion.div
+        className="relative mb-3"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, delay: 1 }}
+      >
         <input
           type="text"
           placeholder="جستجو"
@@ -30,11 +41,16 @@ const HomePage: React.FC = () => {
           size={25}
           className={`absolute top-2 left-2 text-${themeColor}-500`}
         />
-      </div>
+      </motion.div>
       {/* Offer Box */}
       <OfferCarousel />
       {/* Booking */}
-      <div className="mt-4 p-4 rounded-xl bg-gradient-to-r z-10 from-blue-500 to-violet-500 relative after:absolute after:content-[''] after:top-2 after:-left-4 after:w-40 after:h-40 after:bg-white after:rounded-full after:bg-opacity-30 after:-z-10 before:absolute before:content-[''] before:bottom-2 before:-right-4 before:w-40 before:h-40 before:bg-white before:rounded-full before:bg-opacity-30 before:-z-10 overflow-hidden">
+      <motion.div
+        className="mt-4 p-4 rounded-xl bg-gradient-to-r z-10 from-blue-500 to-violet-500 relative after:absolute after:content-[''] after:top-2 after:-left-4 after:w-40 after:h-40 after:bg-white after:rounded-full after:bg-opacity-30 after:-z-10 before:absolute before:content-[''] before:bottom-2 before:-right-4 before:w-40 before:h-40 before:bg-white before:rounded-full before:bg-opacity-30 before:-z-10 overflow-hidden"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, delay: 1 }}
+      >
         <h3 className="text-xl font-bold text-white mb-2">رزرو نوبت</h3>
         <p className="text-white text-sm font-light mb-4">
           همین حالا نوبت خود را رزرو کنید و از خدمات ویژه ما بهره‌مند شوید.
@@ -45,7 +61,7 @@ const HomePage: React.FC = () => {
         >
           رزرو کن
         </Link>
-      </div>
+      </motion.div>
 
       {/* Packages */}
       <PackagesList />

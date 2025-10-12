@@ -276,7 +276,7 @@ const Sliders: React.FC = () => {
       </CustomModal>
 
       <div className="flex flex-row justify-between items-center mt-8">
-        <PageTitle title="اسلایدر ها" />
+        <PageTitle title="بنر ها" />
         {/* Edit Box */}
         <div className="flex flex-row flex-wrap items-center gap-2">
           <Dropdown

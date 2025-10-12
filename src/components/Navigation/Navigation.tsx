@@ -67,9 +67,7 @@ const Navigation: React.FC = () => {
             navigate("/dashboard");
           }}
           className={`flex flex-col items-center ${
-            value === 0
-              ? `text-${themeColor}-700`
-              : "text-white dark:text-white"
+            value === 0 ? "text-black" : "text-white dark:text-white"
           }`}
         >
           <FaRegUser size={20} />
@@ -81,9 +79,7 @@ const Navigation: React.FC = () => {
             navigate("/working-time");
           }}
           className={`flex flex-col items-center ${
-            value === 3
-              ? `text-${themeColor}-700`
-              : "text-white dark:text-white"
+            value === 3 ? "text-black" : "text-white dark:text-white"
           }`}
         >
           <MdTimer size={20} />
@@ -95,9 +91,7 @@ const Navigation: React.FC = () => {
             navigate("/home");
           }}
           className={`flex flex-col items-center ${
-            value === 1
-              ? `text-${themeColor}-700`
-              : "text-white dark:text-white"
+            value === 1 ? "text-black" : "text-white dark:text-white"
           }`}
         >
           <GrHomeRounded size={20} />
@@ -109,9 +103,7 @@ const Navigation: React.FC = () => {
             navigate("/reserve");
           }}
           className={`flex flex-col items-center ${
-            value === 2
-              ? `text-${themeColor}-700`
-              : "text-white dark:text-white"
+            value === 2 ? "text-black" : "text-white dark:text-white"
           }`}
         >
           <LuNotebookText size={20} />

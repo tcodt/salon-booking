@@ -10,6 +10,7 @@ import { LuCircleParking } from "react-icons/lu";
 import Button from "../Button/Button";
 import { Link, useNavigate } from "react-router";
 import { useThemeColor } from "../../context/ThemeColor";
+import { motion } from "framer-motion";
 
 const PackagesList: React.FC = () => {
   const { data: packages, isError, error } = useGetPackages();
@@ -46,7 +47,12 @@ const PackagesList: React.FC = () => {
     >
       {packages?.map((item) => (
         <SwiperSlide key={item?.id}>
-          <div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 50 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            viewport={{ once: false, amount: 0.3 }}
+          >
             <div className="bg-white dark:bg-gray-700 dark:border-none border border-slate-300 h-auto w-full rounded-xl shadow-md flex flex-col gap-8">
               <div className="space-y-4">
                 <Link to={`/packages/${item?.id}`} className="block">
@@ -111,7 +117,7 @@ const PackagesList: React.FC = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </SwiperSlide>
       ))}
     </Swiper>

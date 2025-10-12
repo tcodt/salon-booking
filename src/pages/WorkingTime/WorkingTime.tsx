@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import Loading from "../../components/Loading/Loading";
 import toast from "react-hot-toast";
 import { BiSolidCalendarCheck, BiSolidCalendarX } from "react-icons/bi";
-import { RxUpdate } from "react-icons/rx";
-import { FaPencil, FaTrashCan } from "react-icons/fa6";
-import { IoPersonAdd } from "react-icons/io5";
+import { FaPencil } from "react-icons/fa6";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useGetWorkingTime } from "../../hooks/working-time/useGetWorkingTime";
@@ -14,13 +12,15 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
-import OptionsBox from "../../components/OptionsBox/OptionsBox";
 import { useAcl } from "../../context/AclContext";
+import Dropdown from "../../components/Dropdown/Dropdown";
+import AddWorkingTime from "../AddWorkingTime/AddWorkingTime";
 
 const WorkingTime: React.FC = () => {
   const { data: workingTimes, isPending, isError, error } = useGetWorkingTime();
   const removeWorkingTimeMutation = useRemoveWorkingTime();
   const queryClient = useQueryClient();
+  const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
   const [isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -62,28 +62,14 @@ const WorkingTime: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {canManageWorkingTime && (
-        <div className="flex flex-row flex-wrap items-center gap-2">
-          <OptionsBox
-            color={themeColor}
-            onClick={() => navigate("/add-working-time")}
-            icon={<IoPersonAdd />}
-            title="افزودن"
-          />
-          <OptionsBox
-            color={themeColor}
-            onClick={() => setIsUpdateOpen(true)}
-            icon={<RxUpdate />}
-            title="بروزرسانی"
-          />
-          <OptionsBox
-            color={themeColor}
-            onClick={() => setIsDeleteOpen(true)}
-            icon={<FaTrashCan />}
-            title="حذف"
-          />
-        </div>
-      )}
+      {/* Add Working Time Modal */}
+      <CustomModal
+        isOpen={isAddOpen}
+        onClose={() => setIsAddOpen(false)}
+        title="افزودن ساعت کاری"
+      >
+        <AddWorkingTime />
+      </CustomModal>
 
       {/* Delete working time modal */}
       <CustomModal
@@ -181,7 +167,23 @@ const WorkingTime: React.FC = () => {
         </div>
       </CustomModal>
 
-      <PageTitle title="ساعات کاری" />
+      {canManageWorkingTime && (
+        <div className="flex flex-row justify-between items-center mt-8">
+          <PageTitle title="ساعات کاری" />
+          {/* Edit Box */}
+          <div className="flex flex-row flex-wrap items-center gap-2">
+            <Dropdown
+              isAddOpen={isAddOpen}
+              setIsAddOpen={setIsAddOpen}
+              isUpdateOpen={isUpdateOpen}
+              setIsUpdateOpen={setIsUpdateOpen}
+              isDeleteOpen={isDeleteOpen}
+              setIsDeleteOpen={setIsDeleteOpen}
+            />
+          </div>
+        </div>
+      )}
+
       {!workingTimes?.length && (
         <p className="text-center p-6 text-gray-500">
           هیچ ساعت کاری تنظیم نشده است!

@@ -36,23 +36,41 @@ const Packages: React.FC = () => {
     null
   );
 
-  console.log("Selected Package: ", selectedPackage);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-    // watch,
-  } = useForm<UpdatePackage>({
+  // Form جداگانه برای افزودن
+  const addForm = useForm<AddPackage>({
     defaultValues: {
-      business_id: selectedPackage?.business?.id || 1,
+      business_id: 0,
       name: "",
       desc: "",
       total_price: "",
       service_ids: [],
     },
   });
+
+  // Form جداگانه برای بروزرسانی
+  const updateForm = useForm<UpdatePackage>({
+    defaultValues: {
+      business_id: 0,
+      name: "",
+      desc: "",
+      total_price: "",
+      service_ids: [],
+    },
+  });
+
+  const {
+    register: addRegister,
+    handleSubmit: addHandleSubmit,
+    formState: { errors: addErrors },
+    reset: addReset,
+  } = addForm;
+
+  const {
+    register: updateRegister,
+    handleSubmit: updateHandleSubmit,
+    formState: { errors: updateErrors },
+    reset: updateReset,
+  } = updateForm;
 
   const { data: packages, isPending, isError, error } = useGetPackages();
   const { data: servicesData = [] } = useGetServices();
@@ -63,12 +81,8 @@ const Packages: React.FC = () => {
   const queryClient = useQueryClient();
   const { themeColor } = useThemeColor();
 
-  // console.log(businessData);
-
   const MAX_SIZE = 5 * 1024 * 1024;
   const ALLOWED_TYPES = ["image/jpeg", "image/png"];
-
-  // const selectedServiceIds = watch("service_ids");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -87,6 +101,16 @@ const Packages: React.FC = () => {
   };
 
   const handleAddPackage = (data: AddPackage) => {
+    if (!data.business_id || data.business_id === 0) {
+      toast.error("لطفا یک بیزینس معتبر انتخاب کنید");
+      return;
+    }
+
+    if (data.service_ids.length === 0 || data.service_ids.includes(0)) {
+      toast.error("لطفا حداقل یک سرویس معتبر انتخاب کنید");
+      return;
+    }
+
     if (!image) {
       toast.error("لطفا یک عکس انتخاب کنید");
       return;
@@ -103,24 +127,28 @@ const Packages: React.FC = () => {
 
     const formData = new FormData();
     formData.append("business_id", data.business_id?.toString() || "1");
-    // formData.append(
-    //   "business_id",
-    //   businessData.map((business) => business.id).toString() || "1" //! NEED TO CHECK
-    // );
     formData.append("name", data.name);
     formData.append("desc", data.desc);
     formData.append("total_price", data.total_price.replace(/,/g, ""));
     formData.append("image", image);
 
-    (data.service_ids || []).map(Number).forEach((id) => {
+    // اصلاح: بدون [] و map(Number) برای consistency
+    (data.service_ids ?? []).map(Number).forEach((id) => {
       formData.append("service_ids", id.toString());
+    });
+
+    //! Log for bugs
+    console.log("Sending data:", {
+      business_id: data.business_id,
+      service_ids: data.service_ids,
+      hasImage: !!image,
     });
 
     addPackageMutation.mutate(formData, {
       onSuccess: () => {
         toast.success("پکیج با موفقیت اضافه شد", { id: toastId });
         queryClient.invalidateQueries({ queryKey: ["packages"] });
-        reset();
+        addReset();
         setImage(null);
         setPreview(null);
         setIsAddOpen(false);
@@ -141,7 +169,7 @@ const Packages: React.FC = () => {
 
   useEffect(() => {
     if (selectedPackage) {
-      reset({
+      updateReset({
         business_id: selectedPackage.business?.id || 0,
         name: selectedPackage.name,
         desc: selectedPackage.desc,
@@ -155,7 +183,7 @@ const Packages: React.FC = () => {
           : null
       );
     } else {
-      reset({
+      updateReset({
         business_id: 0,
         name: "",
         desc: "",
@@ -164,7 +192,7 @@ const Packages: React.FC = () => {
       });
       setPreview(null);
     }
-  }, [selectedPackage, reset]);
+  }, [selectedPackage, updateReset]);
 
   if (isPending) return <Loading />;
   if (isError) {
@@ -191,7 +219,7 @@ const Packages: React.FC = () => {
   };
 
   const handleUpdatePackage = (pkg: any) => {
-    reset(pkg);
+    updateReset(pkg);
     setSelectedPackage(pkg);
   };
 
@@ -224,13 +252,10 @@ const Packages: React.FC = () => {
       formDataUpdate.append("image", image);
     }
 
-    (data.service_ids || []).map(Number).forEach((id) => {
+    // اصلاح: بدون [] و map(Number)
+    (data.service_ids ?? []).map(Number).forEach((id) => {
       formDataUpdate.append("service_ids", id.toString());
     });
-
-    // data.service_ids.forEach((id: number) => {
-    //   formDataUpdate.append("service_ids", id.toString());
-    // });
 
     updatePackageMutation.mutate(
       { id: selectedPackage.id, formData: formDataUpdate },
@@ -238,10 +263,9 @@ const Packages: React.FC = () => {
         onSuccess: () => {
           toast.success("پکیج با موفقیت بروزرسانی شد", { id: toastId });
           queryClient.invalidateQueries({ queryKey: ["packages"] });
-          reset();
+          updateReset();
           setImage(null);
           setPreview(null);
-          setIsUpdateOpen(false);
           setSelectedPackage(null);
         },
         onError: (error) => {
@@ -262,11 +286,16 @@ const Packages: React.FC = () => {
       {/* Add Package Modal  */}
       <CustomModal
         isOpen={isAddOpen}
-        onClose={() => setIsAddOpen(false)}
+        onClose={() => {
+          setIsAddOpen(false);
+          addReset();
+          setImage(null);
+          setPreview(null);
+        }}
         title="افزودن پکیج"
       >
         <form
-          onSubmit={handleSubmit(handleAddPackage)}
+          onSubmit={addHandleSubmit(handleAddPackage)}
           className="flex flex-col gap-6"
         >
           <div>
@@ -274,10 +303,12 @@ const Packages: React.FC = () => {
               type="text"
               className="primary-input"
               placeholder="نام پکیج"
-              {...register("name", { required: "نام پکیج الزامی است" })}
+              {...addRegister("name", { required: "نام پکیج الزامی است" })}
             />
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+            {addErrors.name && (
+              <p className="text-red-500 text-sm mt-1">
+                {addErrors.name.message}
+              </p>
             )}
           </div>
 
@@ -285,10 +316,12 @@ const Packages: React.FC = () => {
             <textarea
               className="primary-input"
               placeholder="توضیحات"
-              {...register("desc", { required: "توضیحات الزامی است" })}
+              {...addRegister("desc", { required: "توضیحات الزامی است" })}
             ></textarea>
-            {errors.desc && (
-              <p className="text-red-500 text-sm mt-1">{errors.desc.message}</p>
+            {addErrors.desc && (
+              <p className="text-red-500 text-sm mt-1">
+                {addErrors.desc.message}
+              </p>
             )}
           </div>
 
@@ -297,21 +330,17 @@ const Packages: React.FC = () => {
               type="text"
               className="primary-input"
               placeholder="قیمت"
-              {...register("total_price", {
+              {...addRegister("total_price", {
                 required: "قیمت الزامی است",
-                // pattern: {
-                //   value: /^-?\d*\.?\d+$/,
-                //   message: "لطفا یک عدد معتبر وارد کنید",
-                // },
                 onChange: (e) => {
                   const value = e.target.value.replace(/,/g, "");
                   e.target.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 },
               })}
             />
-            {errors.total_price && (
+            {addErrors.total_price && (
               <p className="text-red-500 text-sm mt-1">
-                {errors.total_price.message}
+                {addErrors.total_price.message}
               </p>
             )}
           </div>
@@ -332,9 +361,10 @@ const Packages: React.FC = () => {
                     <input
                       type="checkbox"
                       value={service.id}
-                      {...register("service_ids", {
+                      {...addRegister("service_ids", {
                         validate: (value) =>
                           value.length > 0 || "حداقل یک سرویس انتخاب کنید",
+                        valueAsNumber: true,
                       })}
                       className={`accent-${themeColor}-500`}
                     />
@@ -343,25 +373,22 @@ const Packages: React.FC = () => {
                 ))}
               </div>
             )}
-            {/* {errors.service_ids && (
+            {addErrors.service_ids && (
               <p className="text-red-500 text-sm mt-1">
-                {errors.service_ids.message}
+                {addErrors.service_ids.message}
               </p>
             )}
-            <p className="text-sm text-gray-500 mt-2">
-              سرویس‌های انتخاب‌شده: {JSON.stringify(selectedServiceIds)}
-            </p> */}
           </div>
 
           <div>
             <select
               className="primary-input"
-              {...register("business_id", {
+              {...addRegister("business_id", {
                 required: true,
                 valueAsNumber: true,
               })}
             >
-              <option value="1">بیزینس پیش‌فرض</option>
+              <option value={0}>انتخاب بیزینس</option>
               {businessData?.map((business) => (
                 <option key={business.id} value={business.id}>
                   {business.name}
@@ -410,12 +437,15 @@ const Packages: React.FC = () => {
         onClose={() => {
           setIsUpdateOpen(false);
           setSelectedPackage(null);
+          updateReset();
+          setImage(null);
+          setPreview(null);
         }}
         title="بروزرسانی پکیج"
       >
         {selectedPackage && (
           <form
-            onSubmit={handleSubmit(handleUpdateSubmit)}
+            onSubmit={updateHandleSubmit(handleUpdateSubmit)}
             className="flex flex-col gap-6 mb-8"
           >
             <div>
@@ -423,12 +453,11 @@ const Packages: React.FC = () => {
                 type="text"
                 className="primary-input"
                 placeholder="نام پکیج"
-                defaultValue={selectedPackage.name}
-                {...register("name", { required: "نام پکیج الزامی است" })}
+                {...updateRegister("name", { required: "نام پکیج الزامی است" })}
               />
-              {errors.name && (
+              {updateErrors.name && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.name.message}
+                  {updateErrors.name.message}
                 </p>
               )}
             </div>
@@ -437,12 +466,11 @@ const Packages: React.FC = () => {
               <textarea
                 className="primary-input"
                 placeholder="توضیحات"
-                defaultValue={selectedPackage.desc}
-                {...register("desc", { required: "توضیحات الزامی است" })}
+                {...updateRegister("desc", { required: "توضیحات الزامی است" })}
               ></textarea>
-              {errors.desc && (
+              {updateErrors.desc && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.desc.message}
+                  {updateErrors.desc.message}
                 </p>
               )}
             </div>
@@ -452,8 +480,7 @@ const Packages: React.FC = () => {
                 type="text"
                 className="primary-input"
                 placeholder="قیمت"
-                defaultValue={selectedPackage.total_price}
-                {...register("total_price", {
+                {...updateRegister("total_price", {
                   required: "قیمت الزامی است",
                   onChange: (e) => {
                     const value = e.target.value.replace(/,/g, "");
@@ -464,9 +491,9 @@ const Packages: React.FC = () => {
                   },
                 })}
               />
-              {errors.total_price && (
+              {updateErrors.total_price && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.total_price.message}
+                  {updateErrors.total_price.message}
                 </p>
               )}
             </div>
@@ -487,7 +514,7 @@ const Packages: React.FC = () => {
                       <input
                         type="checkbox"
                         value={service.id}
-                        {...register("service_ids", {
+                        {...updateRegister("service_ids", {
                           validate: (value) =>
                             value.length > 0 || "حداقل یک سرویس انتخاب کنید",
                           valueAsNumber: true,
@@ -502,9 +529,9 @@ const Packages: React.FC = () => {
                   ))}
                 </div>
               )}
-              {errors.service_ids && (
+              {updateErrors.service_ids && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.service_ids.message}
+                  {updateErrors.service_ids.message}
                 </p>
               )}
             </div>
@@ -512,13 +539,12 @@ const Packages: React.FC = () => {
             <div>
               <select
                 className="primary-input"
-                {...register("business_id", {
+                {...updateRegister("business_id", {
                   required: true,
                   valueAsNumber: true,
                 })}
-                defaultValue={selectedPackage?.business?.id || 1}
               >
-                <option value="1">بیزینس پیش‌فرض</option>
+                <option value={0}>انتخاب بیزینس</option>
                 {businessData?.map((business) => (
                   <option key={business.id} value={business.id}>
                     {business.name}
@@ -551,8 +577,14 @@ const Packages: React.FC = () => {
               )}
             </div>
 
-            <Button variant="primary" type="submit">
-              بروزرسانی
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={updatePackageMutation.isPending}
+            >
+              {updatePackageMutation.isPending
+                ? "درحال بروزرسانی..."
+                : "بروزرسانی"}
             </Button>
           </form>
         )}
