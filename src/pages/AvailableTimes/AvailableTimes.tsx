@@ -23,6 +23,26 @@ import { useUpdateSlots } from "../../hooks/slots/useUpdateSlots";
 import { useNavigate } from "react-router";
 import { useRemoveSlots } from "../../hooks/slots/useRemoveSlots";
 import Dropdown from "../../components/Dropdown/Dropdown";
+import { motion } from "framer-motion";
+
+const parentVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const childrenVariants = {
+  hidden: { opacity: 0, x: 100 },
+  visible: {
+    opacity: 1,
+    x: 0,
+  },
+};
 
 const AvailableTimes: React.FC = () => {
   const [dateValue, setDateValue] = useState<DateObject | null>(null);
@@ -526,15 +546,21 @@ const AvailableTimes: React.FC = () => {
         </div>
 
         {filteredSlotsArray && filteredSlotsArray.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl"
+            variants={parentVariants}
+            initial="hidden"
+            animate="visible"
+          >
             {filteredSlotsArray.map((slot: SlotsResponse) => (
-              <div
+              <motion.div
                 key={slot.id}
                 className={`rounded-xl shadow-md p-4 flex flex-col items-start border-2 transition-all ${
                   slot.is_available
                     ? "border-green-400 bg-green-50 dark:bg-green-900"
                     : "border-red-400 bg-red-50 dark:bg-red-900"
                 }`}
+                variants={childrenVariants}
               >
                 <div className="flex items-center gap-2 mb-2">
                   <span className="font-semibold text-gray-700 dark:text-white">
@@ -564,9 +590,9 @@ const AvailableTimes: React.FC = () => {
                     {slot.is_available ? "در دسترس" : "رزرو شده"}
                   </span>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         ) : (
           <div className="text-gray-500 text-lg mt-8">
             {filteredSlots === "all"

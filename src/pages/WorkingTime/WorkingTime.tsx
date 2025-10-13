@@ -15,6 +15,26 @@ import { useThemeColor } from "../../context/ThemeColor";
 import { useAcl } from "../../context/AclContext";
 import Dropdown from "../../components/Dropdown/Dropdown";
 import AddWorkingTime from "../AddWorkingTime/AddWorkingTime";
+import { motion } from "framer-motion";
+
+const parentVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const childrenVariants = {
+  hidden: { opacity: 0, x: 100 },
+  visible: {
+    opacity: 1,
+    x: 0,
+  },
+};
 
 const WorkingTime: React.FC = () => {
   const { data: workingTimes, isPending, isError, error } = useGetWorkingTime();
@@ -191,11 +211,17 @@ const WorkingTime: React.FC = () => {
       )}
 
       <div className="mt-8">
-        <div className="grid grid-cols-1 gap-6">
+        <motion.div
+          className="grid grid-cols-1 gap-6"
+          variants={parentVariants}
+          initial="hidden"
+          animate="visible"
+        >
           {workingTimes?.map((time) => (
-            <div
+            <motion.div
+              variants={childrenVariants}
               key={time.id}
-              className="p-4 rounded-xl bg-white shadow-md dark:bg-gray-700"
+              className={`p-4 rounded-xl bg-white shadow-md dark:bg-gray-700 border-s-4 border-e-4 border-${themeColor}-500`}
             >
               <div className="flex items-center justify-between mb-4">
                 <h3 className={`text-lg font-semibold text-${themeColor}-500`}>
@@ -216,9 +242,9 @@ const WorkingTime: React.FC = () => {
                   </span>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </div>
   );

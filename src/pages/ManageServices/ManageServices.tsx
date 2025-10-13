@@ -21,6 +21,7 @@ import { useUpdateService } from "../../hooks/services/useUpdateService";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
 import Dropdown from "../../components/Dropdown/Dropdown";
+import { motion } from "framer-motion";
 
 const ManageServices: React.FC = () => {
   const {
@@ -343,9 +344,12 @@ const ManageServices: React.FC = () => {
       )}
 
       {services?.map((service) => (
-        <div
+        <motion.div
           className="p-4 rounded-xl bg-white shadow-md dark:bg-gray-700"
           key={service?.id}
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
         >
           <div
             className={`text-xl font-semibold text-${themeColor}-800 bg-${themeColor}-100 p-1 border-s-4 border-${themeColor}-500`}
@@ -391,7 +395,7 @@ const ManageServices: React.FC = () => {
               </span>
             </div>
           </div>
-        </div>
+        </motion.div>
       ))}
     </div>
   );

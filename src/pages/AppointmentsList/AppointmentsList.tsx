@@ -11,6 +11,26 @@ import Button from "../../components/Button/Button";
 // import { FaPencil } from "react-icons/fa6";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { PiFilesDuotone } from "react-icons/pi";
+import { motion } from "framer-motion";
+
+const parentVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const childrenVariants = {
+  hidden: { opacity: 0, x: 100 },
+  visible: {
+    opacity: 1,
+    x: 0,
+  },
+};
 
 const AppointmentsList: React.FC = () => {
   const {
@@ -51,11 +71,17 @@ const AppointmentsList: React.FC = () => {
     <div className="space-y-6">
       <PageTitle title="رزرو ها" />
       {appointments && appointments.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:grid-cols-3">
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:grid-cols-3"
+          variants={parentVariants}
+          initial="hidden"
+          animate="visible"
+        >
           {appointments?.map((appointment) => (
-            <div
+            <motion.div
               key={appointment.id}
               className="bg-white shadow-md rounded-xl p-4 dark:bg-gray-700"
+              variants={childrenVariants}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
@@ -113,9 +139,9 @@ const AppointmentsList: React.FC = () => {
                   {appointment?.time ? appointment.time : "-"}
                 </p>
               </div> */}
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       ) : (
         <div className="flex flex-col items-center justify-start gap-6 pt-16">
           <PiFilesDuotone size={60} color="gray" />

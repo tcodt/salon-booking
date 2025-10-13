@@ -16,6 +16,26 @@ import { useUpdateSlider } from "../../hooks/sliders/useUpdateSlider";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
 import Dropdown from "../../components/Dropdown/Dropdown";
+import { motion } from "framer-motion";
+
+const parentVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const childrenVariants = {
+  hidden: { opacity: 0, x: 100 },
+  visible: {
+    opacity: 1,
+    x: 0,
+  },
+};
 
 const Sliders: React.FC = () => {
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
@@ -291,11 +311,17 @@ const Sliders: React.FC = () => {
       </div>
 
       <div className="mt-5">
-        <div className="grid grid-cols-1 gap-4">
+        <motion.div
+          className="grid grid-cols-1 gap-4"
+          variants={parentVariants}
+          initial="hidden"
+          animate="visible"
+        >
           {sliders?.map((slider) => (
-            <div
+            <motion.div
               key={slider.id}
               className="rounded-xl p-4 transition bg-white shadow-md dark:bg-gray-700"
+              variants={childrenVariants}
             >
               <h4 className="text-lg font-semibold text-gray-700 mb-2 dark:text-white">
                 {slider.title}
@@ -318,9 +344,9 @@ const Sliders: React.FC = () => {
               >
                 {slider.is_active ? "فعال" : "غیرفعال"}
               </span>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ import {
   Packages as PackagesType,
   UpdatePackage,
 } from "../../types/packages";
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
 import { FaPencil } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useRemovePackage } from "../../hooks/packages/useRemovePackage";
@@ -25,6 +25,26 @@ import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
 import { useGetBusinesses } from "../../hooks/business/useGetBusinesses";
 import Dropdown from "../../components/Dropdown/Dropdown";
+import { motion } from "framer-motion";
+
+const parentVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const childrenVariants = {
+  hidden: { opacity: 0, x: 100 },
+  visible: {
+    opacity: 1,
+    x: 0,
+  },
+};
 
 const Packages: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
@@ -35,6 +55,7 @@ const Packages: React.FC = () => {
   const [selectedPackage, setSelectedPackage] = useState<PackagesType | null>(
     null
   );
+  const navigate = useNavigate();
 
   // Form جداگانه برای افزودن
   const addForm = useForm<AddPackage>({
@@ -239,7 +260,7 @@ const Packages: React.FC = () => {
       return;
     }
 
-    console.log(data);
+    // console.log(data);
 
     const toastId = toast.loading("درحال بروزرسانی پکیج...");
 
@@ -654,12 +675,18 @@ const Packages: React.FC = () => {
         </div>
       </div>
 
-      <div className="space-y-4">
+      <motion.div
+        className="space-y-4"
+        variants={parentVariants}
+        initial="hidden"
+        animate="visible"
+      >
         {packages.map((pkg) => (
-          <Link
-            to={`/packages/${pkg.id}`}
+          <motion.div
+            onClick={() => navigate(`/packages/${pkg.id}`)}
             key={pkg.id}
             className="bg-white shadow-md rounded-xl p-4 flex flex-row items-center justify-between dark:bg-gray-700"
+            variants={childrenVariants}
           >
             <div className="space-y-2 flex-1">
               <h4 className="text-base font-medium text-gray-800 dark:text-white">
@@ -680,9 +707,9 @@ const Packages: React.FC = () => {
                 className="h-14 w-28 object-cover rounded-xl"
               />
             </div>
-          </Link>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 };

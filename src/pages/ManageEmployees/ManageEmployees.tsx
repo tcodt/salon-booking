@@ -19,6 +19,7 @@ import { useThemeColor } from "../../context/ThemeColor";
 import { useAcl } from "../../context/AclContext";
 import Dropdown from "../../components/Dropdown/Dropdown";
 import EmployeeCard from "../../components/EmployeeCard/EmployeeCard";
+import { motion } from "framer-motion";
 
 const ManageEmployees: React.FC = () => {
   const {
@@ -292,9 +293,12 @@ const ManageEmployees: React.FC = () => {
         hasPermission("employee_list") &&
         employees?.map((employee: GetEmployeesItem) => {
           return (
-            <div
+            <motion.div
               key={employee.id}
               className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-4"
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
             >
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-16 h-16 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
@@ -344,7 +348,7 @@ const ManageEmployees: React.FC = () => {
                   </tr>
                 </tbody>
               </table>
-            </div>
+            </motion.div>
           );
         })
       )}
