@@ -17,6 +17,7 @@ import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
 import Dropdown from "../../components/Dropdown/Dropdown";
 import { motion } from "framer-motion";
+import { IoCamera } from "react-icons/io5";
 
 const parentVariants = {
   hidden: { opacity: 0 },
@@ -45,12 +46,14 @@ const Sliders: React.FC = () => {
   const [selectedSlider, setSelectedSlider] = useState<SliderItems | null>(
     null
   );
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<Pick<SliderItems, "title" | "sub_title" | "is_active">>();
+  } = useForm<SliderItems>();
   const slidersMutation = useAddSlider();
   const removeSliderMutation = useRemoveSlider();
   const updateSliderMutation = useUpdateSlider();
@@ -61,34 +64,72 @@ const Sliders: React.FC = () => {
   if (isPending) return <Loading />;
 
   if (isError) {
-    toast.error("خطا در بارگذاری اسلایدرها!");
+    toast.error("خطا در بارگذاری بنرها!");
     console.log(error);
   }
 
-  const handleAddSlider = (
-    data: Pick<SliderItems, "title" | "sub_title" | "is_active">
-  ) => {
-    slidersMutation.mutate(data, {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Check if file is PNG
+      if (file.type !== "image/png") {
+        toast.error("فقط فایل‌های PNG مجاز هستند!");
+        setSelectedImage(null);
+        setImagePreview(null);
+        return;
+      }
+      // Check if file size is less than 5MB (5 * 1024 * 1024 bytes)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("حجم فایل نباید بیشتر از ۵ مگابایت باشد!");
+        setSelectedImage(null);
+        setImagePreview(null);
+        return;
+      }
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setSelectedImage(null);
+      setImagePreview(null);
+    }
+  };
+
+  const handleAddSlider = (data: SliderItems) => {
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("sub_title", data.sub_title);
+    formData.append("is_active", data.is_active.toString());
+    if (selectedImage) {
+      formData.append("image", selectedImage);
+    }
+
+    const addSliderToast = toast.loading("درحال ایجاد بنر...");
+
+    slidersMutation.mutate(formData, {
       onSuccess: () => {
-        toast.success("اسلایدر با موفقیت ایجاد شد!");
+        toast.success("بنر با موفقیت ایجاد شد!", { id: addSliderToast });
         queryClient.invalidateQueries({ queryKey: ["sliders"] });
         reset();
+        setSelectedImage(null);
+        setImagePreview(null);
       },
       onError: (error) => {
         const axiosError = error as AxiosError;
         console.log(axiosError);
-        toast.error("خطا در ایجاد اسلایدر!");
+        toast.error("خطا در ایجاد بنر!", { id: addSliderToast });
       },
     });
     setIsAddOpen(false);
-    reset();
   };
 
   const handleRemoveEmployee = (id: number) => {
     const removeSliderId = toast.loading("لطفا منتظر بمانید...");
     removeSliderMutation.mutate(id, {
       onSuccess: () => {
-        toast.success("اسلایدر مورد نظر با موفقیت حذف شد", {
+        toast.success("بنر مورد نظر با موفقیت حذف شد", {
           id: removeSliderId,
         });
         queryClient.invalidateQueries({ queryKey: ["sliders"] });
@@ -96,7 +137,7 @@ const Sliders: React.FC = () => {
       onError: (error: unknown) => {
         const axiosError = error as AxiosError;
         console.log(axiosError);
-        toast.error("خطا در حذف اسلایدر!", { id: removeSliderId });
+        toast.error("خطا در حذف بنر!", { id: removeSliderId });
       },
     });
   };
@@ -104,34 +145,40 @@ const Sliders: React.FC = () => {
   const handleSlider = (slider: SliderItems) => {
     setSelectedSlider(slider);
     setSelectedSliderId(slider.id);
+    setImagePreview(typeof slider.image === "string" ? slider.image : null);
+    setSelectedImage(null);
   };
 
   const handleUpdateSlider = () => {
     if (!selectedSlider) {
-      toast.error("لطفا اسلایدر مورد نظر را انتخاب کنید!");
+      toast.error("لطفا بنر مورد نظر را انتخاب کنید!");
       return;
     } else if (!selectedSliderId) {
-      toast.error("شناسه اسلایدر معتبر نیست!");
+      toast.error("شناسه بنر معتبر نیست!");
       return;
     }
 
-    const data = {
-      id: selectedSliderId,
-      title: selectedSlider?.title || "",
-      sub_title: selectedSlider?.sub_title || "",
-      is_active: selectedSlider?.is_active || false,
-    };
+    const formData = new FormData();
+    formData.append("id", selectedSliderId.toString());
+    formData.append("title", selectedSlider.title || "");
+    formData.append("sub_title", selectedSlider.sub_title || "");
+    formData.append("is_active", selectedSlider.is_active.toString());
+    if (selectedImage) {
+      formData.append("image", selectedImage);
+    }
 
-    updateSliderMutation.mutate(data, {
+    updateSliderMutation.mutate(formData, {
       onSuccess: () => {
-        toast.success("اسلایدر با موفقیت بروزرسانی شد!");
+        toast.success("بنر با موفقیت بروزرسانی شد!");
         setIsUpdateOpen(false);
+        setSelectedImage(null);
+        setImagePreview(null);
         queryClient.invalidateQueries({ queryKey: ["sliders"] });
       },
       onError: (error) => {
         const axiosEror = error as AxiosError;
         console.log(axiosEror);
-        toast.error("خطا در بروزرسانی اسلایدر!");
+        toast.error("خطا در بروزرسانی بنر!");
       },
     });
   };
@@ -141,8 +188,13 @@ const Sliders: React.FC = () => {
       {/* Add Slider Modal */}
       <CustomModal
         isOpen={isAddOpen}
-        onClose={() => setIsAddOpen(false)}
-        title="افزودن اسلایدر"
+        onClose={() => {
+          setIsAddOpen(false);
+          setSelectedImage(null);
+          setImagePreview(null);
+          reset();
+        }}
+        title="افزودن بنر"
       >
         <form
           onSubmit={handleSubmit(handleAddSlider)}
@@ -192,6 +244,36 @@ const Sliders: React.FC = () => {
             )}
           </div>
 
+          <div>
+            <label
+              htmlFor="add-package-image"
+              className="block mb-1 font-medium text-gray-700 dark:text-gray-300"
+            >
+              تصویر
+            </label>
+            <label htmlFor="add-package-image">
+              <div className="bg-white text-gray-500 hover:bg-slate-100 border-2 border-gray-300 rounded-xl border-dashed p-4 cursor-pointer dark:bg-gray-900 dark:border-gray-600">
+                <span className="flex items-center gap-2">
+                  انتخاب عکس <IoCamera size={20} />
+                </span>
+              </div>
+            </label>
+            <input
+              type="file"
+              className="hidden"
+              id="add-package-image"
+              accept="image/png"
+              onChange={handleImageChange}
+            />
+            {imagePreview && (
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="mt-2 w-32 rounded-md"
+              />
+            )}
+          </div>
+
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
@@ -208,7 +290,7 @@ const Sliders: React.FC = () => {
           </div>
 
           <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "در حال ارسال..." : "ایجاد اسلایدر"}
+            {isSubmitting ? "در حال ارسال..." : "ایجاد بنر"}
           </Button>
         </form>
       </CustomModal>
@@ -219,85 +301,142 @@ const Sliders: React.FC = () => {
         onClose={() => {
           setIsUpdateOpen(false);
           setSelectedSlider(null);
+          setSelectedImage(null);
+          setImagePreview(null);
+          reset();
         }}
-        title="بروزرسانی اسلایدر"
+        title="بروزرسانی بنر"
       >
-        <div className="space-y-4">
-          <input
-            type="text"
-            placeholder="عنوان"
-            defaultValue={selectedSlider?.title}
-            onChange={(e) => {
-              setSelectedSlider((prev) =>
-                prev ? { ...prev, title: e.target.value } : null
-              );
-            }}
-            className="primary-input"
-          />
-          <textarea
-            rows={2}
-            className="primary-input"
-            placeholder="زیرعنوان"
-            defaultValue={selectedSlider?.sub_title}
-            onChange={(e) =>
-              setSelectedSlider((prev) =>
-                prev ? { ...prev, sub_title: e.target.value } : null
-              )
-            }
-          ></textarea>
-          <Button onClick={handleUpdateSlider}>
-            {updateSliderMutation.isPending
-              ? "درحال بروزرسانی..."
-              : "بروزرسانی اسلایدر"}
-          </Button>
-          {sliders?.map((slider) => (
-            <div
-              key={slider.id}
-              className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-e-xl p-4 bg-slate-100 dark:bg-gray-700 shadow-md`}
-            >
-              <p className="text-base text-gray-600 dark:text-gray-300">
-                {slider.title}
-              </p>
-              <button
-                className={`text-xl text-${themeColor}-500 absolute top-5 left-3 hover:text-${themeColor}-600 transition`}
-                onClick={() => handleSlider(slider)}
+        {sliders && sliders.length ? (
+          <div className="space-y-4">
+            <input
+              type="text"
+              placeholder="عنوان"
+              value={selectedSlider?.title || ""}
+              onChange={(e) => {
+                setSelectedSlider((prev) =>
+                  prev ? { ...prev, title: e.target.value } : null
+                );
+              }}
+              className="primary-input"
+            />
+            <textarea
+              rows={2}
+              className="primary-input"
+              placeholder="زیرعنوان"
+              value={selectedSlider?.sub_title || ""}
+              onChange={(e) =>
+                setSelectedSlider((prev) =>
+                  prev ? { ...prev, sub_title: e.target.value } : null
+                )
+              }
+            ></textarea>
+            <div>
+              <label
+                htmlFor="package-image"
+                className="block mb-1 font-medium text-gray-700 dark:text-gray-300"
               >
-                <FaPencil />
-              </button>
+                تصویر
+              </label>
+              <label htmlFor="package-image">
+                <div className="bg-white text-gray-500 hover:bg-slate-100 border-2 border-gray-300 rounded-xl border-dashed p-4 cursor-pointer dark:bg-gray-900 dark:border-gray-600">
+                  <span className="flex items-center gap-2">
+                    انتخاب عکس <IoCamera size={20} />
+                  </span>
+                </div>
+              </label>
+              <input
+                type="file"
+                className="hidden"
+                id="package-image"
+                accept="image/png"
+                onChange={handleImageChange}
+              />
+              {imagePreview && (
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="mt-2 w-32 rounded-md"
+                />
+              )}
             </div>
-          ))}
-        </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={selectedSlider?.is_active || false}
+                onChange={(e) =>
+                  setSelectedSlider((prev) =>
+                    prev ? { ...prev, is_active: e.target.checked } : null
+                  )
+                }
+                className={`accent-${themeColor}-500`}
+                id="update_is_active_id"
+              />
+              <label
+                htmlFor="update_is_active_id"
+                className="text-gray-700 dark:text-gray-300"
+              >
+                فعال باشد
+              </label>
+            </div>
+            <Button onClick={handleUpdateSlider}>
+              {updateSliderMutation.isPending
+                ? "درحال بروزرسانی..."
+                : "بروزرسانی بنر"}
+            </Button>
+          </div>
+        ) : (
+          <div className="text-center">
+            <p className="text-base font-medium text-gray-500 dark:text-gray-300">
+              هیچ بنری برای بروزرسانی وجود ندارد!
+            </p>
+          </div>
+        )}
       </CustomModal>
 
       {/* Remove Slider Modal */}
       <CustomModal
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
-        title="حذف اسلایدر"
+        title="حذف بنر"
       >
         <div className="space-y-4">
-          {sliders?.map((slider) => (
-            <div
-              key={slider.id}
-              className="flex items-center gap-4 relative border-s-2 border-s-red-500 rounded-e-xl p-4 bg-slate-100 dark:bg-gray-700 shadow-md"
-            >
-              <p className="text-base text-gray-600 dark:text-gray-300">
-                {slider.title}
-              </p>
-              <button
-                className="text-xl text-red-500 absolute top-5 left-3 hover:text-red-600 transition"
-                onClick={() => handleRemoveEmployee(slider.id)}
+          {sliders && sliders.length ? (
+            sliders?.map((slider) => (
+              <div
+                key={slider.id}
+                className="flex items-center gap-4 relative border-s-2 border-s-red-500 rounded-e-xl p-4 bg-slate-100 dark:bg-gray-700 shadow-md"
               >
-                <FaRegTrashAlt />
-              </button>
+                <p className="text-base text-gray-600 dark:text-gray-300">
+                  {slider.title}
+                </p>
+                {typeof slider.image === "string" && (
+                  <img
+                    src={slider.image}
+                    alt={slider.title}
+                    className="w-16 h-16 object-cover rounded-md"
+                  />
+                )}
+                <button
+                  className="text-xl text-red-500 absolute top-5 left-3 hover:text-red-600 transition"
+                  onClick={() => handleRemoveEmployee(slider.id)}
+                >
+                  <FaRegTrashAlt />
+                </button>
+              </div>
+            ))
+          ) : (
+            <div className="text-center">
+              <p className="text-base font-medium text-gray-500 dark:text-gray-300">
+                هیچ بنری برای حذف وجود ندارد!
+              </p>
             </div>
-          ))}
+          )}
         </div>
       </CustomModal>
 
       <div className="flex flex-row justify-between items-center mt-8">
         <PageTitle title="بنر ها" />
-        {/* Edit Box */}
         <div className="flex flex-row flex-wrap items-center gap-2">
           <Dropdown
             isAddOpen={isAddOpen}
@@ -317,35 +456,60 @@ const Sliders: React.FC = () => {
           initial="hidden"
           animate="visible"
         >
-          {sliders?.map((slider) => (
-            <motion.div
-              key={slider.id}
-              className="rounded-xl p-4 transition bg-white shadow-md dark:bg-gray-700"
-              variants={childrenVariants}
-            >
-              <h4 className="text-lg font-semibold text-gray-700 mb-2 dark:text-white">
-                {slider.title}
-              </h4>
-              <p
-                className="text-sm text-gray-500 mb-4 line-clamp-2 cursor-pointer dark:text-gray-300"
-                onClick={(e) => {
-                  const target = e.target as HTMLElement;
-                  target.classList.toggle("line-clamp-2");
-                }}
+          {sliders && sliders.length ? (
+            sliders?.map((slider) => (
+              <motion.div
+                key={slider.id}
+                className="rounded-xl p-4 transition bg-white shadow-md dark:bg-gray-700"
+                variants={childrenVariants}
               >
-                {slider.sub_title}
+                <div className="flex items-center gap-4">
+                  <div>
+                    <h4 className="text-lg font-semibold text-gray-700 mb-2 dark:text-white">
+                      {slider.title}
+                    </h4>
+                    <p
+                      className="text-sm text-gray-500 mb-4 line-clamp-2 cursor-pointer dark:text-gray-300"
+                      onClick={(e) => {
+                        const target = e.target as HTMLElement;
+                        target.classList.toggle("line-clamp-2");
+                      }}
+                    >
+                      {slider.sub_title}
+                    </p>
+                    <span
+                      className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${
+                        slider.is_active
+                          ? "bg-green-100 text-green-600 dark:bg-green-500 dark:text-white"
+                          : "bg-red-100 text-red-600 dark:bg-red-500 dark:text-white"
+                      }`}
+                    >
+                      {slider.is_active ? "فعال" : "غیرفعال"}
+                    </span>
+                  </div>
+                  {typeof slider.image === "string" && (
+                    <img
+                      src={slider.image}
+                      alt={slider.title}
+                      className="w-16 h-16 object-cover rounded-md"
+                    />
+                  )}
+                  <button
+                    className={`text-xl text-${themeColor}-500 hover:text-${themeColor}-600 transition`}
+                    onClick={() => handleSlider(slider)}
+                  >
+                    <FaPencil />
+                  </button>
+                </div>
+              </motion.div>
+            ))
+          ) : (
+            <div className="text-center">
+              <p className="text-base font-medium text-gray-500 dark:text-gray-300">
+                هیچ بنری وجود ندارد!
               </p>
-              <span
-                className={`inline-block px-3 py-1 text-sm font-medium rounded-full ${
-                  slider.is_active
-                    ? "bg-green-100 text-green-600 dark:bg-green-500 dark:text-white"
-                    : "bg-red-100 text-red-600 dark:bg-red-500 dark:text-white"
-                }`}
-              >
-                {slider.is_active ? "فعال" : "غیرفعال"}
-              </span>
-            </motion.div>
-          ))}
+            </div>
+          )}
         </motion.div>
       </div>
     </div>

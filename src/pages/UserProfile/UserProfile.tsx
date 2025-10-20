@@ -131,7 +131,7 @@ const UserProfile: React.FC = () => {
           >
             {userProfile?.image ? (
               <img
-                src={userProfile.image}
+                src={userProfile?.image}
                 alt="User"
                 className="w-20 h-20 rounded-full object-cover"
               />
@@ -305,11 +305,9 @@ const UserProfile: React.FC = () => {
       </div>
 
       <p className="text-sm font-normal text-gray-600 text-right dark:text-gray-300">
-        <span className="text-red-500 font-medium text-base">توجه!</span> لورم
-        ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از
-        طراحان گرافیک است. چاپگرها و متون بلکه روزنامه و مجله در ستون و
-        سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای
-        متنوع با هدف بهبود ابزارهای کاربردی می باشد.
+        <span className="text-red-500 font-medium text-base">توجه!</span> لطفاً
+        پیش از انجام هرگونه تغییر در اطلاعات حساب کاربری خود، از درستی اطلاعات
+        وارد شده اطمینان حاصل کنید. مسئولیت صحت داده‌ها بر عهده کاربر می‌باشد.
       </p>
     </section>
   );

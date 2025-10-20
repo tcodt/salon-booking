@@ -200,7 +200,7 @@ const Packages: React.FC = () => {
       });
       setPreview(
         selectedPackage.image
-          ? `https://queuingprojectapi.pythonanywhere.com${selectedPackage.image}`
+          ? `https://narjin.ir/api${selectedPackage.image}`
           : null
       );
     } else {
@@ -700,7 +700,7 @@ const Packages: React.FC = () => {
               <img
                 src={
                   pkg?.image
-                    ? `https://queuingprojectapi.pythonanywhere.com${pkg.image}`
+                    ? `https://narjin.ir/api${pkg.image}`
                     : "/images/no-image.jpg"
                 }
                 alt="Package Image"

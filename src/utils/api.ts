@@ -2,7 +2,8 @@ import axios from "axios";
 import { clearAuthTokens } from "./tokenHelper";
 
 const api = axios.create({
-  baseURL: "https://queuingprojectapi.pythonanywhere.com",
+  baseURL: "https://narjin.ir/api",
+  // baseURL: "https://queuingprojectapi.pythonanywhere.com",
 });
 
 api.interceptors.request.use((config) => {

@@ -59,7 +59,7 @@ const PackagesList: React.FC = () => {
                   <img
                     src={
                       item?.image
-                        ? `https://queuingprojectapi.pythonanywhere.com${item?.image}`
+                        ? `https://narjin.ir/api${item?.image}`
                         : "/images/no-image.jpg"
                     }
                     alt="Package Image"

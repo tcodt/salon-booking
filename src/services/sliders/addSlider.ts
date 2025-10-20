@@ -3,7 +3,7 @@ import api from "../../utils/api";
 
 type AddSliderType = Pick<SliderItems, "title" | "sub_title" | "is_active">;
 
-export const addSlider = async (data: AddSliderType) => {
+export const addSlider = async (data: AddSliderType | FormData) => {
   const response = await api.post("/sliders/", data);
   return response.data;
 };

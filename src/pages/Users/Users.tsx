@@ -43,7 +43,7 @@ const getImageUrl = (imagePath: string | null | undefined): string | null => {
   if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
     return imagePath;
   }
-  return `https://queuingprojectapi.pythonanywhere.com${
+  return `https://narjin.ir/api${
     imagePath.startsWith("/") ? "" : "/"
   }${imagePath}`;
 };
