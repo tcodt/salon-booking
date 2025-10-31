@@ -5,7 +5,6 @@ import { BiSolidCalendarCheck, BiSolidCalendarX } from "react-icons/bi";
 import { FaPencil } from "react-icons/fa6";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { useGetWorkingTime } from "../../hooks/working-time/useGetWorkingTime";
 import { AxiosError } from "axios";
 import { useRemoveWorkingTime } from "../../hooks/working-time/useRemoveWorkingTime";
 import { useQueryClient } from "@tanstack/react-query";
@@ -16,6 +15,7 @@ import { useAcl } from "../../context/AclContext";
 import Dropdown from "../../components/Dropdown/Dropdown";
 import AddWorkingTime from "../AddWorkingTime/AddWorkingTime";
 import { motion } from "framer-motion";
+import { useDisplayWorkingTime } from "../../hooks/working-time/useDisplayWorkingTime";
 
 const parentVariants = {
   hidden: { opacity: 0 },
@@ -37,7 +37,12 @@ const childrenVariants = {
 };
 
 const WorkingTime: React.FC = () => {
-  const { data: workingTimes, isPending, isError, error } = useGetWorkingTime();
+  const {
+    data: workingTimes,
+    isPending,
+    isError,
+    error,
+  } = useDisplayWorkingTime();
   const removeWorkingTimeMutation = useRemoveWorkingTime();
   const queryClient = useQueryClient();
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);

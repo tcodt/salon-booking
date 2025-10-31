@@ -22,10 +22,6 @@ const Register: React.FC = () => {
   const registerMutation = useRegister();
   const { themeColor } = useThemeColor();
 
-  const toggle = () => {
-    setIsVisible(!isVisible);
-  };
-
   const handleRegister: SubmitHandler<RegisterType> = async (data) => {
     const transformedData: RegisterType = {
       first_name: data.first_name,
@@ -128,16 +124,9 @@ const Register: React.FC = () => {
                 <FaPhoneAlt />
               </div>
             </label>
-            <label className="md:w-2/4 w-full relative">
-              <button
-                type="button"
-                className="absolute top-4 right-2 text-gray-500 text-lg"
-                onClick={toggle}
-              >
-                {isVisible ? <IoEye /> : <IoEyeOff />}
-              </button>
+            <div className="md:w-2/4 w-full relative">
               <input
-                type={!isVisible ? "password" : "text"}
+                type={isVisible ? "text" : "password"}
                 placeholder={errors?.password?.message || "رمز عبور"}
                 maxLength={12}
                 autoComplete="current-password"
@@ -154,10 +143,24 @@ const Register: React.FC = () => {
                   },
                 })}
               />
-              <div className="absolute top-4 left-2 text-gray-500 text-lg">
+
+              {/* lock icon on the left */}
+              <div className="absolute top-4 left-2 text-gray-500 text-lg pointer-events-none">
                 <IoIosLock />
               </div>
-            </label>
+
+              {/* eye icon button on the right */}
+              <button
+                type="button"
+                className="absolute top-4 right-2 text-gray-500 text-lg z-10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsVisible((prev) => !prev);
+                }}
+              >
+                {isVisible ? <IoEyeOff /> : <IoEye />}
+              </button>
+            </div>
 
             <Button type="submit">ثبت نام</Button>
             <span className="text-lg font-medium text-slate-700 text-center">

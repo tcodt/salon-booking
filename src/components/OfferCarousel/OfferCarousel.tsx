@@ -1,14 +1,14 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
-import { useGetSliders } from "../../hooks/sliders/useGetSliders";
 import toast from "react-hot-toast";
 import Loading from "../Loading/Loading";
 import { useThemeColor } from "../../context/ThemeColor";
 import { motion } from "framer-motion";
+import { useDisplaySlider } from "../../hooks/sliders/useDisplaySlider";
 
 const OfferCarousel: React.FC = () => {
-  const { data: sliders, isPending, isError, error } = useGetSliders();
+  const { data: sliders, isPending, isError, error } = useDisplaySlider();
   const { themeColor } = useThemeColor();
 
   // const styleVariant = [

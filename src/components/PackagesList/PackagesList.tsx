@@ -1,5 +1,4 @@
 import React from "react";
-import { useGetPackages } from "../../hooks/packages/useGetPackages";
 import toast from "react-hot-toast";
 import { HiOutlineBuildingOffice } from "react-icons/hi2";
 
@@ -11,9 +10,10 @@ import Button from "../Button/Button";
 import { Link, useNavigate } from "react-router";
 import { useThemeColor } from "../../context/ThemeColor";
 import { motion } from "framer-motion";
+import { useDisplayPackages } from "../../hooks/packages/useDisplayPackages";
 
 const PackagesList: React.FC = () => {
-  const { data: packages, isError, error } = useGetPackages();
+  const { data: packages, isError, error } = useDisplayPackages();
   const navigate = useNavigate();
   const { themeColor } = useThemeColor();
 
