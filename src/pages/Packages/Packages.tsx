@@ -200,7 +200,7 @@ const Packages: React.FC = () => {
       });
       setPreview(
         selectedPackage.image
-          ? `https://narjin.ir/api${selectedPackage.image}`
+          ? `https://api.narjin.ir${selectedPackage.image}`
           : null
       );
     } else {
@@ -259,8 +259,6 @@ const Packages: React.FC = () => {
       toast.error("لطفا حداقل یک سرویس انتخاب کنید");
       return;
     }
-
-    // console.log(data);
 
     const toastId = toast.loading("درحال بروزرسانی پکیج...");
 
@@ -700,7 +698,7 @@ const Packages: React.FC = () => {
               <img
                 src={
                   pkg?.image
-                    ? `https://narjin.ir/api${pkg.image}`
+                    ? `https://api.narjin.ir${pkg.image}`
                     : "/images/no-image.jpg"
                 }
                 alt="Package Image"

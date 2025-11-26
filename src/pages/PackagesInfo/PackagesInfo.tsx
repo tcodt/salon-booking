@@ -46,7 +46,7 @@ const PackagesInfo: React.FC = () => {
             <img
               src={
                 packageData?.image
-                  ? `https://narjin.ir/api${packageData.image}`
+                  ? `https://api.narjin.ir${packageData.image}`
                   : "/images/no-image.jpg"
               }
               alt="Packge Image"

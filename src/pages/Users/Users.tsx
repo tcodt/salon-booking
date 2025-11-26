@@ -43,7 +43,7 @@ const getImageUrl = (imagePath: string | null | undefined): string | null => {
   if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
     return imagePath;
   }
-  return `https://narjin.ir/api${
+  return `https://api.narjin.ir${
     imagePath.startsWith("/") ? "" : "/"
   }${imagePath}`;
 };
@@ -56,6 +56,8 @@ const Users: React.FC = () => {
   const queryClient = useQueryClient();
   const { themeColor } = useThemeColor();
   const { hasPermission } = useAcl();
+
+  console.log(usersData);
 
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isUpdatePassVisible, setIsUpdatePassVisible] =

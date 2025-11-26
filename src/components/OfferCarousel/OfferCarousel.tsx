@@ -69,7 +69,7 @@ const OfferCarousel: React.FC = () => {
         return (
           <SwiperSlide key={slider.id}>
             <motion.div
-              className={`bg-${themeColor}-400 rounded-xl shadow-md p-4 h-40 flex flex-col relative after:absolute after:content-[''] after:-bottom-12 after:left-0 after:w-20 after:h-40 after:bg-white after:opacity-25 after:rounded-full after:transform after:rotate-45 before:absolute before:content-[''] before:-bottom-20 before:left-28 before:w-20 before:h-52 before:bg-white before:opacity-25 before:rounded-full before:transform before:rotate-45 after:-z-10 before:-z-10 z-20 overflow-hidden`}
+              className={`bg-${themeColor}-400 rounded-xl shadow-md p-4 h-48 sm:h-40 flex flex-col relative after:absolute after:content-[''] after:-bottom-12 after:left-0 after:w-20 after:h-40 after:bg-white after:opacity-25 after:rounded-full after:transform after:rotate-45 before:absolute before:content-[''] before:-bottom-20 before:left-28 before:w-20 before:h-52 before:bg-white before:opacity-25 before:rounded-full before:transform before:rotate-45 after:-z-10 before:-z-10 z-20 overflow-hidden`}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 1 }}

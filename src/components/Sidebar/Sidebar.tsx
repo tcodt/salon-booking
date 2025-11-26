@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import { FaUsers, FaUserTie, FaWallet } from "react-icons/fa";
+import { FaUsers, FaWallet } from "react-icons/fa";
 import { GiBeard } from "react-icons/gi";
 import {
   MdHome,
   MdOutlineAccountCircle,
   MdPerson,
-  MdSettings,
+  // MdSettings,
   MdSpaceDashboard,
 } from "react-icons/md";
 import { Link, useLocation, useNavigate } from "react-router";
@@ -110,12 +110,12 @@ const Sidebar: React.FC = () => {
       path: "/packages",
       requiredPermission: "packages_list",
     },
-    {
-      icon: <FaUserTie size={20} />,
-      label: "آرایشگران",
-      path: "/stylists",
-      requiredPermission: null,
-    },
+    // {
+    //   icon: <FaUserTie size={20} />,
+    //   label: "آرایشگران",
+    //   path: "/stylists",
+    //   requiredPermission: null,
+    // },
     {
       icon: <FaWallet size={20} />,
       label: "کیف پول",
@@ -134,12 +134,12 @@ const Sidebar: React.FC = () => {
       path: "/user-profile",
       requiredPermission: null,
     },
-    {
-      icon: <MdSettings size={20} />,
-      label: "تنظیمات",
-      path: "/settings",
-      requiredPermission: null,
-    },
+    // {
+    //   icon: <MdSettings size={20} />,
+    //   label: "تنظیمات",
+    //   path: "/settings",
+    //   requiredPermission: null,
+    // },
   ];
 
   const filteredNavItems = navItems.filter((item) => {
@@ -172,7 +172,7 @@ const Sidebar: React.FC = () => {
           rounded-e-xl shadow-lg transition-transform duration-300 ease-in-out
           ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}`}
       >
-        <div className="flex flex-col p-4 pb-8">
+        <div className="flex flex-col gap-12 p-4 pb-8">
           <div className="flex items-center justify-start p-4 mb-8">
             <div
               className={`rounded-full p-1 w-16 h-16 border-2 border-${themeColor}-500 overflow-hidden`}
@@ -211,31 +211,32 @@ const Sidebar: React.FC = () => {
             </motion.ul>
           </nav>
 
-          <div className="mt-auto mb-2 p-3 rounded-lg bg-red-100 dark:bg-red-500 flex items-center">
-            <div className="w-8 h-8 rounded-full bg-red-200 flex items-center justify-center">
-              <IoLogOut className="text-red-600" size={20} />
+          <div>
+            <div className="mt-auto mb-2 p-3 rounded-lg bg-red-100 dark:bg-red-500 flex items-center">
+              <div className="w-8 h-8 rounded-full bg-red-200 flex items-center justify-center">
+                <IoLogOut className="text-red-600" size={20} />
+              </div>
+              <div className="mr-3 overflow-hidden">
+                <button
+                  className="cursor-pointer text-sm font-medium text-gray-700 dark:text-white"
+                  onClick={() => navigate("/logout")}
+                >
+                  خروج
+                </button>
+              </div>
             </div>
-            <div className="mr-3 overflow-hidden">
-              <button
-                className="cursor-pointer text-sm font-medium text-gray-700 dark:text-white"
-                onClick={() => navigate("/logout")}
-              >
-                خروج
-              </button>
-            </div>
-          </div>
-
-          <div className="mt-auto p-3 rounded-lg bg-gray-100 dark:bg-gray-500 flex items-center">
-            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-              <MdOutlineAccountCircle className="text-gray-600" size={20} />
-            </div>
-            <div className="mr-3 overflow-hidden">
-              <p className="text-sm font-medium text-gray-700 dark:text-white">
-                {user?.first_name}
-              </p>
-              <p className="text-xs text-gray-500 truncate dark:text-gray-200">
-                {user?.phone_number}
-              </p>
+            <div className="mt-auto p-3 rounded-lg bg-gray-100 dark:bg-gray-500 flex items-center">
+              <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                <MdOutlineAccountCircle className="text-gray-600" size={20} />
+              </div>
+              <div className="mr-3 overflow-hidden">
+                <p className="text-sm font-medium text-gray-700 dark:text-white">
+                  {user?.first_name}
+                </p>
+                <p className="text-xs text-gray-500 truncate dark:text-gray-200">
+                  {user?.phone_number}
+                </p>
+              </div>
             </div>
           </div>
         </div>
