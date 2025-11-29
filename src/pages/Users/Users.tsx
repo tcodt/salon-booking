@@ -57,8 +57,6 @@ const Users: React.FC = () => {
   const { themeColor } = useThemeColor();
   const { hasPermission } = useAcl();
 
-  console.log(usersData);
-
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isUpdatePassVisible, setIsUpdatePassVisible] =
     useState<boolean>(false);
@@ -579,6 +577,7 @@ const Users: React.FC = () => {
                 <button
                   className={`text-xl text-${themeColor}-500 absolute top-7 left-4 hover:text-${themeColor}-600 transition`}
                   onClick={() => handleSelectUserForUpdate(user.id, user)}
+                  type="button"
                 >
                   <FaPencil />
                 </button>

@@ -23,7 +23,7 @@ const HomePage: React.FC = () => {
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.5, delay: 1 }}
       >
-        سلام {greetingUser}
+        {greetingUser}
       </motion.h3>
       {/* Search Bar */}
       <motion.div

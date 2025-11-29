@@ -77,7 +77,9 @@ const OfferCarousel: React.FC = () => {
               <h3 className="text-xl font-bold mb-3 text-white dark:text-white">
                 {slider.title}
               </h3>
-              <p className="mb-4 text-gray-100">{slider.sub_title}</p>
+              <p className="mb-4 text-gray-100 line-clamp-2">
+                {slider.sub_title}
+              </p>
               <button
                 className={`bg-${themeColor}-500 text-white font-medium py-2 px-4 rounded-xl mt-auto self-start transition-colors duration-300`}
               >
