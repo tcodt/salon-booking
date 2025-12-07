@@ -41,7 +41,7 @@ const PackagesList: React.FC = () => {
         modifier: 1,
         slideShadows: true,
       }}
-      pagination={true}
+      pagination={false}
       modules={[EffectCoverflow, Autoplay]}
       className="mySwiper"
     >
@@ -53,7 +53,7 @@ const PackagesList: React.FC = () => {
             transition={{ duration: 0.5, ease: "easeOut" }}
             viewport={{ once: false, amount: 0.3 }}
           >
-            <div className="bg-white dark:bg-gray-700 dark:border-none border border-slate-300 h-auto w-full rounded-xl shadow-md flex flex-col gap-8">
+            <div className="bg-white dark:bg-gray-700 dark:border-none border border-slate-300 h-auto w-full rounded-xl shadow-md flex flex-col gap-8 relative z-10">
               <div className="space-y-4">
                 <Link to={`/packages/${item?.id}`} className="block">
                   <img
@@ -63,7 +63,7 @@ const PackagesList: React.FC = () => {
                         : "/images/no-image.jpg"
                     }
                     alt="Package Image"
-                    className="rounded-xl h-40 w-full object-cover"
+                    className="rounded-xl h-40 w-full object-cover cursor-pointer"
                   />
                 </Link>
                 <div className="space-y-4 p-4">

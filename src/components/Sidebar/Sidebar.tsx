@@ -45,9 +45,7 @@ const Sidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { themeColor } = useThemeColor();
-  const { hasPermission } = useAcl();
-
-  const isAdmin = user?.is_owner || user?.is_staff;
+  const { role, hasPermission } = useAcl();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -62,7 +60,7 @@ const Sidebar: React.FC = () => {
 
   useEffect(() => {
     setIsSidebarOpen(false);
-  }, [location, setIsSidebarOpen]);
+  }, [location.pathname, setIsSidebarOpen]);
 
   const logoSrc = logoMap[themeColor] || "/images/logo-main.jpg";
 
@@ -142,13 +140,15 @@ const Sidebar: React.FC = () => {
     // },
   ];
 
+  // فیلتر کردن منوها بر اساس دسترسی
   const filteredNavItems = navItems.filter((item) => {
-    const hasAccess =
-      !item.requiredPermission ||
-      isAdmin ||
-      hasPermission(item.requiredPermission);
-    // console.log(`Sidebar: Item "${item.label}" hasAccess: ${hasAccess}`);
-    return hasAccess;
+    // آیتم‌هایی که پرمیشن نمی‌خوان → همه ببینن
+    if (!item.requiredPermission) return true;
+
+    // فقط ادمین‌ها و کسانی که پرمیشن دارن می‌بینن
+    if (role === "admin") return true;
+
+    return hasPermission(item.requiredPermission);
   });
 
   return (
@@ -173,7 +173,7 @@ const Sidebar: React.FC = () => {
           ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}`}
       >
         <div className="flex flex-col gap-12 p-4 pb-8">
-          <div className="flex items-center justify-start p-4 mb-8">
+          <div className="flex items-center justify-start p-4">
             <div
               className={`rounded-full p-1 w-16 h-16 border-2 border-${themeColor}-500 overflow-hidden`}
             >

@@ -11,6 +11,7 @@ import { Link } from "react-router";
 import { useGetUsers } from "../../hooks/users/useGetUsers";
 import { motion } from "framer-motion";
 import { DashboardResponse } from "../../types/dashboard";
+import { useAcl } from "../../context/AclContext";
 
 // 👇 Type guard to ensure we safely access admin fields
 const isAdminDashboard = (
@@ -22,10 +23,13 @@ const Dashboard: React.FC = () => {
   const { data: dashboardData, error, isError } = useGetDashboardToday();
   const { data: usersData } = useGetUsers();
   const { themeColor } = useThemeColor();
+  const { role } = useAcl();
+
+  const isAdmin = role === "admin";
 
   // ✅ Use type guard before accessing admin-only fields
   const incomeData = useMemo(() => {
-    if (!isAdminDashboard(dashboardData)) return [];
+    if (isAdmin || !isAdminDashboard(dashboardData)) return [];
     const { today = 0, week = 0, month = 0 } = dashboardData.income;
     const maxIncome = Math.max(today, week, month) || 1;
     return [
@@ -33,18 +37,18 @@ const Dashboard: React.FC = () => {
       { label: "هفته", value: week, height: (week / maxIncome) * 100 },
       { label: "ماه", value: month, height: (month / maxIncome) * 100 },
     ];
-  }, [dashboardData]);
+  }, [dashboardData, isAdmin]);
 
   // Handle error
   if (isError) return <div>{error.message}</div>;
 
   // Match new users
-  const newUserIds =
-    dashboardData?.type === "admin" &&
-    dashboardData?.new_users.map((nw) => nw?.id);
-  const matchedUsers = usersData?.filter(
-    (user) => newUserIds && newUserIds?.includes(user.id)
-  );
+  const matchedUsers =
+    isAdmin && isAdminDashboard(dashboardData)
+      ? usersData?.filter((user) =>
+          dashboardData.new_users.some((nu) => nu.id === user.id)
+        )
+      : [];
 
   return (
     <div>
@@ -59,7 +63,7 @@ const Dashboard: React.FC = () => {
         </h3>
 
         {/* Income Chart */}
-        {dashboardData?.type === "admin" && (
+        {isAdmin && incomeData.length > 0 && (
           <div className="col-span-full">
             <div className="h-72 bg-white dark:bg-gray-700 rounded-xl shadow-sm p-4 flex flex-col justify-end">
               <div
@@ -131,7 +135,7 @@ const Dashboard: React.FC = () => {
           </span>
         </div>
 
-        {dashboardData?.type === "admin" && (
+        {isAdmin && isAdminDashboard(dashboardData) && (
           <div className="p-4 bg-white dark:bg-gray-700 rounded-xl shadow-sm col-span-full grid grid-cols-12 gap-2 relative overflow-hidden">
             <div className="absolute top-2 left-0">
               <GrLineChart
@@ -164,7 +168,7 @@ const Dashboard: React.FC = () => {
         )}
 
         <h3 className="primary-title col-span-full mt-4 dark:text-white">
-          رزرو ها
+          رزروهای اخیر
         </h3>
 
         {dashboardData && dashboardData?.total_appointments < 1 && (
@@ -197,19 +201,22 @@ const Dashboard: React.FC = () => {
             </Link>
           ))}
 
-        {dashboardData?.type === "admin" && (
-          <div className="col-span-full flex flex-row items-end justify-between">
-            <h3 className="primary-title col-span-full mt-4 dark:text-white">
-              کاربران
-            </h3>
-            <Link
-              to="/users"
-              className={`text-sm font-medium text-${themeColor}-500 hover:opacity-50 transition-opacity`}
-            >
-              همه کاربران
-            </Link>
-          </div>
-        )}
+        {isAdmin &&
+          isAdminDashboard(dashboardData) &&
+          matchedUsers &&
+          matchedUsers.length > 0 && (
+            <div className="col-span-full flex flex-row items-end justify-between">
+              <h3 className="primary-title col-span-full mt-4 dark:text-white">
+                کاربران
+              </h3>
+              <Link
+                to="/users"
+                className={`text-sm font-medium text-${themeColor}-500 hover:opacity-50 transition-opacity`}
+              >
+                همه کاربران
+              </Link>
+            </div>
+          )}
 
         {matchedUsers?.slice(0, 4).map((user) => (
           <Link

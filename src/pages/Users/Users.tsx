@@ -10,7 +10,6 @@ import CustomModal from "../../components/CustomModal/CustomModal";
 import { useQueryClient } from "@tanstack/react-query";
 import Button from "../../components/Button/Button";
 import { useThemeColor } from "../../context/ThemeColor";
-import { useAcl } from "../../context/AclContext";
 import { useAddUser } from "../../hooks/users/useAddUser";
 import { useUpdateUser } from "../../hooks/users/useUpdateUser";
 import { useRemoveUser } from "../../hooks/users/useRemoveUser";
@@ -55,7 +54,6 @@ const Users: React.FC = () => {
   const removeUserMutation = useRemoveUser();
   const queryClient = useQueryClient();
   const { themeColor } = useThemeColor();
-  const { hasPermission } = useAcl();
 
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isUpdatePassVisible, setIsUpdatePassVisible] =
@@ -647,7 +645,6 @@ const Users: React.FC = () => {
       {usersData?.length === 0 ? (
         <p className="text-gray-600">کاربری یافت نشد.</p>
       ) : (
-        hasPermission("user_list") &&
         usersData?.map((user) => (
           <motion.div
             key={user.id}

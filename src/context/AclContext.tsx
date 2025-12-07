@@ -1,64 +1,65 @@
-import React, { createContext, useContext, useEffect, useMemo } from "react";
-import { useGetUserPermissionsById } from "../hooks/permissions/useGetUserPermissionsById";
+import React, { createContext, useContext, useMemo } from "react";
+import { useGetProfile } from "../hooks/profile/useGetProfile";
 
 interface AclContextType {
   userPermissions: string[];
   hasPermission: (permission: string) => boolean;
-  role: string;
-}
-
-interface AclProviderProps {
-  children: React.ReactNode;
-  userId?: number | null;
+  role: "admin" | "employee" | "normal-user";
+  isOwner: boolean;
+  isSuperuser: boolean;
 }
 
 const AclContext = createContext<AclContextType | undefined>(undefined);
 
-export const AclProvider: React.FC<AclProviderProps> = ({
+export const AclProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
-  userId,
 }) => {
-  const { data: userPermissionsData, error: permissionsError } =
-    useGetUserPermissionsById(userId ?? 0);
+  const { data: userInfo, isLoading, error } = useGetProfile();
+
+  const isOwner = !!userInfo?.is_owner;
+  const isSuperuser = !!userInfo?.is_superuser;
+  const isAdmin = isOwner || isSuperuser;
 
   const userPermissions = useMemo<string[]>(() => {
-    return userId && userPermissionsData?.permissions_display
-      ? userPermissionsData?.permissions_display.map((p) => p.code)
-      : [];
-  }, [userId, userPermissionsData?.permissions_display]);
+    if (isAdmin) {
+      return "user_edit,role_edit,appointment_manage_all,appointment_view_all,user_view,settings_edit".split(
+        ","
+      );
+    }
+    return [];
+  }, [isAdmin]);
 
-  const role = useMemo(() => {
-    if (!userId || userPermissions.length === 0) return "normal-user";
-    if (
-      userPermissions.includes("user_edit") ||
-      userPermissions.includes("role_edit")
-    )
-      return "admin";
-    return "employee";
-  }, [userId, userPermissions]);
+  const role = useMemo<"admin" | "employee" | "normal-user">(() => {
+    if (isAdmin) return "admin";
+    if (userPermissions.length > 0) return "employee";
+    return "normal-user";
+  }, [isAdmin, userPermissions.length]);
 
   const hasPermission = (permission: string) => {
-    // if (userPermissions.includes(permission)) {
-    //   console.log("User has the permission");
-    // } else {
-    //   console.log("User doesn't has the permission");
-    // }
     return userPermissions.includes(permission);
   };
 
-  useEffect(() => {
-    // if (userId) {
-    //   console.log(`User ID: ${userId}`);
-    //   console.log("User Permissions:", userPermissions);
-    //   console.log(`نقش کاربر (${userId}): ${role}`);
-    // }
-    if (permissionsError) {
-      console.error("Error fetching permissions:", permissionsError);
-    }
-  }, [userId, userPermissions, permissionsError, role]);
+  // برای دیباگ
+  // useEffect(() => {
+  //   console.log("ACL Debug →", { isOwner, isSuperuser, role, userPermissions });
+  // }, [isOwner, isSuperuser, role, userPermissions]);
+
+  if (isLoading) return null;
+  if (error) {
+    console.error("Error loading user profile for ACL:", error);
+    return null;
+  }
 
   return (
-    <AclContext.Provider value={{ userPermissions, hasPermission, role }}>
+    <AclContext.Provider
+      value={{
+        userPermissions,
+        hasPermission,
+        role,
+        isOwner,
+        isSuperuser,
+      }}
+    >
       {children}
     </AclContext.Provider>
   );
@@ -66,8 +67,6 @@ export const AclProvider: React.FC<AclProviderProps> = ({
 
 export const useAcl = () => {
   const context = useContext(AclContext);
-  if (!context) {
-    throw new Error("useAcl must be used within an AclProvider");
-  }
+  if (!context) throw new Error("useAcl must be used within AclProvider");
   return context;
 };

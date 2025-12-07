@@ -60,7 +60,7 @@ type NewUser = {
 type Payment = any; // Replace with proper type if payment structure is known
 
 // Dashboard response types
-type AdminDashboardResponse = {
+export type AdminDashboardResponse = {
   type: "admin";
   total_appointments: number;
   appointments: Appointment[];
@@ -75,7 +75,7 @@ type AdminDashboardResponse = {
   new_users: NewUser[];
 };
 
-type UserDashboardResponse = {
+export type UserDashboardResponse = {
   type: "user";
   last_appointments: Appointment[];
   last_payments: Payment[];

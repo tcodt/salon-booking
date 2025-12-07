@@ -116,12 +116,10 @@ const UserProfile: React.FC = () => {
             </li>
             <li className="text-gray-700 font-medium dark:text-gray-300">
               نقش:{" "}
-              <span>
-                {role === "admin"
-                  ? "مدیر"
-                  : role === "employee"
-                  ? "کارمند"
-                  : "کاربر معمولی"}
+              <span className="text-base">
+                {role === "admin" && "مدیر"}
+                {role === "employee" && "کارمند"}
+                {role === "normal-user" && "کاربر معمولی"}
               </span>
             </li>
           </ul>

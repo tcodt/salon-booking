@@ -111,6 +111,9 @@ const AvailableTimes: React.FC = () => {
   const handleAddSlot = (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!dateValue || !selectedService)
+      return toast.error("لطفا با دقت فرم را پر کنید");
+
     // Convert dateValue and startTimeValue to correct formats
     const dateStr = dateValue?.format?.("YYYY-MM-DD") || "";
     const startTimeStr = `${startTimeValue?.hour
@@ -250,7 +253,10 @@ const AvailableTimes: React.FC = () => {
               calendar={persian}
               format="HH:mm"
               render={
-                <button className="flex items-center gap-2 py-2 px-4 rounded-xl bg-white text-gray-600 text-base font-medium border border-gray-200">
+                <button
+                  type="button"
+                  className="flex items-center gap-2 py-2 px-4 rounded-xl bg-white text-gray-600 text-base font-medium border border-gray-200"
+                >
                   {startTimeValue ? String(startTimeValue) : "انتخاب ساعت"}
                 </button>
               }
@@ -261,13 +267,14 @@ const AvailableTimes: React.FC = () => {
               calendarPosition="bottom-left"
               onChange={handleChangeTime}
             >
-              <div className="p-2">
+              {/* <div className="p-2">
                 <button
+                type="button"
                   className={`bg-${themeColor}-500 text-white py-2 px-4 rounded-xl text-base font-medium w-full`}
                 >
                   انتخاب
                 </button>
-              </div>
+              </div> */}
             </DatePicker>
             {/* Manual Time Picker */}
 

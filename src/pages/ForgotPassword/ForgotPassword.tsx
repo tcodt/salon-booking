@@ -1,90 +1,71 @@
-import React, { useEffect, useState } from "react";
-import { AiFillMessage } from "react-icons/ai";
-import { MdEmail } from "react-icons/md";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import Button from "../../components/Button/Button";
 import PageBar from "../../components/PageBar/PageBar";
+import { TbPasswordFingerprint } from "react-icons/tb";
+import { useThemeColor } from "../../context/ThemeColor";
+import { useSendResetCode } from "../../hooks/accounts/send-reset-code/useSendResetCode";
+import toast from "react-hot-toast";
 
 const ForgotPassword: React.FC = () => {
   const navigate = useNavigate();
-  const [userPhoneNumber, setUserPhoneNumber] = useState<string>("");
-  const [selectedBox, setSelectedBox] = useState<"phoneNumber" | "email">(
-    "phoneNumber"
-  );
+  const { themeColor } = useThemeColor();
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const sendResetCodeMutation = useSendResetCode();
 
   const getBackToPreviousPage = () => {
     navigate(-1);
   };
 
-  useEffect(() => {
-    const userData = localStorage.getItem("userData");
-    const parsedUserData = userData ? JSON.parse(userData) : null;
-    const phoneNumber = parsedUserData ? parsedUserData.phoneNumber : "";
-    setUserPhoneNumber(phoneNumber);
-  }, []);
-
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    navigate("/receive-code");
+
+    if (phoneNumber.length !== 11)
+      return toast.error("شماره موبایل باید 11 رقم باشد");
+
+    sendResetCodeMutation.mutate(phoneNumber, {
+      onSuccess: () => {
+        toast.success("کد تأیید ارسال شد");
+        navigate("/receive-code", {
+          state: { phoneNumber },
+        });
+      },
+      onError: () => {
+        toast.error("شماره موبایل معتبر نیست یا مشکلی پیش آمده");
+      },
+    });
   };
 
   return (
-    <section className="p-4 h-screen">
+    <section className="p-4">
       <PageBar title="بازنشانی رمز عبور" handleClick={getBackToPreviousPage} />
 
-      <div className="flex flex-col gap-8 mt-12 pb-4">
-        <img
-          src="/images/forgot-pass-pic.svg"
-          alt="Forgot Password Image"
-          className="h-[300px] w-[300px] object-contain mx-auto"
-        />
-        <p className="text-base text-gray-700 font-medium text-center">
-          انتخاب کنید که چطور رمز عبور را بازنشانی کنیم
-        </p>
-        <div className="flex flex-col gap-4">
-          <div
-            className={`p-3 rounded-xl border-2 hover:border-orange-500 transition flex items-center gap-4 ${
-              selectedBox === "phoneNumber"
-                ? "border-orange-500"
-                : "border-slate-200"
-            }`}
-            onClick={() => setSelectedBox("phoneNumber")}
-          >
-            <div className="p-4 bg-orange-100 text-orange-500 text-2xl rounded-full">
-              <AiFillMessage />
-            </div>
-            <div className="flex flex-col gap-2">
-              <span className="text-sm text-gray-500 font-medium">
-                از طریق SMS
-              </span>
-              <span className="text-lg text-gray-800 font-medium">
-                {userPhoneNumber}
-              </span>
-            </div>
-          </div>
-          <div
-            className={`p-3 rounded-xl border-2 hover:border-orange-500 transition flex items-center gap-4 ${
-              selectedBox === "email" ? "border-orange-500" : "border-slate-200"
-            }`}
-            onClick={() => setSelectedBox("email")}
-          >
-            <div className="p-4 bg-orange-100 text-orange-500 text-2xl rounded-full">
-              <MdEmail />
-            </div>
-            <div className="flex flex-col gap-2">
-              <span className="text-sm text-gray-500 font-medium">
-                از طریق ایمیل
-              </span>
-              <span className="text-lg text-gray-800 font-medium">
-                example@example.com
-              </span>
-            </div>
-          </div>
+      <form className="flex flex-col gap-8 mt-12 pb-4">
+        <div className="flex items-center justify-center">
+          <TbPasswordFingerprint
+            size={70}
+            className={`text-${themeColor}-500`}
+          />
         </div>
+        <p className="text-base text-gray-700 font-medium text-center">
+          شماره موبایل خود را وارد کنید
+        </p>
+        <input
+          type="tel"
+          inputMode="numeric"
+          className="primary-input"
+          placeholder="شماره موبایل"
+          value={phoneNumber}
+          onChange={(e) =>
+            setPhoneNumber(e.target.value.replace(/[^0-9]/g, ""))
+          }
+          minLength={11}
+          maxLength={11}
+        />
         <Button type="submit" onClick={handleSubmit}>
-          ادامه
+          {sendResetCodeMutation.isPending ? "منتظر بمانید..." : " ادامه"}
         </Button>
-      </div>
+      </form>
     </section>
   );
 };

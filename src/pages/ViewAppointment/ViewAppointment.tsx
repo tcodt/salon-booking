@@ -40,10 +40,28 @@ const ViewAppointment: React.FC = () => {
             </h3>
             <div className="flex items-center gap-2">
               <div className="relative">
-                <div className="w-4 h-4 bg-yellow-500 rounded-full animate-ping absolute"></div>
-                <div className="w-4 h-4 bg-yellow-600 rounded-full"></div>
+                <div
+                  className={`w-4 h-4 ${
+                    appointmentData?.status === "pending"
+                      ? "bg-yellow-500"
+                      : "bg-green-500"
+                  } rounded-full animate-ping absolute`}
+                ></div>
+                <div
+                  className={`w-4 h-4 ${
+                    appointmentData?.status === "pending"
+                      ? "bg-yellow-500"
+                      : "bg-green-500"
+                  } rounded-full`}
+                ></div>
               </div>
-              <span className="text-sm text-yellow-600">
+              <span
+                className={`text-sm ${
+                  appointmentData?.status === "pending"
+                    ? "text-yellow-500"
+                    : "text-green-500"
+                }`}
+              >
                 {appointmentData?.get_status}
               </span>
             </div>

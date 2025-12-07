@@ -16,7 +16,6 @@ import { useAddEmployee } from "../../hooks/employees/useAddEmployee";
 import { useUpdateEmployee } from "../../hooks/employees/useUpdateEmployee";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
-import { useAcl } from "../../context/AclContext";
 import Dropdown from "../../components/Dropdown/Dropdown";
 import EmployeeCard from "../../components/EmployeeCard/EmployeeCard";
 import { motion } from "framer-motion";
@@ -60,11 +59,6 @@ const ManageEmployees: React.FC = () => {
   const queryClient = useQueryClient();
   const removeEmployeeMutation = useRemoveEmployee();
   const { themeColor } = useThemeColor();
-  const { hasPermission } = useAcl();
-
-  if (!hasPermission("employee_list")) {
-    return <div className="text-center p-6 text-red-500">دسترسی غیرمجاز!</div>;
-  }
 
   if (isPending) return <Loading />;
 
@@ -290,7 +284,6 @@ const ManageEmployees: React.FC = () => {
       {employees?.length === 0 ? (
         <p className="text-gray-600">آرایشگری یافت نشد.</p>
       ) : (
-        hasPermission("employee_list") &&
         employees?.map((employee: GetEmployeesItem) => {
           return (
             <motion.div
