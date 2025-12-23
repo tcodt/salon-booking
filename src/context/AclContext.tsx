@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo } from "react";
+import React, { createContext, ReactNode, useContext, useMemo } from "react";
 import { useGetProfile } from "../hooks/profile/useGetProfile";
 
 interface AclContextType {
@@ -9,10 +9,16 @@ interface AclContextType {
   isSuperuser: boolean;
 }
 
+export interface AclProviderProps {
+  children: ReactNode;
+  userId: number | null;
+}
+
 const AclContext = createContext<AclContextType | undefined>(undefined);
 
-export const AclProvider: React.FC<{ children: React.ReactNode }> = ({
+export const AclProvider: React.FC<AclProviderProps> = ({
   children,
+  userId,
 }) => {
   const { data: userInfo, isLoading, error } = useGetProfile();
 
@@ -38,11 +44,6 @@ export const AclProvider: React.FC<{ children: React.ReactNode }> = ({
   const hasPermission = (permission: string) => {
     return userPermissions.includes(permission);
   };
-
-  // برای دیباگ
-  // useEffect(() => {
-  //   console.log("ACL Debug →", { isOwner, isSuperuser, role, userPermissions });
-  // }, [isOwner, isSuperuser, role, userPermissions]);
 
   if (isLoading) return null;
   if (error) {

@@ -1,15 +1,13 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { clearAuthTokens } from "./tokenHelper";
 
 const api = axios.create({
   baseURL: "https://api.narjin.ir",
-  // baseURL: "https://narjin.ir/api",
-  // baseURL: "https://queuingprojectapi.pythonanywhere.com",
 });
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
-  if (token) {
+  if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
@@ -17,20 +15,22 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
+  (error: AxiosError) => {
+    const status = error.response?.status;
+    const url = error.config?.url ?? "";
+
+    if (status === 401) {
       clearAuthTokens();
       window.location.href = "/login";
     }
 
     if (
-      error.response.status === 400 &&
-      error.config.url &&
-      (error.config.url.includes("/register") ||
-        error.config.url.includes("/login"))
+      status === 400 &&
+      (url.includes("/register") || url.includes("/login"))
     ) {
       clearAuthTokens();
     }
+
     return Promise.reject(error);
   }
 );

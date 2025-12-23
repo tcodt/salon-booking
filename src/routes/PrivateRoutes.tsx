@@ -3,7 +3,7 @@ import { Navigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { useGetUserPermissions } from "../hooks/permissions/useGetUserPermissions";
 import { useGetProfile } from "../hooks/profile/useGetProfile";
-import { AclProvider } from "../context/AclContext";
+import { AclProvider } from "../context/AclContext"; // ایمپورت درست
 import Dots from "../components/Dots/Dots";
 
 interface PrivateRoutesProps {
@@ -15,7 +15,6 @@ const PrivateRoutes: React.FC<PrivateRoutesProps> = ({ children }) => {
   const { data: userPermissionId, isPending: permissionLoading } =
     useGetUserPermissions();
   const { data: userInfo, isPending: profileLoading } = useGetProfile();
-  // const token = localStorage.getItem("accessToken");
 
   if (permissionLoading || profileLoading)
     return (

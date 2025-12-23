@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { FaPhoneAlt } from "react-icons/fa";
 import Button from "../../components/Button/Button";
@@ -8,7 +8,6 @@ import { IoEye, IoEyeOff } from "react-icons/io5";
 import { IoIosLock } from "react-icons/io";
 import { useLogin } from "../../hooks/accounts/login/useLogin";
 import { AxiosError } from "axios";
-import Loading from "../../components/Loading/Loading";
 import toast from "react-hot-toast";
 import { LoginType } from "../../types/login";
 import { useThemeColor } from "../../context/ThemeColor";
@@ -28,9 +27,9 @@ const Login: React.FC = () => {
   const queryClient = useQueryClient();
   const { login: loginContext } = useAuth();
 
-  const toggle = () => {
+  const toggle = useCallback(() => {
     setIsVisible(!isVisible);
-  };
+  }, [isVisible]);
 
   const handleLogin: SubmitHandler<LoginType> = (data) => {
     const toastId = toast.loading("درحال ورود...");
@@ -46,13 +45,9 @@ const Login: React.FC = () => {
         const axiosError = error as AxiosError;
         console.error("Login failed: ", axiosError);
         if (axiosError.response?.status === 401) {
-          toast.error("خطایی رخ داده است، لطفاً دوباره تلاش کنید", {
-            id: toastId,
-          });
+          toast.error("شماره تلفن یا رمز عبور اشتباه است!", { id: toastId });
         } else {
-          toast.error("شماره تلفن یا رمز عبور اشتباه است!", {
-            id: toastId,
-          });
+          toast.error("خطای سرور، لطفاً بعداً تلاش کنید", { id: toastId });
         }
       },
     });
@@ -61,8 +56,6 @@ const Login: React.FC = () => {
   return (
     <section className="p-4 w-screen h-screen overflow-y-auto">
       <PageBar title="ورود" />
-
-      {loginMutation.isPending && <Loading />}
 
       <div className="mt-6 flex flex-col gap-4 items-center">
         <div className="md:w-2/4 w-full text-center">
@@ -94,7 +87,7 @@ const Login: React.FC = () => {
                     message: "شماره تلفن باید 11 رقم باشد!",
                   },
                 })}
-                onKeyPress={(e) => {
+                onKeyDown={(e) => {
                   if (!/[0-9]/.test(e.key)) {
                     e.preventDefault();
                   }
@@ -121,7 +114,7 @@ const Login: React.FC = () => {
               <input
                 type={!isVisible ? "password" : "text"}
                 placeholder="رمز عبور"
-                maxLength={12}
+                minLength={6}
                 autoComplete="current-password"
                 className="primary-input px-8"
                 {...register("password", {
@@ -144,7 +137,9 @@ const Login: React.FC = () => {
 
             {/* {phoneNumber.length >= 11 && isCodeInputAvailable && <CodeInput />} */}
 
-            <Button type="submit">ورود</Button>
+            <Button type="submit" disabled={loginMutation.isPending}>
+              {loginMutation.isPending ? "در حال ورود..." : "ورود"}
+            </Button>
             <button
               type="button"
               className={`text-sm font-medium text-gray-600 dark:text-gray-300 dark:hover:text-${themeColor}-500 cursor-pointer hover:text-${themeColor}-500 transition`}
