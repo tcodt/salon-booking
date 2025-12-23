@@ -16,10 +16,7 @@ export interface AclProviderProps {
 
 const AclContext = createContext<AclContextType | undefined>(undefined);
 
-export const AclProvider: React.FC<AclProviderProps> = ({
-  children,
-  userId,
-}) => {
+export const AclProvider: React.FC<AclProviderProps> = ({ children }) => {
   const { data: userInfo, isLoading, error } = useGetProfile();
 
   const isOwner = !!userInfo?.is_owner;
