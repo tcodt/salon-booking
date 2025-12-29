@@ -44,14 +44,18 @@ const ViewAppointment: React.FC = () => {
                   className={`w-4 h-4 ${
                     appointmentData?.status === "pending"
                       ? "bg-yellow-500"
-                      : "bg-green-500"
+                      : appointmentData?.status === "canceled"
+                      ? "bg-red-600"
+                      : "bg-green-600"
                   } rounded-full animate-ping absolute`}
                 ></div>
                 <div
                   className={`w-4 h-4 ${
                     appointmentData?.status === "pending"
                       ? "bg-yellow-500"
-                      : "bg-green-500"
+                      : appointmentData?.status === "canceled"
+                      ? "bg-red-600"
+                      : "bg-green-600"
                   } rounded-full`}
                 ></div>
               </div>
@@ -59,6 +63,8 @@ const ViewAppointment: React.FC = () => {
                 className={`text-sm ${
                   appointmentData?.status === "pending"
                     ? "text-yellow-500"
+                    : appointmentData?.status === "canceled"
+                    ? "text-red-500"
                     : "text-green-500"
                 }`}
               >
@@ -240,7 +246,12 @@ const ViewAppointment: React.FC = () => {
       </CustomModal>
 
       <div className="flex justify-start gap-4 mt-4">
-        <Button onClick={() => setIsModalOpen(true)}>تکمیل پرداخت</Button>
+        <Button
+          onClick={() => setIsModalOpen(true)}
+          disabled={appointmentData?.status === "canceled"}
+        >
+          تکمیل پرداخت
+        </Button>
         <button
           className="px-4 py-2 bg-gray-300 text-gray-600 rounded-xl hover:bg-gray-400 hover:text-white transition flex items-center gap-2"
           onClick={() => {

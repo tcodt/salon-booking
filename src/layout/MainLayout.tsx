@@ -3,8 +3,11 @@ import { Outlet } from "react-router";
 import Navigation from "../components/Navigation/Navigation";
 import TopBar from "../components/TopBar/TopBar";
 import Sidebar from "../components/Sidebar/Sidebar";
+import { useHomeTour } from "../hooks/drivers/useHomeTour";
 
 const MainLayout: React.FC = () => {
+  useHomeTour();
+
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden">
       <div

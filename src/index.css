@@ -121,6 +121,19 @@ html {
   display: none;
 }
 
+#driver-popover-content,
+#driver-popover-title,
+#driver-popover-description,
+.driver-popover-footer,
+.driver-popover-prev-btn,
+.driver-popover-next-btn {
+  font-family: "mainFont" !important;
+}
+
+.driver-active .topbar-motion-fix {
+  transform: none !important;
+}
+
 #rotation_profile {
   animation: rotate-x-pause 4s linear infinite;
 }

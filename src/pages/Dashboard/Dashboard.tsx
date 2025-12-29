@@ -12,6 +12,7 @@ import { useGetUsers } from "../../hooks/users/useGetUsers";
 import { motion } from "framer-motion";
 import { DashboardResponse } from "../../types/dashboard";
 import { useAcl } from "../../context/AclContext";
+// import { useAppointmentsReport } from "../../hooks/reports/useAppointmentsReport";
 
 // 👇 Type guard to ensure we safely access admin fields
 const isAdminDashboard = (
@@ -22,10 +23,13 @@ const isAdminDashboard = (
 const Dashboard: React.FC = () => {
   const { data: dashboardData, error, isError } = useGetDashboardToday();
   const { data: usersData } = useGetUsers();
+  // const { data: appointmentsReportData } = useAppointmentsReport();
   const { themeColor } = useThemeColor();
   const { role } = useAcl();
 
   const isAdmin = role === "admin";
+
+  // console.log(appointmentsReportData);
 
   // ✅ Use type guard before accessing admin-only fields
   const incomeData = useMemo(() => {
@@ -192,7 +196,9 @@ const Dashboard: React.FC = () => {
                   className={`${
                     appointment?.status === "pending"
                       ? "text-yellow-500"
-                      : "text-green-500"
+                      : appointment?.status === "confirmed"
+                      ? "text-green-500"
+                      : "text-red-500"
                   } text-sm font-medium`}
                 >
                   {appointment?.get_status}

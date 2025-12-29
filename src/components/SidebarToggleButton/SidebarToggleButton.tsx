@@ -10,6 +10,7 @@ const SidebarToggleButton: React.FC = () => {
       onClick={toggleSidebar}
       className="text-3xl text-white hover:opacity-50 dark:text-white dark:hover:opacity-50 transition"
       aria-label={isSidebarOpen ? "بستن منو" : "باز کردن منو"}
+      id="sidebar"
     >
       {isSidebarOpen ? <MdClose /> : <MdMenu />}
     </button>

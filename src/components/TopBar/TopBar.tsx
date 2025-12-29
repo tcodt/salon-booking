@@ -41,7 +41,7 @@ const TopBar: React.FC = () => {
 
   return (
     <motion.div
-      className={`flex items-center justify-between mb-4 bg-${themeColor}-500 dark:bg-${themeColor}-700 p-4 rounded-3xl`}
+      className={`topbar-motion-fix flex items-center justify-between mb-4 bg-${themeColor}-500 dark:bg-${themeColor}-700 p-4 rounded-3xl`}
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, delay: 1 }}
@@ -51,6 +51,7 @@ const TopBar: React.FC = () => {
         <button
           className={`text-white dark:text-white text-3xl hover:opacity-50 transition`}
           onClick={() => setIsSettingOpen(true)}
+          id="theme-toggle"
         >
           <IoSettingsOutline />
         </button>
@@ -67,6 +68,7 @@ const TopBar: React.FC = () => {
         <button
           className={`text-white dark:text-white text-3xl hover:opacity-50 transition`}
           onClick={() => setIsNotifOpen(true)}
+          id="notif"
         >
           <IoNotificationsOutline />
         </button>

@@ -20,7 +20,7 @@ export interface AppointmentDataType {
 export enum AppointmentStatus {
   Pending = "pending",
   Confirmed = "confirmed",
-  Cancelled = "cancelled",
+  Canceled = "canceled",
   Completed = "completed",
 }
 

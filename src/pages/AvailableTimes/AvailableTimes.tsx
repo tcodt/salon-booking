@@ -331,7 +331,7 @@ const AvailableTimes: React.FC = () => {
             availableSlots.map((slot) => (
               <div
                 key={slot.id}
-                className={`flex flex-col gap-2 relative border-s-2 border-s-${themeColor}-500 rounded-e-xl bg-slate-100 dark:bg-gray-700 shadow-md p-2`}
+                className={`flex flex-col gap-2 relative border-s-2 border-s-${themeColor}-500 rounded-e-xl bg-slate-100 dark:bg-gray-700 shadow-md p-2 mb-4`}
               >
                 <div className="flex items-center gap-2 text-base font-medium">
                   <span className="text-gray-800 dark:text-gray-100">
@@ -449,7 +449,7 @@ const AvailableTimes: React.FC = () => {
           availableSlots.map((slot) => (
             <div
               key={slot.id}
-              className={`flex flex-col gap-2 relative border-s-2 border-s-red-500 rounded-e-xl bg-slate-100 dark:bg-gray-700 shadow-md p-2`}
+              className={`flex flex-col gap-2 relative border-s-2 border-s-red-500 rounded-e-xl bg-slate-100 dark:bg-gray-700 shadow-md p-2 mb-4`}
             >
               <div className="flex items-center gap-2 text-base font-medium">
                 <span className="text-gray-800 dark:text-gray-100">

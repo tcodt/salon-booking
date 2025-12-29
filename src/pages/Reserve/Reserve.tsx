@@ -30,11 +30,13 @@ const Reserve: React.FC = () => {
 
   // فیلتر اسلوت‌ها بر اساس سرویس انتخاب‌شده و در دسترس بودن
   const availableSlots = useMemo(() => {
-    if (!services) return []; // اگر سرویسی انتخاب نشده، هیچ اسلوتی نشون نده
+    // اگر سرویس یا کارمند انتخاب نشده باشه، هیچ اسلوتی نشون نده
+    if (!services || !employee) return [];
+
     return slots.filter(
       (slot) => slot.is_available && slot.service === services
     );
-  }, [slots, services]);
+  }, [slots, services, employee]);
 
   const handleBooking = () => {
     if (!selectedSlotId || !services || !employee) {
@@ -91,6 +93,7 @@ const Reserve: React.FC = () => {
             </select>
             {servicesLoading && <Dots />}
           </div>
+
           <div>
             <select
               className="primary-input"
@@ -117,13 +120,27 @@ const Reserve: React.FC = () => {
             زمان‌های در دسترس
           </span>
 
-          {!services && (
+          {(!services || !employee) && (
             <div className="mt-4">
               <p className="text-base font-medium text-gray-500 text-center">
-                لطفاً ابتدا یک سرویس انتخاب کنید
+                {!services
+                  ? "لطفاً ابتدا یک سرویس انتخاب کنید"
+                  : "لطفاً آرایشگر مورد نظر را انتخاب کنید"}
               </p>
             </div>
           )}
+
+          {services &&
+            employee &&
+            availableSlots.length === 0 &&
+            !slotPending && (
+              <div className="mt-4">
+                <p className="text-base font-medium text-gray-500 text-center">
+                  در حال حاضر هیچ تایم در دسترسی برای این سرویس و آرایشگر وجود
+                  ندارد!
+                </p>
+              </div>
+            )}
 
           {services && availableSlots.length === 0 && !slotPending && (
             <div className="mt-4">
@@ -209,7 +226,8 @@ const Reserve: React.FC = () => {
           disabled={
             addAppointmentMutation.isPending ||
             !services ||
-            availableSlots.length === 0
+            !employee ||
+            !selectedSlotId
           }
         >
           {addAppointmentMutation.isPending ? "در حال ارسال..." : "ثبت رزرو"}
