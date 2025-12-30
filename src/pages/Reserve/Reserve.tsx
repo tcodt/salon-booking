@@ -177,7 +177,8 @@ const Reserve: React.FC = () => {
                     <span className="text-gray-700 dark:text-gray-200 font-medium text-base flex items-center gap-1">
                       تاریخ:
                       <span className="text-gray-500 dark:text-gray-400">
-                        {new Date(slot.date).toLocaleDateString("fa-IR")}
+                        {/* {new Date(slot.date).toLocaleDateString("fa-IR")} */}
+                        {slot.date}
                       </span>
                     </span>
                   </div>

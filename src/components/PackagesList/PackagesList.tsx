@@ -49,9 +49,10 @@ const PackagesList: React.FC = () => {
         <SwiperSlide key={item?.id}>
           <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 50 }}
-            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            // whileInView={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            viewport={{ once: false, amount: 0.3 }}
+            // viewport={{ once: false, amount: 0.3 }}
           >
             <div className="bg-white dark:bg-gray-700 dark:border-none border border-slate-300 h-auto w-full rounded-xl shadow-md flex flex-col gap-8 relative z-10">
               <div className="space-y-4">

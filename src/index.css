@@ -130,6 +130,14 @@ html {
   font-family: "mainFont" !important;
 }
 
+.driver-overlay {
+  pointer-events: auto;
+}
+
+.driver-no-interaction {
+  pointer-events: none !important;
+}
+
 .driver-active .topbar-motion-fix {
   transform: none !important;
 }

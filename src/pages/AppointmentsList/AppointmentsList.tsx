@@ -52,8 +52,6 @@ const AppointmentsList: React.FC = () => {
 
   if (isPending) return <Loading />;
 
-  console.log("Appointments: ", appointments);
-
   const handleRemoveAppointment = (id: number) => {
     const removeAppointmentId = toast.loading("لطفا منتظر بمانید...");
     removeAppointmentMutation.mutate(id, {

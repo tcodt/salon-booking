@@ -40,7 +40,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-200">
+          <h3 className="text-base font-semibold mb-2 text-gray-800 dark:text-gray-200 line-clamp-1">
             رزرو {appointment?.service?.name}
           </h3>
           <div className="relative">

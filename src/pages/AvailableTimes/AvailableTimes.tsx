@@ -75,10 +75,10 @@ const AvailableTimes: React.FC = () => {
   }
 
   // Helper to convert date string to Persian date
-  const toPersianDate = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("fa-IR");
-  };
+  // const toPersianDate = (dateStr: string) => {
+  //   const date = new Date(dateStr);
+  //   return date.toLocaleDateString("fa-IR");
+  // };
 
   const handleChangeDate = (
     val: DateObject | null
@@ -510,11 +510,11 @@ const AvailableTimes: React.FC = () => {
               filteredSlots == "all"
                 ? `text-${themeColor}-500 border-${themeColor}-500`
                 : "text-gray-500 dark:text-gray-200 border-transparent"
-            } p-1 border-b-2 text-base font-medium relative`}
+            } p-1 border-b-2 text-xs font-medium relative`}
             onClick={handleAllAppointments}
           >
             <div
-              className={`absolute -top-3 -right-1 bg-${themeColor}-500 text-white text-xs w-6 h-4 rounded-full flex items-center justify-center`}
+              className={`absolute -top-3 -right-1 bg-${themeColor}-500 text-white w-6 h-4 rounded-full flex items-center justify-center`}
             >
               {allSlotsCount}
             </div>
@@ -525,11 +525,11 @@ const AvailableTimes: React.FC = () => {
               filteredSlots === "available"
                 ? "text-green-500 border-green-500"
                 : "text-gray-500 dark:text-gray-200 border-transparent"
-            } p-1 border-b-2 text-base font-medium relative`}
+            } p-1 border-b-2 text-xs font-medium relative`}
             onClick={handleAvailableAppointments}
           >
             <div
-              className={`absolute -top-3 -right-1 bg-${themeColor}-500 text-white text-xs w-6 h-4 rounded-full flex items-center justify-center`}
+              className={`absolute -top-3 -right-1 bg-${themeColor}-500 text-white w-6 h-4 rounded-full flex items-center justify-center`}
             >
               {availableSlotsCount}
             </div>
@@ -540,11 +540,11 @@ const AvailableTimes: React.FC = () => {
               filteredSlots === "unavailable"
                 ? "text-red-500 border-red-500"
                 : "text-gray-500 dark:text-gray-200 border-transparent"
-            } p-1 border-b-2 text-base font-medium relative`}
+            } p-1 border-b-2 text-xs font-medium relative`}
             onClick={handleUnAvailableAppointments}
           >
             <div
-              className={`absolute -top-3 -right-1 bg-${themeColor}-500 text-white text-xs w-6 h-4 rounded-full flex items-center justify-center`}
+              className={`absolute -top-3 -right-1 bg-${themeColor}-500 text-white w-6 h-4 rounded-full flex items-center justify-center`}
             >
               {unavailableSlotsCount}
             </div>
@@ -574,7 +574,7 @@ const AvailableTimes: React.FC = () => {
                     تاریخ:
                   </span>
                   <span className="text-base text-gray-600 dark:text-gray-300">
-                    {toPersianDate(slot.date)}
+                    {slot.date}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 mb-2">
