@@ -36,6 +36,13 @@ import AvailableTimes from "../pages/AvailableTimes/AvailableTimes";
 import UserProfileDetail from "../pages/UserProfileDetail/UserProfileDetail";
 import UpdateSlots from "../pages/UpdateSlots/UpdateSlots";
 import Users from "../pages/Users/Users";
+import { UserTypeProvider } from "../context/UserTypeContext";
+import RoleAuthentication from "../pages/RoleAuthentication/RoleAuthentication";
+import CreateBusiness from "../pages/CreateBusiness/CreateBusiness";
+import RandomCodeInput from "../pages/RandomCodeInput/RandomCodeInput";
+import UserFlow from "../layout/UserFlow";
+import WaitingRoom from "../pages/WaitingRoom/WaitingRoom";
+import { BusinessStatusGuard } from "../components/BusinessStatusGuard/BusinessStatusGuard";
 
 // Wrapper component for offline detection
 const NetworkStatusWrapper: React.FC<{ children: React.ReactNode }> = ({
@@ -46,83 +53,106 @@ const NetworkStatusWrapper: React.FC<{ children: React.ReactNode }> = ({
 };
 
 const AppRoutes: React.FC = () => {
-  // const token = localStorage.getItem("accessToken");
   const { isAuthenticated } = useAuth();
 
   return (
     <Router>
-      <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<SplashScreen />} />
-        <Route
-          path="/auth"
-          element={isAuthenticated ? <Navigate to="/dashboard" /> : <Auth />}
-        />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/receive-code" element={<ForgotPasswordCode />} />
-        <Route path="/change-password" element={<ChangePassword />} />
-        <Route path="/acl" element={<AclManager />} />
-
-        {/* Network Status Route */}
-        <Route path="/offline" element={<OfflinePage />} />
-
-        {/* Authenticated routes with MainLayout */}
-        <Route
-          element={
-            <PrivateRoutes>
-              <NetworkStatusWrapper>
-                <MainLayout />
-              </NetworkStatusWrapper>
-            </PrivateRoutes>
-          }
-        >
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/reserve" element={<Reserve />} />
-
-          {/* Shared authenticated routes */}
-          <Route path="/user-profile" element={<UserProfile />} />
+      <UserTypeProvider>
+        <Routes>
+          {/* Public routes (no guard needed) */}
+          <Route path="/" element={<SplashScreen />} />
           <Route
-            path="/user-profile-detail/:id"
-            element={<UserProfileDetail />}
+            path="/auth"
+            element={isAuthenticated ? <Navigate to="/dashboard" /> : <Auth />}
           />
-          <Route path="/appointments-list" element={<AppointmentsList />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/receive-code" element={<ForgotPasswordCode />} />
+          <Route path="/change-password" element={<ChangePassword />} />
+          <Route path="/acl" element={<AclManager />} />
+          <Route path="/offline" element={<OfflinePage />} />
+
+          {/* Role Authentication Flow (no business check needed) */}
+          <Route element={<UserFlow />}>
+            <Route
+              path="/role-authentication"
+              element={<RoleAuthentication />}
+            />
+            <Route path="/create-business" element={<CreateBusiness />} />
+            <Route path="/random-code-input" element={<RandomCodeInput />} />
+          </Route>
+
+          {/* Waiting Room - accessible without MainLayout */}
           <Route
-            path="/manage-employees"
+            path="/waiting-room"
             element={
               <PrivateRoutes>
-                <ManageEmployees />
+                <NetworkStatusWrapper>
+                  <BusinessStatusGuard>
+                    <WaitingRoom />
+                  </BusinessStatusGuard>
+                </NetworkStatusWrapper>
               </PrivateRoutes>
             }
           />
-          <Route path="/manage-services" element={<ManageServices />} />
-          <Route path="/view-appointment/:id" element={<ViewAppointment />} />
-          <Route path="/wallet" element={<Wallet />} />
-          <Route path="/available-times" element={<AvailableTimes />} />
-          <Route
-            path="/update-appointment/:id"
-            element={<UpdateAppointment />}
-          />
-          <Route path="/update-slots/:id" element={<UpdateSlots />} />
-          <Route path="/working-time" element={<WorkingTime />} />
-          <Route path="/add-working-time" element={<AddWorkingTime />} />
-          <Route path="/sliders" element={<Sliders />} />
-          <Route path="/users" element={<Users />} />
-          <Route
-            path="/update-working-time/:id"
-            element={<UpdateWorkingTime />}
-          />
-          <Route path="/packages" element={<Packages />} />
-          <Route path="/packages/:id" element={<PackagesInfo />} />
-          <Route path="/logout" element={<Logout />} />
-        </Route>
 
-        {/* Not Found route */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          {/* Authenticated routes with MainLayout and Business Guard */}
+          <Route
+            element={
+              <PrivateRoutes>
+                <BusinessStatusGuard>
+                  <NetworkStatusWrapper>
+                    <MainLayout />
+                  </NetworkStatusWrapper>
+                </BusinessStatusGuard>
+              </PrivateRoutes>
+            }
+          >
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/reserve" element={<Reserve />} />
+            <Route path="/user-profile" element={<UserProfile />} />
+            <Route
+              path="/user-profile-detail/:id"
+              element={<UserProfileDetail />}
+            />
+            <Route path="/appointments-list" element={<AppointmentsList />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route
+              path="/manage-employees"
+              element={
+                <PrivateRoutes>
+                  <ManageEmployees />
+                </PrivateRoutes>
+              }
+            />
+            <Route path="/manage-services" element={<ManageServices />} />
+            <Route path="/view-appointment/:id" element={<ViewAppointment />} />
+            <Route path="/wallet" element={<Wallet />} />
+            <Route path="/available-times" element={<AvailableTimes />} />
+            <Route
+              path="/update-appointment/:id"
+              element={<UpdateAppointment />}
+            />
+            <Route path="/update-slots/:id" element={<UpdateSlots />} />
+            <Route path="/working-time" element={<WorkingTime />} />
+            <Route path="/add-working-time" element={<AddWorkingTime />} />
+            <Route path="/sliders" element={<Sliders />} />
+            <Route path="/users" element={<Users />} />
+            <Route
+              path="/update-working-time/:id"
+              element={<UpdateWorkingTime />}
+            />
+            <Route path="/packages" element={<Packages />} />
+            <Route path="/packages/:id" element={<PackagesInfo />} />
+            <Route path="/logout" element={<Logout />} />
+          </Route>
+
+          {/* Not Found route */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </UserTypeProvider>
     </Router>
   );
 };

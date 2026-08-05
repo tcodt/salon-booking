@@ -26,7 +26,7 @@ export const useRegister = () => {
       queryClient.setQueryData(["userProfile"], data.user);
       loginContext({ access: data.access, refresh: data.refresh }, data.user);
       toast.success("ثبت‌نام با موفقیت انجام شد!");
-      navigate("/");
+      navigate("/role-authentication");
     },
     onError: (error: unknown) => {
       // اول AxiosError بودن رو چک می‌کنیم
@@ -56,7 +56,7 @@ export const useRegister = () => {
 
           // اگر خطای فیلد دیگه‌ای بود (مثل password, email و ...)
           const firstFieldError = Object.values(errorData).find(
-            (arr) => Array.isArray(arr) && arr.length > 0
+            (arr) => Array.isArray(arr) && arr.length > 0,
           );
           if (firstFieldError && typeof firstFieldError[0] === "string") {
             toast.error(firstFieldError[0]);

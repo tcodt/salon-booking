@@ -47,16 +47,16 @@ const Sidebar: React.FC = () => {
   const { themeColor } = useThemeColor();
   const { role, hasPermission } = useAcl();
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const sidebar = document.getElementById("sidebar");
-      if (sidebar && !sidebar.contains(event.target as Node) && isSidebarOpen) {
-        setIsSidebarOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isSidebarOpen, setIsSidebarOpen]);
+  // useEffect(() => {
+  //   const handleClickOutside = (event: MouseEvent) => {
+  //     const sidebar = document.getElementById("sidebar");
+  //     if (sidebar && !sidebar.contains(event.target as Node) && isSidebarOpen) {
+  //       setIsSidebarOpen(false);
+  //     }
+  //   };
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => document.removeEventListener("mousedown", handleClickOutside);
+  // }, [isSidebarOpen, setIsSidebarOpen]);
 
   useEffect(() => {
     setIsSidebarOpen(false);
@@ -199,6 +199,12 @@ const Sidebar: React.FC = () => {
                 <motion.li key={item.label} variants={childrenVariants}>
                   <Link
                     to={item.path}
+                    onClick={(e) => {
+                      // Optional: If you want complete programmatic control to prevent race conditions
+                      e.preventDefault();
+                      navigate(item.path);
+                      // setIsSidebarOpen(false);
+                    }}
                     className={`flex items-center p-3 rounded-lg hover:bg-${themeColor}-50 text-gray-700 hover:text-${themeColor}-600 transition-colors duration-200 dark:text-gray-300 dark:hover:text-${themeColor}-500 dark:hover:bg-${themeColor}-50`}
                   >
                     <span className={`text-${themeColor}-600`}>

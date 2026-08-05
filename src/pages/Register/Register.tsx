@@ -34,8 +34,11 @@ const Register: React.FC = () => {
   };
 
   return (
-    <section className="p-4 w-screen h-screen overflow-y-auto" id="shape">
-      <PageBar title="ثبت نام" />
+    <section
+      className={`p-4 w-screen h-screen ${registerMutation.isPending ? "overflow-hidden" : "overflow-y-auto"}`}
+      id="shape"
+    >
+      {!registerMutation.isPending && <PageBar title="ثبت نام" />}
 
       {registerMutation.isPending && <Loading />}
 

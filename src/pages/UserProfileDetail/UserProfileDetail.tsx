@@ -66,14 +66,14 @@ const UserProfileDetail: React.FC = () => {
                 <div className="flex flex-row items-center gap-4 mt-8">
                   <button
                     type="button"
-                    className="py-2 px-4 rounded-full bg-green-500 text-white hover:opacity-50 transition-opacity flex-1"
+                    className="py-2 px-4 rounded-full bg-red-500 text-white hover:opacity-50 transition-opacity flex-1"
                     onClick={() => handleRemoveUser(user?.id)}
                   >
                     بله
                   </button>
                   <button
                     type="button"
-                    className="py-2 px-4 rounded-full bg-red-500 text-white hover:opacity-50 transition-opacity flex-1"
+                    className="py-2 px-4 rounded-full bg-slate-200 text-gray-800 hover:opacity-50 transition-opacity flex-1"
                     onClick={() => setIsRemoveOpen(false)}
                   >
                     خیر

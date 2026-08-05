@@ -11,4 +11,34 @@ export interface BusinessItem {
   owner: number;
 }
 
+export interface BusinessResponse {
+  id: number;
+  name: string;
+  slug: string;
+  random_code: string;
+  business_type: string;
+  address: string;
+  phone_number: string;
+  is_active: boolean;
+}
+
+export interface BusinessRequest {
+  name: string;
+  slug: string;
+  business_type: string;
+  address: string;
+  phone_number: string;
+}
+
+export type BusinessMeResponse = {
+  id: number;
+  name: string;
+  slug: string;
+  random_code: string;
+  business_type: string;
+  address: string;
+  phone_number: string;
+  is_active: boolean;
+};
+
 export type Business = BusinessItem[];

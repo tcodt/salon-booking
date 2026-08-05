@@ -7,7 +7,8 @@ type ButtonVariant =
   | "add"
   | "update"
   | "delete"
-  | "select";
+  | "select"
+  | "green";
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
   variant?: ButtonVariant;
@@ -34,6 +35,8 @@ const Button: React.FC<ButtonProps> = ({
       "bg-red-100 text-red-500 hover:bg-red-200 border-2 border-red-200 rounded-full",
     select:
       "bg-white text-gray-500 hover:bg-slate-100 border-2 border-gray-300 rounded-xl border-dashed",
+    green:
+      "bg-primary-green-500 text-white hover:bg-primary-green-600 border-2 border-primary-green-200 rounded-full",
   };
 
   const buttonClasses = `${baseClasses} ${variantClasses[variant]}`;

@@ -47,78 +47,86 @@ const PackagesList: React.FC = () => {
     >
       {packages?.map((item) => (
         <SwiperSlide key={item?.id}>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 50 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            // whileInView={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            // viewport={{ once: false, amount: 0.3 }}
-          >
-            <div className="bg-white dark:bg-gray-700 dark:border-none border border-slate-300 h-auto w-full rounded-xl shadow-md flex flex-col gap-8 relative z-10">
-              <div className="space-y-4">
-                <Link to={`/packages/${item?.id}`} className="block">
+          <Link to={`/packages/${item?.id}`} className="block">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 50 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            >
+              <div className="bg-white dark:bg-gray-700 dark:border-none border border-slate-300 h-auto w-full rounded-xl shadow-md flex flex-col gap-8 relative z-10 cursor-pointer">
+                <div className="space-y-4">
                   <img
                     src={
                       item?.image
-                        ? `https://api.narjin.ir${item?.image}`
+                        ? `https://queuingprojectapi.pythonanywhere.com${item?.image}`
                         : "/images/no-image.jpg"
                     }
                     alt="Package Image"
-                    className="rounded-xl h-40 w-full object-cover cursor-pointer"
+                    className="rounded-xl h-40 w-full object-cover"
                   />
-                </Link>
-                <div className="space-y-4 p-4">
-                  <Link
-                    to={`/packages/${item?.id}`}
-                    className="text-gray-700 dark:text-white text-lg font-semibold block"
-                  >
-                    {item?.name}
-                  </Link>
-                  <p className="text-gray-600 dark:text-gray-300 line-clamp-2 text-sm">
-                    {item?.desc}
-                  </p>
-                  <div className="flex flex-row items-center gap-4 flex-wrap">
-                    <div className="flex items-center gap-2">
-                      <HiOutlineBuildingOffice
-                        className={`text-2xl text-${themeColor}-500 dark:text-${themeColor}-400`}
-                      />
-                      <p className="text-sm font-medium text-gray-500 dark:text-gray-300">
-                        {item?.business?.name}
-                      </p>
+
+                  <div className="space-y-4 p-4">
+                    <h3 className="text-gray-700 dark:text-white text-lg font-semibold">
+                      {item?.name}
+                    </h3>
+
+                    <p className="text-gray-600 dark:text-gray-300 line-clamp-2 text-sm">
+                      {item?.desc}
+                    </p>
+
+                    <div className="flex flex-row items-center gap-4 flex-wrap">
+                      <div className="flex items-center gap-2">
+                        <HiOutlineBuildingOffice
+                          className={`text-2xl text-${themeColor}-500 dark:text-${themeColor}-400`}
+                        />
+                        <p className="text-sm font-medium text-gray-500 dark:text-gray-300">
+                          {item?.business?.name}
+                        </p>
+                      </div>
+
+                      {item?.business?.is_coffee_shop && (
+                        <div className="flex items-center gap-2">
+                          <GiCoffeeCup
+                            className={`text-2xl text-${themeColor}-500 dark:text-${themeColor}-400`}
+                          />
+                          <p className="text-sm font-medium text-gray-500 dark:text-gray-300">
+                            کافی شاپ
+                          </p>
+                        </div>
+                      )}
+
+                      {item?.business?.is_parking && (
+                        <div className="flex items-center gap-2">
+                          <LuCircleParking
+                            className={`text-2xl text-${themeColor}-500 dark:text-${themeColor}-400`}
+                          />
+                          <p className="text-sm font-medium text-gray-500 dark:text-gray-300">
+                            پارکینگ
+                          </p>
+                        </div>
+                      )}
                     </div>
-                    {item?.business?.is_coffee_shop && (
-                      <div className="flex items-center gap-2">
-                        <GiCoffeeCup
-                          className={`text-2xl text-${themeColor}-500 dark:text-${themeColor}-400`}
-                        />
-                        <p className="text-sm font-medium text-gray-500 dark:text-gray-300">
-                          کافی شاپ
-                        </p>
-                      </div>
-                    )}
-                    {item?.business?.is_parking && (
-                      <div className="flex items-center gap-2">
-                        <LuCircleParking
-                          className={`text-2xl text-${themeColor}-500 dark:text-${themeColor}-400`}
-                        />
-                        <p className="text-sm font-medium text-gray-500 dark:text-gray-300">
-                          پارکینگ
-                        </p>
-                      </div>
-                    )}
+
+                    <p
+                      className={`text-${themeColor}-600 dark:text-${themeColor}-400 text-left text-base`}
+                    >
+                      {formatPrice(item?.total_price)} تومان
+                    </p>
+
+                    {/* Prevent the button click from triggering the card Link */}
+                    <Button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigate(`/packages/${item?.id}`);
+                      }}
+                    >
+                      نمایش بیشتر
+                    </Button>
                   </div>
-                  <p
-                    className={`text-${themeColor}-600 dark:text-${themeColor}-400 line-clamp-2 text-left text-base`}
-                  >
-                    {formatPrice(item?.total_price)} تومان
-                  </p>
-                  <Button onClick={() => navigate(`/packages/${item?.id}`)}>
-                    نمایش بیشتر
-                  </Button>
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
+          </Link>
         </SwiperSlide>
       ))}
     </Swiper>

@@ -24,7 +24,7 @@ const HomePage: React.FC = () => {
     .filter((c) => c.rating >= 1 && c.rating <= 5)
     .sort(
       (a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     )
     .slice(0, 6); // حداکثر ۶ نظر نمایش بده
 

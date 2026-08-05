@@ -46,6 +46,21 @@
     width: theme("width.full");
   }
 
+  .primary-input-green {
+    outline: 2px solid theme("colors.primary-green.300");
+    background-color: theme("colors.white");
+    padding: theme("padding.2") theme("padding.4");
+    border-radius: theme("borderRadius.xl");
+    color: theme("colors.gray.800");
+    font-weight: theme("fontWeight.medium");
+    height: theme("height.12");
+    width: theme("width.full");
+  }
+
+  .primary-input-green:focus {
+    outline-color: theme("colors.primary-green.500");
+  }
+
   .primary-input:focus {
     outline-color: var(--theme-color);
   }

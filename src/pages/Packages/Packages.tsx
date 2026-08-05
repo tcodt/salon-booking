@@ -53,7 +53,7 @@ const Packages: React.FC = () => {
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
   const [isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
   const [selectedPackage, setSelectedPackage] = useState<PackagesType | null>(
-    null
+    null,
   );
   const navigate = useNavigate();
 
@@ -200,9 +200,14 @@ const Packages: React.FC = () => {
       });
       setPreview(
         selectedPackage.image
-          ? `https://api.narjin.ir${selectedPackage.image}`
-          : null
+          ? `https://queuingprojectapi.pythonanywhere.com${selectedPackage.image}`
+          : null,
       );
+      // setPreview(
+      //   selectedPackage.image
+      //     ? `https://api.narjin.ir${selectedPackage.image}`
+      //     : null
+      // );
     } else {
       updateReset({
         business_id: 0,
@@ -292,7 +297,7 @@ const Packages: React.FC = () => {
           toast.error("خطا در بروزرسانی پکیج!", { id: toastId });
           console.log("An error occured: ", axiosError);
         },
-      }
+      },
     );
   };
 
@@ -505,7 +510,7 @@ const Packages: React.FC = () => {
                     const value = e.target.value.replace(/,/g, "");
                     e.target.value = value.replace(
                       /\B(?=(\d{3})+(?!\d))/g,
-                      ","
+                      ",",
                     );
                   },
                 })}
@@ -698,7 +703,7 @@ const Packages: React.FC = () => {
               <img
                 src={
                   pkg?.image
-                    ? `https://api.narjin.ir${pkg.image}`
+                    ? `https://queuingprojectapi.pythonanywhere.com${pkg.image}`
                     : "/images/no-image.jpg"
                 }
                 alt="Package Image"

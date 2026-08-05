@@ -16,7 +16,7 @@ import { useAcl } from "../../context/AclContext";
 
 // 👇 Type guard to ensure we safely access admin fields
 const isAdminDashboard = (
-  data: DashboardResponse | undefined
+  data: DashboardResponse | undefined,
 ): data is Extract<DashboardResponse, { type: "admin" }> =>
   data?.type === "admin";
 
@@ -50,7 +50,7 @@ const Dashboard: React.FC = () => {
   const matchedUsers =
     isAdmin && isAdminDashboard(dashboardData)
       ? usersData?.filter((user) =>
-          dashboardData.new_users.some((nu) => nu.id === user.id)
+          dashboardData.new_users.some((nu) => nu.id === user.id),
         )
       : [];
 
@@ -172,7 +172,7 @@ const Dashboard: React.FC = () => {
         )}
 
         <h3 className="primary-title col-span-full mt-4 dark:text-white">
-          رزروهای اخیر
+          رزرو های اخیر
         </h3>
 
         {dashboardData && dashboardData?.total_appointments < 1 && (
@@ -197,8 +197,8 @@ const Dashboard: React.FC = () => {
                     appointment?.status === "pending"
                       ? "text-yellow-500"
                       : appointment?.status === "confirmed"
-                      ? "text-green-500"
-                      : "text-red-500"
+                        ? "text-green-500"
+                        : "text-red-500"
                   } text-sm font-medium`}
                 >
                   {appointment?.get_status}
