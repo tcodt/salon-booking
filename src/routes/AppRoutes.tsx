@@ -119,14 +119,7 @@ const AppRoutes: React.FC = () => {
             />
             <Route path="/appointments-list" element={<AppointmentsList />} />
             <Route path="/settings" element={<Settings />} />
-            <Route
-              path="/manage-employees"
-              element={
-                <PrivateRoutes>
-                  <ManageEmployees />
-                </PrivateRoutes>
-              }
-            />
+            <Route path="/manage-employees" element={<ManageEmployees />} />
             <Route path="/manage-services" element={<ManageServices />} />
             <Route path="/view-appointment/:id" element={<ViewAppointment />} />
             <Route path="/wallet" element={<Wallet />} />

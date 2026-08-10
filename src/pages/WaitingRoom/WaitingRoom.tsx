@@ -12,9 +12,11 @@ import {
   FaHashtag,
   FaUserClock,
   FaUsers,
+  FaCheck,
 } from "react-icons/fa";
 import { useBusinessMe } from "../../hooks/business/useBusinessMe";
-// import { useNavigate } from "react-router";
+import { useNavigate } from "react-router";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface WaitingRoomProps {
   estimatedTime?: number;
@@ -45,14 +47,22 @@ export const WaitingRoom: React.FC<WaitingRoomProps> = ({
   estimatedTime = 24,
   position = 3,
   totalAhead = 5,
-  onNavigateToDashboard,
-  onRetry,
 }) => {
   const { data: businessData, isLoading, error } = useBusinessMe();
 
   const [timeLeft, setTimeLeft] = useState(estimatedTime);
   const [progress, setProgress] = useState(0);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const handleGoToDashboard = () => {
+    queryClient.invalidateQueries({ queryKey: ["business-me"] });
+    navigate("/dashboard");
+  };
+
+  const handleRetry = () => {
+    navigate("/create-business");
+  };
 
   // Derive Current Status
   const currentStatus = useMemo<StatusType>(() => {
@@ -141,11 +151,17 @@ export const WaitingRoom: React.FC<WaitingRoomProps> = ({
             <div className="bg-gradient-to-r from-primary-green-600 via-primary-green-500 to-emerald-600 p-6 sm:p-8 text-white text-center">
               <div className="flex justify-center mb-4">
                 <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm animate-pulse">
-                  <FaSpinner className="w-10 h-10 sm:w-12 sm:h-12 text-white animate-spin" />
+                  {currentStatus === "approved" ? (
+                    <FaCheck className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
+                  ) : (
+                    <FaSpinner className="w-10 h-10 sm:w-12 sm:h-12 text-white animate-spin" />
+                  )}
                 </div>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold mb-2">
-                در انتظار تأیید مدیر
+                {currentStatus === "approved"
+                  ? "تبریک! کسب‌وکار شما تأیید شد"
+                  : "در انتظار تأیید کسب‌وکار"}
               </h2>
               <p className="text-white/90 text-base sm:text-lg">
                 {businessData?.name || "کسب‌وکار شما"}
@@ -254,28 +270,20 @@ export const WaitingRoom: React.FC<WaitingRoomProps> = ({
 
               {/* Approved View */}
               {currentStatus === "approved" && (
-                <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4 sm:p-6 text-center">
-                  <FaCheckCircle className="w-12 h-12 sm:w-16 sm:h-16 text-green-500 mx-auto mb-3" />
-                  <h3 className="text-lg sm:text-xl font-semibold text-green-700 mb-2">
-                    تبریک! 🎉
-                  </h3>
-                  <p className="text-green-600 text-sm sm:text-base">
-                    کسب‌وکار شما با موفقیت تأیید شد و اکنون فعال است
-                  </p>
-                </div>
+                <button
+                  onClick={handleGoToDashboard}
+                  className="w-full bg-gradient-to-r from-primary-green-500 to-emerald-500 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-shadow text-sm sm:text-base"
+                >
+                  ورود به پنل مدیریت کسب‌وکار
+                </button>
               )}
-
-              {/* Rejected View */}
               {currentStatus === "rejected" && (
-                <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 sm:p-6 text-center">
-                  <FaTimesCircle className="w-12 h-12 sm:w-16 sm:h-16 text-red-500 mx-auto mb-3" />
-                  <h3 className="text-lg sm:text-xl font-semibold text-red-700 mb-2">
-                    درخواست رد شد
-                  </h3>
-                  <p className="text-red-600 text-sm sm:text-base">
-                    اطلاعات وارد شده کامل نمی‌باشد. لطفاً مجدداً ثبت‌نام کنید.
-                  </p>
-                </div>
+                <button
+                  onClick={handleRetry}
+                  className="w-full bg-gradient-to-r from-primary-green-500 to-emerald-500 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-shadow text-sm sm:text-base"
+                >
+                  ثبت مجدد درخواست
+                </button>
               )}
 
               {/* Actions */}
@@ -300,7 +308,7 @@ export const WaitingRoom: React.FC<WaitingRoomProps> = ({
                     </button> */}
                   </>
                 )}
-                {currentStatus === "approved" && (
+                {/* {currentStatus === "approved" && (
                   <button
                     onClick={onNavigateToDashboard}
                     className="w-full bg-gradient-to-r from-primary-green-500 to-emerald-500 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-shadow text-sm sm:text-base"
@@ -315,7 +323,7 @@ export const WaitingRoom: React.FC<WaitingRoomProps> = ({
                   >
                     ثبت مجدد درخواست
                   </button>
-                )}
+                )} */}
               </div>
             </div>
           </div>
@@ -356,7 +364,7 @@ const StatusBadge: React.FC<{ status: StatusType; businessId?: number }> = ({
     },
     approved: {
       icon: <FaCheckCircle className="text-green-500 text-xl sm:text-2xl" />,
-      title: "تأیید شد ✅",
+      title: "تأیید شد",
       desc: "کسب‌وکار شما با موفقیت تأیید شد",
       style: "bg-green-50 border-green-200",
       textColor: "text-green-700",

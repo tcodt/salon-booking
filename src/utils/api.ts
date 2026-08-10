@@ -2,8 +2,9 @@ import axios, { AxiosError } from "axios";
 import { clearAuthTokens } from "./tokenHelper";
 
 const api = axios.create({
-  // baseURL: "https://api.narjin.ir",
-  baseURL: "https://queuingprojectapi.pythonanywhere.com",
+  baseURL:
+    import.meta.env.VITE_API_BASE_URL ||
+    "https://queuingprojectapi.pythonanywhere.com",
 });
 
 api.interceptors.request.use((config) => {
@@ -20,16 +21,21 @@ api.interceptors.response.use(
     const status = error.response?.status;
     const url = error.config?.url ?? "";
 
+    // Only force logout on 401 for protected endpoints
     if (status === 401) {
-      clearAuthTokens();
-      window.location.href = "/login";
-    }
+      const isAuthEndpoint =
+        url.includes("/login") ||
+        url.includes("/register") ||
+        url.includes("/token");
 
-    if (
-      status === 400 &&
-      (url.includes("/register") || url.includes("/login"))
-    ) {
-      clearAuthTokens();
+      if (!isAuthEndpoint) {
+        clearAuthTokens();
+        // Prefer router navigation if you later move this into a React context.
+        // For now keep the hard redirect so the app recovers cleanly.
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
+      }
     }
 
     return Promise.reject(error);

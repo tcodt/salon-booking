@@ -1,8 +1,8 @@
-// components/BusinessStatusGuard/BusinessStatusGuard.tsx
 import React from "react";
 import { Navigate, useLocation } from "react-router";
 import { useBusinessMe } from "../../hooks/business/useBusinessMe";
 import { useAuth } from "../../context/AuthContext";
+import { useUserType } from "../../context/UserTypeContext";
 
 interface BusinessStatusGuardProps {
   children: React.ReactNode;
@@ -12,48 +12,81 @@ export const BusinessStatusGuard: React.FC<BusinessStatusGuardProps> = ({
   children,
 }) => {
   const { isAuthenticated } = useAuth();
-  const { data: businessData, isLoading, error } = useBusinessMe();
+  const { userType, isReady } = useUserType();
   const location = useLocation();
+  const isOwnerFlow = userType === "owner";
 
-  // If user is not authenticated, redirect to login
+  // Customers (or unknown type) never need business-me checks
+  const { data: businessData, isLoading, error, isFetched } = useBusinessMe();
+
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Show loading state while checking business status
-  if (isLoading) {
+  // Wait for persisted role
+  if (!isReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-primary-green-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // Normal users skip owner business gate entirely
+  if (!isOwnerFlow) {
+    // Optional: force code join if they have no joined business yet
+    const joined = localStorage.getItem("joinedBusiness");
+    const onboardingPaths = [
+      "/role-authentication",
+      "/random-code-input",
+      "/create-business",
+    ];
+    if (
+      !joined &&
+      !onboardingPaths.includes(location.pathname) &&
+      userType === "customer"
+    ) {
+      return <Navigate to="/random-code-input" replace />;
+    }
+    return <>{children}</>;
+  }
+
+  // ---- Owner flow ----
+  if (isLoading || !isFetched) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-primary-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-12 h-12 border-4 border-primary-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-gray-600">درحال بررسی کسب و کار...</p>
         </div>
       </div>
     );
   }
 
-  // If there's an error or no business data
+  // No business yet → create flow
   if (error || !businessData) {
-    // Redirect to role authentication to create business
-    return <Navigate to="/role-authentication" replace />;
+    if (
+      location.pathname === "/create-business" ||
+      location.pathname === "/role-authentication"
+    ) {
+      return <>{children}</>;
+    }
+    return <Navigate to="/create-business" replace />;
   }
 
-  // If business is NOT active and user is NOT on waiting room
+  // Pending activation
   if (!businessData.is_active && location.pathname !== "/waiting-room") {
     return <Navigate to="/waiting-room" replace />;
   }
 
-  // If business IS active and user is on waiting room
+  // Already active but still on waiting room → dashboard
   if (businessData.is_active && location.pathname === "/waiting-room") {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  // If business IS active, allow access to all routes
-  // If business is NOT active, only allow access to waiting room
-  if (!businessData.is_active && location.pathname === "/waiting-room") {
+    // Allow rendering waiting room so user can see congratulations once;
+    // WaitingRoom itself has the CTA to dashboard.
+    // If you prefer auto-redirect, use:
+    // return <Navigate to="/dashboard" replace />;
     return <>{children}</>;
   }
 
-  // Allow access to children (authenticated routes)
   return <>{children}</>;
 };

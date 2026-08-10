@@ -1,5 +1,10 @@
-// --- File: contexts/UserTypeContext.tsx ---
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
 
 export type UserType = "customer" | "owner" | null;
 
@@ -7,7 +12,10 @@ interface UserTypeContextType {
   userType: UserType;
   setUserType: (type: "customer" | "owner") => void;
   clearUserType: () => void;
+  isReady: boolean;
 }
+
+const STORAGE_KEY = "userType";
 
 const UserTypeContext = createContext<UserTypeContextType | undefined>(
   undefined,
@@ -16,36 +24,39 @@ const UserTypeContext = createContext<UserTypeContextType | undefined>(
 export const UserTypeProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [userType, setUserType] = useState<UserType>(null);
+  const [userType, setUserTypeState] = useState<UserType>(null);
+  const [isReady, setIsReady] = useState(false);
 
-  const handleSetUserType = (type: "customer" | "owner") => {
-    setUserType(type);
-    // In a real app, you might also persist to localStorage or sessionStorage here
-    // localStorage.setItem('userType', type);
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY) as UserType | null;
+    if (saved === "customer" || saved === "owner") {
+      setUserTypeState(saved);
+    }
+    setIsReady(true);
+  }, []);
+
+  const setUserType = (type: "customer" | "owner") => {
+    setUserTypeState(type);
+    localStorage.setItem(STORAGE_KEY, type);
   };
 
   const clearUserType = () => {
-    setUserType(null);
-    // localStorage.removeItem('userType');
+    setUserTypeState(null);
+    localStorage.removeItem(STORAGE_KEY);
   };
 
   return (
     <UserTypeContext.Provider
-      value={{
-        userType,
-        setUserType: handleSetUserType,
-        clearUserType,
-      }}
+      value={{ userType, setUserType, clearUserType, isReady }}
     >
       {children}
     </UserTypeContext.Provider>
   );
 };
 
-// Custom hook for using the context
 export const useUserType = (): UserTypeContextType => {
   const context = useContext(UserTypeContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useUserType must be used within a UserTypeProvider");
   }
   return context;

@@ -39,7 +39,14 @@ const CreateBusiness: React.FC = () => {
   const onSubmit = (data: BusinessData) => {
     if (data) {
       addBusinessMutation.mutate(data, {
-        onSuccess: () => {
+        onSuccess: (business) => {
+          // If backend already activated the business, skip waiting room
+          if (business?.is_active) {
+            toast.success("کسب‌وکار با موفقیت فعال شد!");
+            navigate("/waiting-room"); // WaitingRoom shows congratulations when is_active
+            return;
+          }
+          toast.success("درخواست ثبت شد. در انتظار تأیید...");
           navigate("/waiting-room");
         },
         onError: () => {

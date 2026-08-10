@@ -6,25 +6,47 @@ import {
   useEffect,
 } from "react";
 
+export type ThemeColorName =
+  | "primary-green"
+  | "orange"
+  | "blue"
+  | "red"
+  | "green"
+  | "purple"
+  | "yellow";
+
 interface ThemeColorContextType {
-  themeColor: string;
-  setThemeColor: (color: string) => void;
+  themeColor: ThemeColorName;
+  setThemeColor: (color: ThemeColorName) => void;
 }
 
 const ThemeColorContext = createContext<ThemeColorContextType | undefined>(
-  undefined
+  undefined,
 );
 
+const COLOR_MAP: Record<ThemeColorName, string> = {
+  "primary-green": "#19705D",
+  orange: "#f97316",
+  blue: "#3b82f6",
+  red: "#ef4444",
+  green: "#22c55e",
+  purple: "#a855f7",
+  yellow: "#eab308",
+};
+
 export const ThemeColorProvider = ({ children }: { children: ReactNode }) => {
-  const [themeColor, setThemeColor] = useState<string>(() => {
-    return localStorage.getItem("themeColor") || "primary-green";
+  const [themeColor, setThemeColor] = useState<ThemeColorName>(() => {
+    const saved = localStorage.getItem("themeColor") as ThemeColorName | null;
+    return saved && COLOR_MAP[saved] ? saved : "primary-green";
   });
 
   useEffect(() => {
     localStorage.setItem("themeColor", themeColor);
-
-    // Set CSS custom property
-    document.documentElement.style.setProperty("--theme-color", themeColor);
+    document.documentElement.style.setProperty(
+      "--theme-color",
+      COLOR_MAP[themeColor],
+    );
+    document.documentElement.setAttribute("data-theme", themeColor);
   }, [themeColor]);
 
   return (
@@ -37,7 +59,7 @@ export const ThemeColorProvider = ({ children }: { children: ReactNode }) => {
 export const useThemeColor = () => {
   const context = useContext(ThemeColorContext);
   if (!context) {
-    throw new Error("useTheme must be used within a ThemeProvider");
+    throw new Error("useThemeColor must be used within a ThemeColorProvider");
   }
   return context;
 };

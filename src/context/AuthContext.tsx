@@ -1,14 +1,18 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { User } from "../types/users";
-// import { AclResponse } from "../types/acl";
-// import { useGetAcl } from "../hooks/acl/useGetAcl";
-// import { useGetAclById } from "../hooks/acl/useGetAclById";
+import { clearAuthTokens, getUserFromStorage } from "../utils/tokenHelper";
 
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
-  // acl: AclResponse | null;
+  isLoading: boolean;
   login: (tokens: { access: string; refresh: string }, userData: User) => void;
   logout: () => void;
 }
@@ -21,51 +25,46 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const queryClient = useQueryClient();
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // const { data: aclArray } = useGetAcl(user?.id ?? 0);
-  // const acl = aclArray && aclArray.length > 0 ? aclArray[0] : null;
-  // const { data } = useGetAclById(user?.id ?? 0);
-  // console.log("Get ACL by ID: ", data);
-
-  // Check local storage for token on app load
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     if (accessToken) {
-      const storedUser = localStorage.getItem("user");
+      const storedUser = getUserFromStorage();
       if (storedUser) {
-        setUser(JSON.parse(storedUser));
+        setUser(storedUser);
         setIsAuthenticated(true);
+      } else {
+        clearAuthTokens();
       }
     }
+    setIsLoading(false);
   }, []);
 
-  const login = (
-    tokens: { access: string; refresh: string },
-    userData: User
-  ) => {
-    localStorage.setItem("accessToken", tokens.access);
-    localStorage.setItem("refreshToken", tokens.refresh);
-    localStorage.setItem("user", JSON.stringify(userData));
-    setUser(userData);
-    setIsAuthenticated(true);
-  };
+  const login = useCallback(
+    (tokens: { access: string; refresh: string }, userData: User) => {
+      localStorage.setItem("accessToken", tokens.access);
+      localStorage.setItem("refreshToken", tokens.refresh);
+      localStorage.setItem("user", JSON.stringify(userData));
+      setUser(userData);
+      setIsAuthenticated(true);
+    },
+    [],
+  );
 
-  // Clear cache on logout
-  const logout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("user");
+  const logout = useCallback(() => {
+    clearAuthTokens();
     setUser(null);
-    queryClient.clear();
     setIsAuthenticated(false);
-  };
+    queryClient.clear();
+  }, [queryClient]);
 
   return (
     <AuthContext.Provider
       value={{
         user,
         isAuthenticated,
-        // acl,
+        isLoading,
         login,
         logout,
       }}
@@ -80,6 +79,5 @@ export const useAuth = () => {
   if (!context) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
-
   return context;
 };

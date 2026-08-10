@@ -3,19 +3,15 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
-// import { ThemeProvider } from "./context/ThemeContext.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeColorProvider } from "./context/ThemeColor.tsx";
 import { WalletProvider } from "./context/WalletContext.tsx";
-// import { AclProvider } from "./context/AclContext.tsx";
-// import { useGetUserPermissions } from "./hooks/permissions/useGetUserPermissions.ts";
-// import { useGetProfile } from "./hooks/profile/useGetProfile.ts";
 
 const client = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 5 * 60 * 1000,
-      // cacheTime: 30 * 60 * 1000,
+      retry: 1,
     },
   },
 });
@@ -29,10 +25,7 @@ createRoot(document.getElementById("root")!).render(
             <App />
           </WalletProvider>
         </ThemeColorProvider>
-        {/* <ThemeProvider> */}
-        {/* <Providers /> */}
-        {/* </ThemeProvider> */}
       </AuthProvider>
     </QueryClientProvider>
-  </StrictMode>
+  </StrictMode>,
 );

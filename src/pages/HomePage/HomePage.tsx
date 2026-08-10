@@ -11,11 +11,17 @@ import { useThemeColor } from "../../context/ThemeColor";
 import { motion } from "framer-motion";
 import { FaStar } from "react-icons/fa";
 import Dots from "../../components/Dots/Dots";
+import { useAcl } from "../../context/AclContext";
+import { useBusinessMe } from "../../hooks/business/useBusinessMe";
 
 const HomePage: React.FC = () => {
   const { data: userProfile } = useGetProfile();
   const greetingUser = getGreeting(userProfile?.first_name);
   const { themeColor } = useThemeColor();
+  const userACL = useAcl();
+  const { data: userBusiness } = useBusinessMe();
+  console.log("User ACL: ", userACL);
+  console.log("User Business: ", userBusiness);
 
   const { data: comments = [], isLoading: commentsLoading } = useGetComments();
 

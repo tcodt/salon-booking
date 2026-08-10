@@ -3,7 +3,7 @@ import { Navigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { useGetUserPermissions } from "../hooks/permissions/useGetUserPermissions";
 import { useGetProfile } from "../hooks/profile/useGetProfile";
-import { AclProvider } from "../context/AclContext"; // ایمپورت درست
+import { AclProvider } from "../context/AclContext";
 import Dots from "../components/Dots/Dots";
 
 interface PrivateRoutesProps {
@@ -11,30 +11,33 @@ interface PrivateRoutesProps {
 }
 
 const PrivateRoutes: React.FC<PrivateRoutesProps> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
-  const { data: userPermissionId, isPending: permissionLoading } =
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { data: userPermissionsList, isPending: permissionLoading } =
     useGetUserPermissions();
   const { data: userInfo, isPending: profileLoading } = useGetProfile();
 
-  if (permissionLoading || profileLoading)
+  if (authLoading || permissionLoading || profileLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Dots />
       </div>
     );
+  }
 
-  if (!isAuthenticated) return <Navigate to="/auth" replace />;
+  if (!isAuthenticated) {
+    return <Navigate to="/auth" replace />;
+  }
 
-  const matchedPermission = userPermissionId?.find(
-    (item) => item.users.phone_number === userInfo?.phone_number
+  // Find the permission record that belongs to the current user
+  const matchedPermission = userPermissionsList?.find(
+    (item) => item.users?.phone_number === userInfo?.phone_number,
   );
-  const userId = matchedPermission?.id_user_permission;
 
-  return (
-    <AclProvider userId={userId ? Number(userId) : null}>
-      {children}
-    </AclProvider>
-  );
+  const userPermissionId = matchedPermission?.id_user_permission
+    ? Number(matchedPermission.id_user_permission)
+    : null;
+
+  return <AclProvider userId={userPermissionId}>{children}</AclProvider>;
 };
 
 export default PrivateRoutes;
