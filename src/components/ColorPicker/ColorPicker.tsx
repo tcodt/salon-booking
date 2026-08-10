@@ -1,9 +1,10 @@
 // src/components/ColorPicker.tsx
 import { useState } from "react";
 import { useThemeColor } from "../../context/ThemeColor";
+import type { ThemeColorName } from "../../context/ThemeColor";
 import { IoIosColorPalette } from "react-icons/io";
 
-const colorOptions = [
+const colorOptions: ThemeColorName[] = [
   "blue",
   "red",
   "green",
@@ -17,7 +18,7 @@ const ColorPicker = () => {
   const { themeColor, setThemeColor } = useThemeColor();
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleColorChange = (color: string) => {
+  const handleColorChange = (color: ThemeColorName) => {
     setThemeColor(color);
     setIsOpen(false); // Close the color picker after selection
   };
