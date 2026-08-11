@@ -11,11 +11,26 @@ import { Link, useNavigate } from "react-router";
 import { useThemeColor } from "../../context/ThemeColor";
 import { motion } from "framer-motion";
 import { useDisplayPackages } from "../../hooks/packages/useDisplayPackages";
+import { useJoinedBusiness } from "../../context/JoinedBusinessContext";
+import { useUserType } from "../../context/UserTypeContext";
+import { filterByBusinessId } from "../../utils/filterByJoinedBusiness";
+import { useMemo } from "react";
 
 const PackagesList: React.FC = () => {
   const { data: packages, isError, error } = useDisplayPackages();
   const navigate = useNavigate();
   const { themeColor } = useThemeColor();
+  const { joinedBusiness } = useJoinedBusiness();
+  const { userType } = useUserType();
+  const isCustomer = userType === "customer" || !userType;
+
+  const visiblePackages = useMemo(() => {
+    if (!packages) return [];
+    if (isCustomer) {
+      return filterByBusinessId(packages, joinedBusiness?.id);
+    }
+    return packages;
+  }, [packages, isCustomer, joinedBusiness?.id]);
 
   // Function to format price to Persian format
   const formatPrice = (price: string) => {
@@ -45,7 +60,7 @@ const PackagesList: React.FC = () => {
       modules={[EffectCoverflow, Autoplay]}
       className="mySwiper"
     >
-      {packages?.map((item) => (
+      {visiblePackages?.map((item) => (
         <SwiperSlide key={item?.id}>
           <Link to={`/packages/${item?.id}`} className="block">
             <motion.div

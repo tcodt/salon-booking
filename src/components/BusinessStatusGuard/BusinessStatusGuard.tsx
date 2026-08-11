@@ -1,8 +1,8 @@
 import React from "react";
 import { Navigate, useLocation } from "react-router";
-import { useBusinessMe } from "../../hooks/business/useBusinessMe";
 import { useAuth } from "../../context/AuthContext";
 import { useUserType } from "../../context/UserTypeContext";
+import { useBusinessMe } from "../../hooks/business/useBusinessMe";
 
 interface BusinessStatusGuardProps {
   children: React.ReactNode;

@@ -11,6 +11,9 @@ import { useThemeColor } from "../../context/ThemeColor";
 import { useGetSlots } from "../../hooks/slots/useGetSlots";
 import { LuCalendarClock } from "react-icons/lu";
 import Dots from "../../components/Dots/Dots";
+import { useJoinedBusiness } from "../../context/JoinedBusinessContext";
+import { filterByBusinessId } from "../../utils/filterByJoinedBusiness";
+import { useUserType } from "../../context/UserTypeContext";
 
 const Reserve: React.FC = () => {
   const [selectedSlotId, setSelectedSlotId] = useState<number | null>(null);
@@ -27,6 +30,25 @@ const Reserve: React.FC = () => {
   const queryClient = useQueryClient();
   const addAppointmentMutation = useAddAppointment();
   const { themeColor } = useThemeColor();
+  const { joinedBusiness, hasJoinedBusiness } = useJoinedBusiness();
+  const { userType } = useUserType();
+
+  const isCustomer = userType === "customer" || !userType;
+  const businessId = joinedBusiness?.id ?? null;
+
+  const scopedServices = useMemo(
+    () =>
+      isCustomer ? filterByBusinessId(servicesData, businessId) : servicesData,
+    [servicesData, businessId, isCustomer],
+  );
+
+  const scopedEmployees = useMemo(
+    () =>
+      isCustomer
+        ? filterByBusinessId(employeesData, businessId)
+        : employeesData,
+    [employeesData, businessId, isCustomer],
+  );
 
   // فیلتر اسلوت‌ها بر اساس سرویس انتخاب‌شده و در دسترس بودن
   const availableSlots = useMemo(() => {
@@ -34,9 +56,22 @@ const Reserve: React.FC = () => {
     if (!services || !employee) return [];
 
     return slots.filter(
-      (slot) => slot.is_available && slot.service === services
+      (slot) => slot.is_available && slot.service === services,
     );
   }, [slots, services, employee]);
+
+  if (isCustomer && !hasJoinedBusiness) {
+    return (
+      <div className="space-y-4 py-10 text-center">
+        <p className="text-gray-600 dark:text-gray-300">
+          ابتدا کد سالن را وارد کنید.
+        </p>
+        <Button type="button" onClick={() => navigate("/random-code-input")}>
+          ورود کد کسب‌وکار
+        </Button>
+      </div>
+    );
+  }
 
   const handleBooking = () => {
     if (!selectedSlotId || !services || !employee) {
@@ -85,7 +120,7 @@ const Reserve: React.FC = () => {
               disabled={servicesLoading}
             >
               <option value="">انتخاب سرویس</option>
-              {servicesData?.map((service) => (
+              {scopedServices?.map((service) => (
                 <option key={service.id} value={service.id}>
                   {service.name}
                 </option>
@@ -103,7 +138,7 @@ const Reserve: React.FC = () => {
               disabled={employeesLoading}
             >
               <option value="">لطفاً آرایشگر را انتخاب کنید</option>
-              {employeesData?.map((employee) => (
+              {scopedEmployees?.map((employee) => (
                 <option key={employee.id} value={employee.id}>
                   {employee?.user?.first_name} - {employee?.skill}
                 </option>

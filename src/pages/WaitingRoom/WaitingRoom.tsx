@@ -14,9 +14,9 @@ import {
   FaUsers,
   FaCheck,
 } from "react-icons/fa";
-import { useBusinessMe } from "../../hooks/business/useBusinessMe";
 import { useNavigate } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
+import { useBusinessMe } from "../../hooks/business/useBusinessMe";
 
 interface WaitingRoomProps {
   estimatedTime?: number;

@@ -45,8 +45,8 @@ const RoleAuthentication = () => {
   };
 
   return (
-    <div className="bg-gray-50 flex flex-col items-center justify-center p-4 min-h-full">
-      <div className="bg-white rounded-full p-2 flex justify-center items-center my-6">
+    <div className="bg-gray-50 dark:bg-gray-900 flex flex-col items-center justify-center p-4 min-h-full">
+      <div className="bg-white dark:bg-gray-800 rounded-full p-2 flex justify-center items-center my-6">
         <img
           src="/images/logo-main.png"
           alt="Logo"
@@ -61,9 +61,9 @@ const RoleAuthentication = () => {
         className="w-full max-w-3xl"
       >
         <motion.div variants={itemVariants} className="text-center mb-10">
-          <div className="inline-block p-4 bg-primary-green-100 rounded-full mb-4">
+          <div className="inline-block p-4 bg-primary-green-100 dark:bg-primary-green-900/40 rounded-full mb-4">
             <svg
-              className="w-12 h-12 text-primary-green-600"
+              className="w-12 h-12 text-primary-green-600 dark:text-primary-green-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -76,10 +76,10 @@ const RoleAuthentication = () => {
               />
             </svg>
           </div>
-          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 dark:text-white tracking-tight">
             انتخاب نقش کاربری
           </h1>
-          <p className="text-gray-500 mt-2 text-lg">
+          <p className="text-gray-500 dark:text-gray-300 mt-2 text-lg">
             لطفاً نوع کاربری خود را انتخاب کنید
           </p>
           <div className="w-24 h-1 bg-primary-green-500 mx-auto mt-4 rounded-full" />
@@ -95,8 +95,8 @@ const RoleAuthentication = () => {
             onClick={() => handleSelect("customer")}
             className={`relative rounded-2xl border-2 p-6 cursor-pointer shadow-sm hover:shadow-md transition-all duration-200 ${
               selectedType === "customer"
-                ? "border-primary-green-500 bg-primary-green-100"
-                : "border-gray-300 bg-white"
+                ? "border-primary-green-500 bg-primary-green-100 dark:bg-primary-green-900/30"
+                : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
             }`}
           >
             {selectedType === "customer" && (
@@ -115,9 +115,9 @@ const RoleAuthentication = () => {
               </div>
             )}
             <div className="flex flex-col items-center text-center">
-              <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+              <div className="w-20 h-20 bg-blue-100 dark:bg-blue-900/40 rounded-full flex items-center justify-center mb-4">
                 <svg
-                  className="w-10 h-10 text-primary-green-600"
+                  className="w-10 h-10 text-primary-green-600 dark:text-primary-green-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -130,11 +130,13 @@ const RoleAuthentication = () => {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-800">کاربر عادی</h3>
-              <p className="text-gray-500 text-sm mt-1">
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+                کاربر عادی
+              </h3>
+              <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
                 ورود با کد کسب‌وکار و رزرو خدمات
               </p>
-              <ul className="mt-3 text-right text-sm text-gray-600 space-y-1 w-full pr-4">
+              <ul className="mt-3 text-right text-sm text-gray-600 dark:text-gray-300 space-y-1 w-full pr-4">
                 <li>• ورود با کد اختصاصی سالن</li>
                 <li>• مشاهده خدمات و پکیج‌ها</li>
                 <li>• رزرو و پیگیری نوبت</li>
@@ -148,8 +150,8 @@ const RoleAuthentication = () => {
             onClick={() => handleSelect("owner")}
             className={`relative rounded-2xl border-2 p-6 cursor-pointer shadow-sm hover:shadow-md transition-all duration-200 ${
               selectedType === "owner"
-                ? "border-primary-green-500 bg-primary-green-100"
-                : "border-gray-300 bg-white"
+                ? "border-primary-green-500 bg-primary-green-100 dark:bg-primary-green-900/30"
+                : "border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
             }`}
           >
             {selectedType === "owner" && (
@@ -168,9 +170,9 @@ const RoleAuthentication = () => {
               </div>
             )}
             <div className="flex flex-col items-center text-center">
-              <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mb-4">
+              <div className="w-20 h-20 bg-indigo-100 dark:bg-indigo-900/40 rounded-full flex items-center justify-center mb-4">
                 <svg
-                  className="w-10 h-10 text-primary-green-600"
+                  className="w-10 h-10 text-primary-green-600 dark:text-primary-green-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -183,11 +185,13 @@ const RoleAuthentication = () => {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-800">مالک کسب‌وکار</h3>
-              <p className="text-gray-500 text-sm mt-1">
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+                مالک کسب‌وکار
+              </h3>
+              <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
                 ثبت سالن و پنل مدیریت
               </p>
-              <ul className="mt-3 text-right text-sm text-gray-600 space-y-1 w-full pr-4">
+              <ul className="mt-3 text-right text-sm text-gray-600 dark:text-gray-300 space-y-1 w-full pr-4">
                 <li>• ثبت و مدیریت کسب‌وکار</li>
                 <li>• مدیریت خدمات و آرایشگران</li>
                 <li>• گزارش رزروها و درآمد</li>
@@ -206,7 +210,7 @@ const RoleAuthentication = () => {
             className={`relative w-full md:w-auto px-12 py-4 rounded-2xl font-bold text-white text-lg shadow-lg transition-all duration-200 ${
               selectedType
                 ? "bg-primary-green-600 hover:bg-primary-green-700"
-                : "bg-gray-300 cursor-not-allowed"
+                : "bg-gray-300 dark:bg-gray-600 cursor-not-allowed"
             }`}
           >
             {isSubmitting ? "در حال انتقال..." : "تأیید و ادامه"}

@@ -1,4 +1,3 @@
-// src/components/ColorPicker.tsx
 import { useState } from "react";
 import { useThemeColor } from "../../context/ThemeColor";
 import type { ThemeColorName } from "../../context/ThemeColor";

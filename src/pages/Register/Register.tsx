@@ -4,10 +4,8 @@ import { IoIosLock } from "react-icons/io";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { Link } from "react-router";
 import Button from "../../components/Button/Button";
-import PageBar from "../../components/PageBar/PageBar";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRegister } from "../../hooks/accounts/register/useRegister";
-import Loading from "../../components/Loading/Loading";
 import { RegisterType } from "../../types/register";
 import { useThemeColor } from "../../context/ThemeColor";
 
@@ -16,168 +14,269 @@ const Register: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterType>();
-  const [isVisible, setIsVisible] = useState<boolean>(false);
-
+  } = useForm<RegisterType>({
+    mode: "onBlur",
+  });
+  const [isVisible, setIsVisible] = useState(false);
   const registerMutation = useRegister();
   const { themeColor } = useThemeColor();
 
-  const handleRegister: SubmitHandler<RegisterType> = async (data) => {
-    const transformedData: RegisterType = {
-      first_name: data.first_name,
-      last_name: data.last_name,
+  const handleRegister: SubmitHandler<RegisterType> = (data) => {
+    registerMutation.mutate({
+      first_name: data.first_name.trim(),
+      last_name: data.last_name.trim(),
       phone_number: data.phone_number,
       password: data.password,
-    };
-
-    registerMutation.mutate(transformedData);
+    });
   };
+
+  const inputErrorClass = (hasError: boolean) =>
+    hasError
+      ? "outline-red-400 dark:outline-red-500 focus:outline-red-500"
+      : "";
 
   return (
     <section
-      className={`p-4 w-screen h-screen ${registerMutation.isPending ? "overflow-hidden" : "overflow-y-auto"}`}
-      id="shape"
+      className="w-full bg-gray-50 dark:bg-gray-900 h-screen overflow-y-auto
+    [-webkit-overflow-scrolling:touch]
+    [scrollbar-width:none]
+    [&::-webkit-scrollbar]:hidden"
     >
-      {!registerMutation.isPending && <PageBar title="ثبت نام" />}
-
-      {registerMutation.isPending && <Loading />}
-
-      <div className="mt-6 flex flex-col gap-4 items-center">
-        <div className="md:w-2/4 w-full text-start">
-          <h3 className={`text-3xl text-${themeColor}-500 font-semibold`}>
+      <div className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-4 py-8 sm:px-6">
+        {/* Brand */}
+        <div className="mb-8 flex flex-col items-center text-center">
+          <div className="mb-4 rounded-full bg-white p-2 shadow-md dark:bg-gray-800">
+            <img
+              src="/images/logo-main.png"
+              alt="لوگو"
+              className="h-20 w-20 rounded-full object-contain border border-primary-green-500"
+            />
+          </div>
+          <h1
+            className={`text-2xl sm:text-3xl font-bold text-${themeColor}-500`}
+          >
             ایجاد حساب کاربری
-          </h3>
+          </h1>
+          <p className="mt-2 max-w-sm text-sm leading-6 text-gray-500 dark:text-gray-300">
+            چند دقیقه وقت بگذارید؛ بعد از ثبت‌نام می‌توانید نقش خود را انتخاب
+            کنید.
+          </p>
         </div>
 
-        <div className="md:w-2/4 w-full flex justify-center p-4">
+        {/* Card */}
+        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-gray-800 sm:p-8">
           <form
             onSubmit={handleSubmit(handleRegister)}
-            className="flex flex-col items-center justify-center gap-6 w-full"
+            className="flex flex-col gap-5"
+            noValidate
           >
-            <div className="flex items-center gap-2">
-              <label className="md:w-2/4 w-full relative">
-                <input
-                  type="text"
-                  placeholder={errors?.first_name?.message || "نام"}
-                  className={`primary-input ${
-                    errors?.first_name?.message
-                      ? "text-sm placeholder:text-red-500"
-                      : "text-base"
-                  }`}
-                  {...register("first_name", {
-                    required: "الزامی",
-                    minLength: {
-                      value: 2,
-                      message: "نام باید بیشتر از 2 کاراکتر باشد!",
-                    },
-                  })}
-                />
+            {/* Name row */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="first_name"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-200"
+                >
+                  نام
+                </label>
+                <div className="relative">
+                  <input
+                    id="first_name"
+                    type="text"
+                    autoComplete="given-name"
+                    placeholder="مثلاً سارا"
+                    aria-invalid={!!errors.first_name}
+                    className={`primary-input pe-10 ${inputErrorClass(
+                      !!errors.first_name,
+                    )}`}
+                    {...register("first_name", {
+                      required: "نام الزامی است",
+                      minLength: {
+                        value: 2,
+                        message: "نام باید حداقل ۲ کاراکتر باشد",
+                      },
+                    })}
+                  />
+                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    <FaUser />
+                  </span>
+                </div>
+                {errors.first_name && (
+                  <p
+                    className="text-sm text-red-500 dark:text-red-400"
+                    role="alert"
+                  >
+                    {errors.first_name.message}
+                  </p>
+                )}
+              </div>
 
-                <div className="absolute top-4 left-2 text-gray-500 text-lg">
-                  <FaUser />
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="last_name"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-200"
+                >
+                  نام خانوادگی
+                </label>
+                <div className="relative">
+                  <input
+                    id="last_name"
+                    type="text"
+                    autoComplete="family-name"
+                    placeholder="مثلاً محمدی"
+                    aria-invalid={!!errors.last_name}
+                    className={`primary-input pe-10 ${inputErrorClass(
+                      !!errors.last_name,
+                    )}`}
+                    {...register("last_name", {
+                      required: "نام خانوادگی الزامی است",
+                      minLength: {
+                        value: 2,
+                        message: "نام خانوادگی باید حداقل ۲ کاراکتر باشد",
+                      },
+                    })}
+                  />
+                  <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    <FaUser />
+                  </span>
                 </div>
-              </label>
-              <label className="md:w-2/4 w-full relative">
-                <input
-                  type="text"
-                  placeholder={errors?.last_name?.message || "نام خانوادگی"}
-                  className={`primary-input ${
-                    errors?.last_name?.message
-                      ? "text-sm placeholder:text-red-500"
-                      : "text-base"
-                  }`}
-                  {...register("last_name", {
-                    required: "الزامی",
-                    minLength: {
-                      value: 2,
-                      message: "نام خانوادگی باید بیشتر از 2 کاراکتر باشد!",
-                    },
-                  })}
-                />
-                <div className="absolute top-4 left-2 text-gray-500 text-lg">
-                  <FaUser />
-                </div>
-              </label>
+                {errors.last_name && (
+                  <p
+                    className="text-sm text-red-500 dark:text-red-400"
+                    role="alert"
+                  >
+                    {errors.last_name.message}
+                  </p>
+                )}
+              </div>
             </div>
-            <label className="md:w-2/4 w-full relative">
-              <input
-                type="text"
-                maxLength={11}
-                placeholder={errors?.phone_number?.message || "شماره تلفن"}
-                autoComplete="username"
-                className={`primary-input ps-4 pe-8 ${
-                  errors?.phone_number?.message
-                    ? "text-sm placeholder:text-red-500"
-                    : "text-base"
-                }`}
-                {...register("phone_number", {
-                  required: "شماره تلفن اجباری است!",
-                  pattern: {
-                    value: /^09[0-9]{9}$/,
-                    message: "شماره تلفن باید 11 رقم باشد!",
-                  },
-                })}
-                onKeyPress={(e) => {
-                  if (!/[0-9]/.test(e.key)) {
-                    e.preventDefault();
-                  }
-                }}
-              />
-              <div className="absolute top-4 left-2 text-gray-500 text-lg">
-                <FaPhoneAlt />
-              </div>
-            </label>
-            <div className="md:w-2/4 w-full relative">
-              <input
-                type={isVisible ? "text" : "password"}
-                placeholder={errors?.password?.message || "رمز عبور"}
-                maxLength={12}
-                autoComplete="current-password"
-                className={`primary-input px-8 text-left ${
-                  errors?.password?.message
-                    ? "text-sm placeholder:text-red-500"
-                    : "text-base"
-                }`}
-                {...register("password", {
-                  required: "رمز عبور اجباری است!",
-                  minLength: {
-                    value: 6,
-                    message: "رمز عبور باید بیشتر از 6 کاراکتر باشد!",
-                  },
-                })}
-              />
 
-              {/* lock icon on the left */}
-              <div className="absolute top-4 left-2 text-gray-500 text-lg pointer-events-none">
-                <IoIosLock />
-              </div>
-
-              {/* eye icon button on the right */}
-              <button
-                type="button"
-                className="absolute top-4 right-2 text-gray-500 text-lg z-10"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsVisible((prev) => !prev);
-                }}
+            {/* Phone */}
+            <div className="space-y-1.5">
+              <label
+                htmlFor="phone_number"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-200"
               >
-                {isVisible ? <IoEyeOff /> : <IoEye />}
-              </button>
+                شماره تلفن
+              </label>
+              <div className="relative">
+                <input
+                  id="phone_number"
+                  type="tel"
+                  inputMode="numeric"
+                  maxLength={11}
+                  autoComplete="username"
+                  placeholder="09123456789"
+                  aria-invalid={!!errors.phone_number}
+                  className={`primary-input pl-10 ${inputErrorClass(
+                    !!errors.phone_number,
+                  )}`}
+                  {...register("phone_number", {
+                    required: "شماره تلفن الزامی است",
+                    pattern: {
+                      value: /^09[0-9]{9}$/,
+                      message: "شماره باید ۱۱ رقم و با ۰۹ شروع شود",
+                    },
+                  })}
+                  onKeyDown={(e) => {
+                    if (
+                      e.key.length === 1 &&
+                      !/[0-9]/.test(e.key) &&
+                      !e.ctrlKey &&
+                      !e.metaKey
+                    ) {
+                      e.preventDefault();
+                    }
+                  }}
+                />
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <FaPhoneAlt />
+                </span>
+              </div>
+              {errors.phone_number && (
+                <p
+                  className="text-sm text-red-500 dark:text-red-400"
+                  role="alert"
+                >
+                  {errors.phone_number.message}
+                </p>
+              )}
             </div>
 
-            <Button type="submit">ثبت نام</Button>
-            <span className="text-lg font-medium text-slate-700 text-center">
-              ...
-            </span>
-            <div>
-              <span className="text-base text-gray-600 font-medium dark:text-gray-300 ">
-                حساب کاربری دارید؟{" "}
-                <Link to="/login" className={`text-${themeColor}-500`}>
-                  ورود
-                </Link>
-              </span>
+            {/* Password */}
+            <div className="space-y-1.5">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 dark:text-gray-200"
+              >
+                رمز عبور
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  type={isVisible ? "text" : "password"}
+                  maxLength={32}
+                  autoComplete="new-password"
+                  placeholder="حداقل ۶ کاراکتر"
+                  aria-invalid={!!errors.password}
+                  className={`primary-input px-10 text-left ${inputErrorClass(
+                    !!errors.password,
+                  )}`}
+                  {...register("password", {
+                    required: "رمز عبور الزامی است",
+                    minLength: {
+                      value: 6,
+                      message: "رمز عبور باید حداقل ۶ کاراکتر باشد",
+                    },
+                  })}
+                />
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <IoIosLock size={18} />
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsVisible((v) => !v)}
+                  aria-label={isVisible ? "مخفی کردن رمز" : "نمایش رمز"}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                >
+                  {isVisible ? <IoEyeOff size={18} /> : <IoEye size={18} />}
+                </button>
+              </div>
+              {errors.password && (
+                <p
+                  className="text-sm text-red-500 dark:text-red-400"
+                  role="alert"
+                >
+                  {errors.password.message}
+                </p>
+              )}
+              <p className="text-xs text-gray-400 dark:text-gray-500">
+                از ترکیب حروف و اعداد برای امنیت بیشتر استفاده کنید.
+              </p>
             </div>
+
+            <Button type="submit" disabled={registerMutation.isPending}>
+              {registerMutation.isPending
+                ? "در حال ثبت‌نام..."
+                : "ثبت‌نام و ادامه"}
+            </Button>
           </form>
+
+          <div className="mt-6 flex items-center gap-3">
+            <div className="h-px flex-1 bg-gray-200 dark:bg-gray-600" />
+            <span className="text-xs text-gray-400">یا</span>
+            <div className="h-px flex-1 bg-gray-200 dark:bg-gray-600" />
+          </div>
+
+          <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-300">
+            قبلاً ثبت‌نام کرده‌اید؟{" "}
+            <Link
+              to="/login"
+              className={`font-semibold text-${themeColor}-500 hover:underline`}
+            >
+              ورود
+            </Link>
+          </p>
         </div>
       </div>
     </section>
