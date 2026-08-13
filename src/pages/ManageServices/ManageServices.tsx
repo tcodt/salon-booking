@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { MdAttachMoney, MdOutlineRoomService } from "react-icons/md";
 import { PiTimerBold } from "react-icons/pi";
 import Loading from "../../components/Loading/Loading";
@@ -22,6 +22,13 @@ import PageTitle from "../../components/PageTitle/PageTitle";
 import { useThemeColor } from "../../context/ThemeColor";
 import Dropdown from "../../components/Dropdown/Dropdown";
 import { motion } from "framer-motion";
+import {
+  getEmployeeLabel,
+  getEmployeeFirstName,
+  getEmployeeImage,
+  getEmployeeDisplayName,
+} from "../../types/employees";
+import { useBusinessMe } from "../../hooks/business/useBusinessMe";
 
 const ManageServices: React.FC = () => {
   const {
@@ -33,13 +40,13 @@ const ManageServices: React.FC = () => {
   const { data: services, isError, isPending, error } = useGetServices();
   const { data: employees } = useGetEmployees();
   const { data: businesses } = useGetBusinesses();
+  const { data: businessMe } = useBusinessMe();
 
   const [isUpdateOpen, setIsUpdateOpen] = useState<boolean>(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
   const [isAddOpen, setIsAddOpen] = useState<boolean>(false);
-  // const [duration, setDuration] = useState("00:00:00");
   const [serviceToEdit, setServiceToEdit] = useState<PostServicesData | null>(
-    null
+    null,
   );
   const [serviceIdToEdit, setServiceIdToEdit] = useState<number | null>(null);
   const [time, setTime] = useState({ hour: 0, minute: 0 });
@@ -49,6 +56,23 @@ const ManageServices: React.FC = () => {
   const addServiceMutation = useAddService();
   const updateServiceMutation = useUpdateService();
   const { themeColor } = useThemeColor();
+  const myBusinessId = businessMe?.id;
+
+  /** Only this owner's services (API may still return extras) */
+  const ownerServices = useMemo(() => {
+    if (!services) return [];
+    if (!myBusinessId) return services;
+
+    return services.filter((s) => {
+      const b = s.business as unknown;
+      if (b == null) return true; // trust API scoping
+      if (typeof b === "number") return b === myBusinessId;
+      if (typeof b === "object" && b !== null && "id" in b) {
+        return (b as { id: number }).id === myBusinessId;
+      }
+      return true;
+    });
+  }, [services, myBusinessId]);
 
   if (isError) {
     toast.error("مشکلی پیش آمد!");
@@ -63,38 +87,53 @@ const ManageServices: React.FC = () => {
   if (isPending) return <Loading />;
 
   const onSubmit = (data: PostServicesData) => {
-    const formattedDuration = `${String(time.hour).padStart(2, "0")}:${String(
-      time.minute
+    if (!myBusinessId) {
+      toast.error("کسب‌وکار شما یافت نشد");
+      return;
+    }
+
+    const duration = `${String(time.hour).padStart(2, "0")}:${String(
+      time.minute,
     ).padStart(2, "0")}:00`;
 
-    const finalData: PostServicesData = {
+    const payload: PostServicesData = {
       ...data,
-      duration: formattedDuration,
+      business_id: myBusinessId,
+      employee_id: Number(data.employee_id),
+      duration,
     };
 
+    // const formattedDuration = `${String(time.hour).padStart(2, "0")}:${String(
+    //   time.minute,
+    // ).padStart(2, "0")}:00`;
+
+    // const finalData: PostServicesData = {
+    //   ...data,
+    //   duration: formattedDuration,
+    // };
+
     const toastId = toast.loading(
-      serviceIdToEdit ? "در حال بروزرسانی سرویس..." : "در حال افزودن سرویس..."
+      serviceIdToEdit ? "در حال بروزرسانی سرویس..." : "در حال افزودن سرویس...",
     );
 
     const mutationFunc = serviceIdToEdit
       ? updateServiceMutation
       : addServiceMutation;
 
-    const mutationPayload = serviceIdToEdit
-      ? { id: serviceIdToEdit, values: finalData }
-      : finalData;
+    // const mutationPayload = serviceIdToEdit
+    //   ? { id: serviceIdToEdit, values: finalData }
+    //   : finalData;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mutationFunc.mutate(mutationPayload as any, {
+    mutationFunc.mutate(payload as any, {
       onSuccess: () => {
         toast.success(
           serviceIdToEdit
             ? "سرویس با موفقیت بروزرسانی شد!"
             : "سرویس با موفقیت افزوده شد!",
-          { id: toastId }
+          { id: toastId },
         );
         reset();
-        // setDuration("00:00:00");
         setIsAddOpen(false);
         setServiceToEdit(null);
         setServiceIdToEdit(null);
@@ -134,7 +173,6 @@ const ManageServices: React.FC = () => {
       employee_id: service.employee_id,
     });
     setServiceIdToEdit(service.id);
-    // setDuration(service.duration);
     const [hour, minute] = service.duration.split(":").map(Number);
     setTime({ hour, minute });
     setIsAddOpen(true);
@@ -155,15 +193,18 @@ const ManageServices: React.FC = () => {
               className="flex items-center gap-4 relative border-s-2 border-s-red-500 rounded-e-xl p-2 bg-slate-100 dark:bg-gray-700 shadow-md"
             >
               <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
-                {ser?.employee?.user.image ? (
-                  <img src={ser?.employee?.user.image} alt="Service Image" />
+                {getEmployeeImage(ser?.employee?.user) ? (
+                  <img
+                    src={getEmployeeImage(ser?.employee?.user) || undefined}
+                    alt="Service Image"
+                  />
                 ) : (
                   <FaUser size={20} />
                 )}
               </div>
               <div className="flex flex-col gap-1">
                 <h4 className="text-base text-gray-800 font-normal dark:text-white">
-                  {ser?.employee?.user.first_name}
+                  {getEmployeeFirstName(ser?.employee?.user)}
                 </h4>
                 <span className="text-sm text-gray-500 font-thin dark:text-gray-300">
                   {ser?.name}
@@ -193,15 +234,18 @@ const ManageServices: React.FC = () => {
               className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-e-xl p-2 bg-slate-100 dark:bg-gray-700 shadow-md`}
             >
               <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
-                {ser?.employee?.user.image ? (
-                  <img src={ser?.employee?.user.image} alt="Service Image" />
+                {getEmployeeImage(ser?.employee?.user) ? (
+                  <img
+                    src={getEmployeeImage(ser?.employee?.user) || undefined}
+                    alt="Service Image"
+                  />
                 ) : (
                   <FaUser size={20} />
                 )}
               </div>
               <div className="flex flex-col gap-1">
                 <h4 className="text-base text-gray-800 font-normal dark:text-white">
-                  {ser?.employee?.user.first_name}
+                  {getEmployeeFirstName(ser?.employee?.user)}
                 </h4>
                 <span className="text-sm text-gray-500 font-thin dark:text-gray-300">
                   {ser?.name}
@@ -225,7 +269,6 @@ const ManageServices: React.FC = () => {
         onClose={() => {
           setIsAddOpen(false);
           reset();
-          // setDuration("00:00:00");
           setTime({ hour: 0, minute: 0 });
         }}
         title="افزودن سرویس جدید"
@@ -275,6 +318,15 @@ const ManageServices: React.FC = () => {
               <p className="text-red-500 text-sm">{errors.price.message}</p>
             )}
 
+            {businessMe && (
+              <p className="text-sm text-gray-500">
+                سالن:{" "}
+                <span className="font-medium text-gray-800 dark:text-gray-200">
+                  {businessMe.name}
+                </span>
+              </p>
+            )}
+
             <select
               {...register("business_id", {
                 required: "کسب‌ و‌ کار الزامی است",
@@ -298,16 +350,19 @@ const ManageServices: React.FC = () => {
             )}
 
             <select
-              {...register("employee_id", { required: "کارمند الزامی است" })}
               className="primary-input"
-              defaultValue={serviceToEdit?.employee_id || ""}
+              {...register("employee_id", {
+                required: "کارمند الزامی است",
+                valueAsNumber: true,
+              })}
+              defaultValue=""
             >
               <option value="" disabled>
                 انتخاب کارمند
               </option>
               {employees?.map((emp) => (
                 <option key={emp.id} value={emp.id}>
-                  {emp.user.first_name} {emp.user.last_name}
+                  {getEmployeeLabel(emp)}
                 </option>
               ))}
             </select>
@@ -339,9 +394,28 @@ const ManageServices: React.FC = () => {
         </div>
       </div>
 
-      {!services?.length && (
+      {!ownerServices.length && (
         <div className="text-base text-gray-500">هیچ سرویسی وجود ندارد!</div>
       )}
+
+      {ownerServices.map((service) => (
+        <motion.div
+          key={service.id}
+          className="rounded-xl bg-white p-4 shadow-md dark:bg-gray-700"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
+          <div
+            className={`border-s-4 border-${themeColor}-500 bg-${themeColor}-100 p-1 text-xl font-semibold text-${themeColor}-800`}
+          >
+            <h4>{service.name}</h4>
+          </div>
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-300">
+            آرایشگر: {getEmployeeDisplayName(service.employee?.user)}
+          </p>
+          {/* duration / price as before */}
+        </motion.div>
+      ))}
 
       {services?.map((service) => (
         <motion.div
@@ -355,8 +429,8 @@ const ManageServices: React.FC = () => {
             className={`text-xl font-semibold text-${themeColor}-800 bg-${themeColor}-100 p-1 border-s-4 border-${themeColor}-500`}
           >
             <h4>
-              {service?.employee?.user.first_name}{" "}
-              {service?.employee?.user.last_name}
+              {getEmployeeFirstName(service?.employee?.user)}{" "}
+              {getEmployeeDisplayName(service?.employee?.user)}
             </h4>
           </div>
           <div className="flex flex-col gap-4 mt-4">

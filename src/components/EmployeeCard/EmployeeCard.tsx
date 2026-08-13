@@ -1,9 +1,15 @@
+import React from "react";
 import { FaUser } from "react-icons/fa";
+import {
+  EmployeeUser,
+  getEmployeeDisplayName,
+  getEmployeeImage,
+} from "../../types/employees";
 
 interface EmployeeCardProps {
   employee: {
     id: number;
-    user: { first_name: string; last_name: string; image?: string };
+    user: EmployeeUser;
     skill?: string;
   };
   actionIcon: React.ReactNode;
@@ -16,38 +22,48 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
   actionIcon,
   onAction,
   themeColor,
-}) => (
-  <div
-    className={`flex items-center gap-4 relative border-s-2 border-s-${themeColor}-500 rounded-e-xl bg-slate-100 dark:bg-gray-700 shadow-md p-2`}
-  >
-    <div className="w-14 h-14 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
-      {employee.user.image ? (
-        <img
-          src={employee.user.image}
-          alt="Employee Image"
-          className="object-cover rounded-full w-full h-full"
-        />
-      ) : (
-        <FaUser size={20} />
-      )}
-    </div>
-    <div className="flex flex-col gap-1">
-      <h4 className="text-base text-gray-800 font-normal dark:text-white">
-        {employee.user.first_name} {employee.user.last_name}
-      </h4>
-      {employee.skill && (
-        <span className="text-sm text-gray-500 font-thin dark:text-gray-300">
-          {employee.skill}
-        </span>
-      )}
-    </div>
-    <button
-      className={`text-xl bg-${themeColor}-100 rounded-full p-1 text-${themeColor}-500 absolute top-6 left-4 hover:text-${themeColor}-600 transition`}
-      onClick={onAction}
+}) => {
+  const name = getEmployeeDisplayName(employee.user);
+  const image = getEmployeeImage(employee.user);
+  const skill = employee.skill?.trim();
+
+  return (
+    <div
+      className={`relative flex items-center gap-4 rounded-e-xl border-s-2 border-s-${themeColor}-500 bg-slate-100 p-2 shadow-md dark:bg-gray-700`}
     >
-      {actionIcon}
-    </button>
-  </div>
-);
+      <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border border-gray-300 bg-gray-100 text-gray-500">
+        {image ? (
+          <img src={image} alt={name} className="h-full w-full object-cover" />
+        ) : (
+          <FaUser size={20} />
+        )}
+      </div>
+
+      <div className="min-w-0 flex-1">
+        <h4 className="truncate text-base font-medium text-gray-800 dark:text-white">
+          {name}
+        </h4>
+        {skill ? (
+          <span className="block truncate text-sm text-gray-500 dark:text-gray-300">
+            {skill}
+          </span>
+        ) : (
+          <span className="block text-sm text-gray-400">
+            بدون مهارت ثبت‌شده
+          </span>
+        )}
+      </div>
+
+      <button
+        type="button"
+        className={`absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-${themeColor}-100 p-1.5 text-lg text-${themeColor}-500 transition hover:text-${themeColor}-600`}
+        onClick={onAction}
+        aria-label="عملیات"
+      >
+        {actionIcon}
+      </button>
+    </div>
+  );
+};
 
 export default EmployeeCard;

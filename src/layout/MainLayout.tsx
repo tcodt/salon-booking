@@ -20,7 +20,7 @@ const MainLayout: React.FC = () => {
           [&::-webkit-scrollbar-thumb]:bg-slate-400"
       >
         <TopBar />
-        <main className="flex-1 min-h-screen pb-12">
+        <main className="min-h-screen flex-1 pb-24">
           <Outlet />
         </main>
         <Navigation />

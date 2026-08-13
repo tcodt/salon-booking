@@ -2,7 +2,7 @@ import { GetEmployeesItem } from "./employees";
 import { GetServicesItem } from "./services";
 
 export interface ReservationRequest {
-  status: string;
+  status?: string;
   service_id: number;
   employee_id: number;
   time_slot_id: number;

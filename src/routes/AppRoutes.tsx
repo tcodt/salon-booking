@@ -1,5 +1,12 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router";
+
 import HomePage from "../pages/HomePage/HomePage";
 import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
@@ -36,21 +43,82 @@ import AvailableTimes from "../pages/AvailableTimes/AvailableTimes";
 import UserProfileDetail from "../pages/UserProfileDetail/UserProfileDetail";
 import UpdateSlots from "../pages/UpdateSlots/UpdateSlots";
 import Users from "../pages/Users/Users";
-import { UserTypeProvider } from "../context/UserTypeContext";
+import { UserTypeProvider, useUserType } from "../context/UserTypeContext";
 import RoleAuthentication from "../pages/RoleAuthentication/RoleAuthentication";
 import CreateBusiness from "../pages/CreateBusiness/CreateBusiness";
 import RandomCodeInput from "../pages/RandomCodeInput/RandomCodeInput";
 import UserFlow from "../layout/UserFlow";
 import WaitingRoom from "../pages/WaitingRoom/WaitingRoom";
 import { BusinessStatusGuard } from "../components/BusinessStatusGuard/BusinessStatusGuard";
+import { RoleRoute } from "./RoleRoute";
+import JoinSalon from "../pages/JoinSalon/JoinSalon";
+import Dots from "../components/Dots/Dots";
 
-// Wrapper component for offline detection
+/* -------------------------------------------------------------------------- */
+/* Network wrapper                                                            */
+/* -------------------------------------------------------------------------- */
+
 const NetworkStatusWrapper: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  useNetworkStatus(); // Applies offline redirect
+  useNetworkStatus();
   return <>{children}</>;
 };
+
+/* -------------------------------------------------------------------------- */
+/* Onboarding-only guard (UserFlow)                                           */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * UserFlow is ONLY for first-time registration after auth.
+ * Returning users who already have userType / joinedBusiness
+ * cannot open role-auth / create-business / random-code-input.
+ */
+const OnboardingOnly: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const { userType, isReady } = useUserType();
+  const location = useLocation();
+
+  if (authLoading || !isReady) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Dots />
+      </div>
+    );
+  }
+
+  // Must be logged in to continue onboarding
+  if (!isAuthenticated) {
+    return <Navigate to="/auth" state={{ from: location }} replace />;
+  }
+
+  const hasJoinedSalon = !!localStorage.getItem("joinedBusiness");
+
+  // Already finished customer onboarding → app (use /join-salon to change code)
+  if (userType === "customer" && hasJoinedSalon) {
+    return <Navigate to="/home" replace />;
+  }
+
+  // Already owner → app / waiting room (not registration code page)
+  if (userType === "owner") {
+    // Allow create-business if they somehow still need it; block random-code
+    if (location.pathname === "/random-code-input") {
+      return <Navigate to="/dashboard" replace />;
+    }
+    // If they already have a business, BusinessStatusGuard handles the rest
+    if (location.pathname === "/role-authentication" && hasJoinedSalon) {
+      return <Navigate to="/dashboard" replace />;
+    }
+  }
+
+  return <>{children}</>;
+};
+
+/* -------------------------------------------------------------------------- */
+/* Routes                                                                     */
+/* -------------------------------------------------------------------------- */
 
 const AppRoutes: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -59,11 +127,13 @@ const AppRoutes: React.FC = () => {
     <Router>
       <UserTypeProvider>
         <Routes>
-          {/* Public routes (no guard needed) */}
+          {/* ===================== PUBLIC ===================== */}
           <Route path="/" element={<SplashScreen />} />
           <Route
             path="/auth"
-            element={isAuthenticated ? <Navigate to="/dashboard" /> : <Auth />}
+            element={
+              isAuthenticated ? <Navigate to="/dashboard" replace /> : <Auth />
+            }
           />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -73,8 +143,21 @@ const AppRoutes: React.FC = () => {
           <Route path="/acl" element={<AclManager />} />
           <Route path="/offline" element={<OfflinePage />} />
 
-          {/* Role Authentication Flow (no business check needed) */}
-          <Route element={<UserFlow />}>
+          {/* ===================== ONBOARDING (new users only) ===================== */}
+          {/*
+            UserFlow shell + OnboardingOnly:
+            - /role-authentication
+            - /create-business
+            - /random-code-input  ← registration code ONLY
+            Registered customers must use /join-salon instead.
+          */}
+          <Route
+            element={
+              <OnboardingOnly>
+                <UserFlow />
+              </OnboardingOnly>
+            }
+          >
             <Route
               path="/role-authentication"
               element={<RoleAuthentication />}
@@ -83,7 +166,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/random-code-input" element={<RandomCodeInput />} />
           </Route>
 
-          {/* Waiting Room - accessible without MainLayout */}
+          {/* ===================== WAITING ROOM (owner pending) ===================== */}
           <Route
             path="/waiting-room"
             element={
@@ -97,7 +180,7 @@ const AppRoutes: React.FC = () => {
             }
           />
 
-          {/* Authenticated routes with MainLayout and Business Guard */}
+          {/* ===================== AUTHENTICATED APP ===================== */}
           <Route
             element={
               <PrivateRoutes>
@@ -109,9 +192,40 @@ const AppRoutes: React.FC = () => {
               </PrivateRoutes>
             }
           >
-            <Route path="/home" element={<HomePage />} />
+            {/* Customer home */}
+            <Route
+              path="/home"
+              element={
+                <RoleRoute allow="customer">
+                  <HomePage />
+                </RoleRoute>
+              }
+            />
+
+            {/*
+              Registered users: enter / change salon code here.
+              NOT the registration random-code-input page.
+            */}
+            <Route
+              path="/join-salon"
+              element={
+                <RoleRoute allow="customer">
+                  <JoinSalon />
+                </RoleRoute>
+              }
+            />
+
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/reserve" element={<Reserve />} />
+
+            <Route
+              path="/reserve"
+              element={
+                <RoleRoute allow="customer">
+                  <Reserve />
+                </RoleRoute>
+              }
+            />
+
             <Route path="/user-profile" element={<UserProfile />} />
             <Route
               path="/user-profile-detail/:id"
@@ -119,11 +233,36 @@ const AppRoutes: React.FC = () => {
             />
             <Route path="/appointments-list" element={<AppointmentsList />} />
             <Route path="/settings" element={<Settings />} />
-            <Route path="/manage-employees" element={<ManageEmployees />} />
-            <Route path="/manage-services" element={<ManageServices />} />
+
+            <Route
+              path="/manage-employees"
+              element={
+                <RoleRoute allow="owner">
+                  <ManageEmployees />
+                </RoleRoute>
+              }
+            />
+            <Route
+              path="/manage-services"
+              element={
+                <RoleRoute allow="owner">
+                  <ManageServices />
+                </RoleRoute>
+              }
+            />
+
             <Route path="/view-appointment/:id" element={<ViewAppointment />} />
             <Route path="/wallet" element={<Wallet />} />
-            <Route path="/available-times" element={<AvailableTimes />} />
+
+            <Route
+              path="/available-times"
+              element={
+                <RoleRoute allow="owner">
+                  <AvailableTimes />
+                </RoleRoute>
+              }
+            />
+
             <Route
               path="/update-appointment/:id"
               element={<UpdateAppointment />}
@@ -131,18 +270,34 @@ const AppRoutes: React.FC = () => {
             <Route path="/update-slots/:id" element={<UpdateSlots />} />
             <Route path="/working-time" element={<WorkingTime />} />
             <Route path="/add-working-time" element={<AddWorkingTime />} />
-            <Route path="/sliders" element={<Sliders />} />
+
+            <Route
+              path="/sliders"
+              element={
+                <RoleRoute allow="owner">
+                  <Sliders />
+                </RoleRoute>
+              }
+            />
+
             <Route path="/users" element={<Users />} />
             <Route
               path="/update-working-time/:id"
               element={<UpdateWorkingTime />}
             />
-            <Route path="/packages" element={<Packages />} />
+
+            <Route
+              path="/packages"
+              element={
+                <RoleRoute allow="owner">
+                  <Packages />
+                </RoleRoute>
+              }
+            />
             <Route path="/packages/:id" element={<PackagesInfo />} />
             <Route path="/logout" element={<Logout />} />
           </Route>
 
-          {/* Not Found route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </UserTypeProvider>

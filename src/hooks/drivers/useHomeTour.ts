@@ -10,12 +10,10 @@ export const useHomeTour = () => {
     if (hasSeenTour) return;
 
     const timeout = setTimeout(() => {
-      // ✅ Ensure all elements exist
-      const requiredSelectors = ["#theme-toggle", "#notif", "#sidebar"];
+      const requiredSelectors = ["#sidebar-toggle", "#theme-toggle", "#notif"];
       const allExist = requiredSelectors.every((sel) =>
-        document.querySelector(sel)
+        document.querySelector(sel),
       );
-
       if (!allExist) return;
 
       document.body.classList.add("driver-active");
@@ -24,10 +22,14 @@ export const useHomeTour = () => {
         animate: true,
         showProgress: true,
         allowClose: true,
-        doneBtnText: "فهمیدم!",
+        overlayOpacity: 0.55,
+        stagePadding: 8,
+        stageRadius: 16,
+        popoverClass: "salon-driver-theme",
+        progressText: "{{current}} از {{total}}",
+        doneBtnText: "شروع کنید",
         prevBtnText: "قبلی",
         nextBtnText: "بعدی",
-
         onDestroyed: () => {
           document.body.classList.remove("driver-active");
           localStorage.setItem("home-tour-seen", "true");
@@ -36,11 +38,21 @@ export const useHomeTour = () => {
 
       driverObj.setSteps([
         {
+          element: "#sidebar-toggle",
+          popover: {
+            title: "منوی اصلی",
+            description:
+              "از اینجا به بخش‌های مختلف مثل خدمات، آرایشگران و تنظیمات دسترسی دارید.",
+            side: "bottom",
+            align: "start",
+          },
+        },
+        {
           element: "#theme-toggle",
           popover: {
-            title: "تغییر تم",
+            title: "ظاهر برنامه",
             description:
-              "با کلیک روی این دکمه می‌توانید تم سایت را تغییر دهید.",
+              "حالت تاریک/روشن و رنگ تم را مطابق سلیقه خود تنظیم کنید.",
             side: "bottom",
             align: "center",
           },
@@ -50,30 +62,34 @@ export const useHomeTour = () => {
           popover: {
             title: "اعلان‌ها",
             description:
-              "با کلیک روی این دکمه می‌توانید اعلان‌های سایت را مشاهده کنید.",
+              "رزروها و پیام‌های مهم اینجا به شما اطلاع داده می‌شود.",
             side: "bottom",
             align: "center",
           },
         },
         {
-          element: "#sidebar",
+          element: "#mobile-nav",
           popover: {
-            title: "منوی اصلی",
+            title: "ناوبری سریع",
             description:
-              "با کلیک روی این دکمه می‌توانید منوی اصلی سایت را باز و بسته کنید.",
-            side: "bottom",
+              "با نوار پایین صفحه، سریع بین خانه، داشبورد و بخش‌های پرکاربرد جابه‌جا شوید.",
+            side: "top",
             align: "center",
           },
         },
       ]);
 
       driverObj.drive();
-    }, 600); // ⏳ wait for layout + hydration
+    }, 700);
 
     return () => {
       clearTimeout(timeout);
       document.body.classList.remove("driver-active");
-      driver()?.destroy();
+      try {
+        driver()?.destroy();
+      } catch {
+        /* ignore */
+      }
     };
   }, []);
 };

@@ -2,6 +2,8 @@
 import React, { createContext, ReactNode, useContext, useMemo } from "react";
 import { useGetProfile } from "../hooks/profile/useGetProfile";
 import { useGetUserPermissionsById } from "../hooks/permissions/useGetUserPermissionsById";
+import { useBusinessMe } from "../hooks/business/useBusinessMe";
+import { useUserType } from "./UserTypeContext";
 import { PermissionsList } from "../types/permissions";
 
 interface AclContextType {
@@ -11,6 +13,8 @@ interface AclContextType {
   isOwner: boolean;
   isSuperuser: boolean;
   isLoading: boolean;
+  /** True when this account runs a business panel */
+  isBusinessOwner: boolean;
 }
 
 export interface AclProviderProps {
@@ -26,29 +30,38 @@ export const AclProvider: React.FC<AclProviderProps> = ({
   children,
   userId,
 }) => {
+  const { data: userInfo, isLoading: profileLoading } = useGetProfile();
+  const { userType } = useUserType();
+
+  // Only fetch business-me when user might be an owner
+  const shouldCheckBusiness =
+    !!userInfo?.is_owner || userType === "owner" || userType === null;
+
   const {
-    data: userInfo,
-    isLoading: profileLoading,
-    isError: profileError,
-  } = useGetProfile();
+    // data: businessMe,
+    isLoading: businessLoading,
+    isSuccess: hasBusiness,
+  } = useBusinessMe();
 
   const { data: userPermissionData, isLoading: permissionsLoading } =
     useGetUserPermissionsById(userId ?? 0);
 
-  const isOwner = !!userInfo?.is_owner;
+  const isOwnerFlag = !!userInfo?.is_owner;
   const isSuperuser = !!userInfo?.is_superuser;
-  const isAdmin = isOwner || isSuperuser;
+
+  // Owner if flag OR they actually have a business OR chose owner flow
+  const isBusinessOwner =
+    isOwnerFlag || isSuperuser || hasBusiness || userType === "owner";
+
+  const isAdmin = isBusinessOwner;
 
   const userPermissions = useMemo<string[]>(() => {
-    if (isAdmin) {
-      return ADMIN_PERMISSIONS;
-    }
+    if (isAdmin) return ADMIN_PERMISSIONS;
 
     if (userPermissionData?.permissions_display?.length) {
       return userPermissionData.permissions_display.map((p) => p.code);
     }
 
-    // Fallback if the API returns a different shape
     if (Array.isArray((userPermissionData as any)?.permissions)) {
       return (userPermissionData as any).permissions
         .map((p: any) => (typeof p === "string" ? p : p?.code))
@@ -69,21 +82,20 @@ export const AclProvider: React.FC<AclProviderProps> = ({
     return userPermissions.includes(permission);
   };
 
-  const isLoading = profileLoading || (!!userId && permissionsLoading);
+  const isLoading =
+    profileLoading ||
+    (shouldCheckBusiness && businessLoading) ||
+    (!!userId && permissionsLoading);
 
-  // Never return null – keep the tree mounted and expose loading state
   const value: AclContextType = {
     userPermissions,
     hasPermission,
     role,
-    isOwner,
+    isOwner: isOwnerFlag || hasBusiness,
     isSuperuser,
     isLoading,
+    isBusinessOwner,
   };
-
-  if (profileError) {
-    console.error("Error loading user profile for ACL:", profileError);
-  }
 
   return <AclContext.Provider value={value}>{children}</AclContext.Provider>;
 };
@@ -95,3 +107,6 @@ export const useAcl = () => {
   }
   return context;
 };
+
+/** Safe outside PrivateRoutes (onboarding / UserFlow) */
+export const useAclOptional = () => useContext(AclContext);

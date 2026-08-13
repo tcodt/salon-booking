@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import Loading from "../../components/Loading/Loading";
 import toast from "react-hot-toast";
-import { GetEmployeesItem } from "../../types/employees";
 import { FaRegTrashAlt, FaUser } from "react-icons/fa";
 import { IoAdd } from "react-icons/io5";
 import { FaPencil } from "react-icons/fa6";
@@ -19,6 +18,17 @@ import { useThemeColor } from "../../context/ThemeColor";
 import Dropdown from "../../components/Dropdown/Dropdown";
 import EmployeeCard from "../../components/EmployeeCard/EmployeeCard";
 import { motion } from "framer-motion";
+import {
+  GetEmployeesItem,
+  getEmployeeDisplayName,
+  getEmployeeFirstName,
+  getEmployeePhone,
+  getEmployeeIsActive,
+  getEmployeeIsOwner,
+  getEmployeeIsStaff,
+  getEmployeeUserId,
+} from "../../types/employees";
+import { useAuth } from "../../context/AuthContext";
 
 const ManageEmployees: React.FC = () => {
   const {
@@ -46,7 +56,7 @@ const ManageEmployees: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [skill, setSkill] = useState<string>("");
   const [updatingEmployeeId, setUpdatingEmployeeId] = useState<number | null>(
-    null
+    null,
   );
   const [selectedUserUpdate, setSelectedUserUpdate] = useState<string>("");
   const [selectedUserIdUpdate, setSelectedUserIdUpdate] = useState<
@@ -59,6 +69,15 @@ const ManageEmployees: React.FC = () => {
   const queryClient = useQueryClient();
   const removeEmployeeMutation = useRemoveEmployee();
   const { themeColor } = useThemeColor();
+  const { user } = useAuth();
+  const currentUserId = user?.id;
+
+  const isSelf = (emp: GetEmployeesItem) => {
+    const empUserId = getEmployeeUserId(emp.user);
+    return (
+      empUserId != null && currentUserId != null && empUserId === currentUserId
+    );
+  };
 
   if (isPending) return <Loading />;
 
@@ -100,7 +119,7 @@ const ManageEmployees: React.FC = () => {
           console.error(error);
           console.error(errorMessage);
         },
-      }
+      },
     );
   };
 
@@ -108,7 +127,7 @@ const ManageEmployees: React.FC = () => {
     id: number,
     skill: string,
     firstName: string,
-    userId: number
+    userId: number,
   ) => {
     setUpdatingEmployeeId(id);
     setSelectedUserIdUpdate(userId);
@@ -140,13 +159,18 @@ const ManageEmployees: React.FC = () => {
           toast.error("خطا در بروزرسانی آرایشگر!", { id: toastId });
           console.error(error);
         },
-      }
+      },
     );
   };
 
-  const handleRemoveEmployee = (id: number) => {
+  const handleRemoveEmployee = (emp: GetEmployeesItem) => {
+    if (isSelf(emp)) {
+      toast.error("نمی‌توانید خودتان را از لیست آرایشگران حذف کنید");
+      return;
+    }
+
     const removeEmpId = toast.loading("لطفا منتظر بمانید...");
-    removeEmployeeMutation.mutate(id, {
+    removeEmployeeMutation.mutate(emp.id, {
       onSuccess: () => {
         toast.success("آرایشگر مورد نظر با موفقیت حذف شد", { id: removeEmpId });
         queryClient.invalidateQueries({ queryKey: ["employees"] });
@@ -167,15 +191,17 @@ const ManageEmployees: React.FC = () => {
         title="حذف آرایشگر"
       >
         <div className="flex flex-col gap-6">
-          {employees.map((emp) => (
-            <EmployeeCard
-              key={emp.id}
-              employee={emp}
-              actionIcon={<FaRegTrashAlt />}
-              onAction={() => handleRemoveEmployee(emp.id)}
-              themeColor={themeColor}
-            />
-          ))}
+          {employees
+            .filter((emp) => !isSelf(emp))
+            .map((emp) => (
+              <EmployeeCard
+                key={emp.id}
+                employee={emp}
+                actionIcon={<FaRegTrashAlt />}
+                onAction={() => handleRemoveEmployee(emp)}
+                themeColor={themeColor}
+              />
+            ))}
         </div>
       </CustomModal>
 
@@ -213,8 +239,8 @@ const ManageEmployees: React.FC = () => {
                   handleUpdateEmp(
                     emp.id,
                     emp.skill,
-                    emp.user.first_name,
-                    emp.user.id
+                    getEmployeeFirstName(emp.user),
+                    getEmployeeUserId(emp.user) ?? 0,
                   )
                 }
                 themeColor={themeColor}
@@ -248,22 +274,20 @@ const ManageEmployees: React.FC = () => {
           <Button variant="primary" onClick={handleAddEmployee}>
             ثبت آرایشگر
           </Button>
-          {users.map((user) => (
-            <EmployeeCard
-              key={user.id}
-              employee={{
-                id: user.id,
-                user: {
-                  first_name: user.first_name,
-                  last_name: user.last_name,
-                  image: user.image,
-                },
-              }}
-              actionIcon={<IoAdd />}
-              onAction={() => handleAddUser(user.id, user.first_name)}
-              themeColor={themeColor}
-            />
-          ))}
+          {users
+            .filter((u) => u.id !== currentUserId)
+            .map((user) => (
+              <EmployeeCard
+                key={user.id}
+                employee={{
+                  id: user.id,
+                  user: user, // full User object
+                }}
+                actionIcon={<IoAdd />}
+                onAction={() => handleAddUser(user.id, user.first_name)}
+                themeColor={themeColor}
+              />
+            ))}
         </div>
       </CustomModal>
 
@@ -299,10 +323,10 @@ const ManageEmployees: React.FC = () => {
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
-                    {employee.user.first_name} {employee.user.last_name}
+                    {getEmployeeDisplayName(employee.user)}
                   </h2>
                   <p className="text-gray-600 dark:text-gray-300 text-sm">
-                    {employee.skill}
+                    {employee.skill?.trim() || "بدون مهارت"}
                   </p>
                 </div>
               </div>
@@ -312,7 +336,7 @@ const ManageEmployees: React.FC = () => {
                   <tr>
                     <td className="font-medium py-2">شماره تلفن:</td>
                     <td className="py-2 text-end">
-                      {employee.user.phone_number}
+                      {getEmployeePhone(employee.user)}
                     </td>
                   </tr>
                   <tr>
@@ -320,23 +344,25 @@ const ManageEmployees: React.FC = () => {
                     <td className="py-2 text-end">
                       <span
                         className={`px-2 py-1 rounded text-xs ${
-                          employee.user.is_active
+                          getEmployeeIsActive(employee.user)
                             ? "bg-green-100 text-green-500 dark:bg-green-500 dark:text-white"
                             : "bg-red-100 text-red-500 dark:bg-red-500 dark:text-white"
                         }`}
                       >
-                        {employee.user.is_active ? "فعال" : "غیرفعال"}
+                        {getEmployeeIsActive(employee.user)
+                          ? "فعال"
+                          : "غیرفعال"}
                       </span>
                     </td>
                   </tr>
                   <tr>
                     <td className="font-medium py-2">نقش:</td>
                     <td className="py-2 text-end">
-                      {employee.user.is_owner
+                      {getEmployeeIsOwner(employee.user)
                         ? "مالک"
-                        : employee.user.is_staff
-                        ? "آرایشگر"
-                        : "کاربر"}
+                        : getEmployeeIsStaff(employee.user)
+                          ? "آرایشگر"
+                          : "کاربر"}
                     </td>
                   </tr>
                 </tbody>

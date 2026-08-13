@@ -12,6 +12,7 @@ import { LoginType } from "../../types/login";
 import { useThemeColor } from "../../context/ThemeColor";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../context/AuthContext";
+import { useUserType } from "../../context/UserTypeContext";
 
 const Login: React.FC = () => {
   const {
@@ -27,6 +28,7 @@ const Login: React.FC = () => {
   const { themeColor } = useThemeColor();
   const queryClient = useQueryClient();
   const { login: loginContext } = useAuth();
+  const { setUserType } = useUserType();
 
   const toggle = useCallback(() => {
     setIsVisible((prev) => !prev);
@@ -40,7 +42,12 @@ const Login: React.FC = () => {
         toast.success("ورود موفقیت‌آمیز بود!", { id: toastId });
         queryClient.setQueryData(["userProfile"], res.user);
         loginContext({ access: res.access, refresh: res.refresh }, res.user);
-        navigate("/home");
+        if (res.user?.is_owner) {
+          setUserType("owner");
+          navigate("/dashboard");
+        } else {
+          navigate("/home"); // or role-authentication if first time
+        }
       },
       onError: (error) => {
         const axiosError = error as AxiosError;

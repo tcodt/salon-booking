@@ -6,13 +6,13 @@ import {
   MdOutlineBookmarkAdded,
   MdOutlineBookmarkRemove,
   MdOutlineEventAvailable,
+  MdPeopleOutline,
   MdWarningAmber,
 } from "react-icons/md";
 import { GrLineChart } from "react-icons/gr";
 import { HiArrowLeft } from "react-icons/hi";
 
 import { useGetDashboardToday } from "../../hooks/dashboard/useGetDashboardToday";
-import { useGetUsers } from "../../hooks/users/useGetUsers";
 import { useThemeColor } from "../../context/ThemeColor";
 import { useAcl } from "../../context/AclContext";
 import {
@@ -21,21 +21,26 @@ import {
   UserDashboardResponse,
 } from "../../types/dashboard";
 import Dots from "../../components/Dots/Dots";
+import { GiSandsOfTime } from "react-icons/gi";
+import { useGetEmployees } from "../../hooks/employees/useGetEmployees";
+import {
+  getEmployeeDisplayName,
+  getEmployeePhone,
+} from "../../types/employees";
 
 /* -------------------------------------------------------------------------- */
 /* Helpers                                                                    */
 /* -------------------------------------------------------------------------- */
 
 const isAdminDashboard = (
-  data: DashboardResponse | undefined
+  data: DashboardResponse | undefined,
 ): data is AdminDashboardResponse => data?.type === "admin";
 
 const isUserDashboard = (
-  data: DashboardResponse | undefined
+  data: DashboardResponse | undefined,
 ): data is UserDashboardResponse => data?.type === "user";
 
-const formatMoney = (value: number) =>
-  `${value.toLocaleString("fa-IR")} تومان`;
+const formatMoney = (value: number) => `${value.toLocaleString("fa-IR")} تومان`;
 
 const statusColor = (status: string) => {
   switch (status) {
@@ -88,7 +93,7 @@ const AdminDashboardView: React.FC<{
   data: AdminDashboardResponse;
   themeColor: string;
 }> = ({ data, themeColor }) => {
-  const { data: usersData } = useGetUsers();
+  const { data: employees, isPending: employeesLoading } = useGetEmployees();
 
   const incomeData = useMemo(() => {
     const { today = 0, week = 0, month = 0 } = data.income ?? {};
@@ -100,32 +105,29 @@ const AdminDashboardView: React.FC<{
     ];
   }, [data.income]);
 
-  const matchedUsers =
-    usersData?.filter((user) =>
-      data.new_users?.some((nu) => nu.id === user.id)
-    ) ?? [];
+  const employeeList = employees ?? [];
 
   return (
     <>
-      {/* Income chart */}
+      {/* Income chart — same as before */}
       {incomeData.length > 0 && (
         <div className="col-span-full">
-          <div className="h-72 bg-white dark:bg-gray-700 rounded-xl shadow-sm p-4 flex flex-col justify-end">
+          <div className="flex h-72 flex-col justify-end rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-700">
             <div
-              className={`border-b-2 border-${themeColor}-500 flex flex-row items-end justify-evenly w-full h-full pb-4`}
+              className={`flex h-full w-full flex-row items-end justify-evenly border-b-2 border-${themeColor}-500 pb-4`}
             >
               {incomeData.map((bar, i) => (
                 <div
                   key={bar.label}
-                  className="flex flex-col items-center justify-end w-1/6 h-full"
+                  className="flex h-full w-1/6 flex-col items-center justify-end"
                 >
                   <motion.div
                     initial={{ height: 0 }}
                     animate={{ height: `${bar.height}%` }}
                     transition={{ duration: 0.8, delay: i * 0.15 }}
-                    className={`w-6 bg-${themeColor}-500 rounded-t-2xl min-h-[4px]`}
+                    className={`min-h-[4px] w-6 rounded-t-2xl bg-${themeColor}-500`}
                   />
-                  <span className="mt-2 text-sm text-gray-700 dark:text-gray-200 font-medium">
+                  <span className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-200">
                     {bar.label}
                   </span>
                   <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -138,12 +140,10 @@ const AdminDashboardView: React.FC<{
         </div>
       )}
 
-      {/* Quick stats */}
+      {/* Stats row */}
       <StatCard
         className="col-span-3"
-        icon={
-          <LuNotebookText size={25} className={`text-${themeColor}-500`} />
-        }
+        icon={<LuNotebookText size={25} className={`text-${themeColor}-500`} />}
         label={
           <>
             {data.total_appointments}{" "}
@@ -153,7 +153,7 @@ const AdminDashboardView: React.FC<{
       />
 
       <StatCard
-        className="col-span-9"
+        className="col-span-5"
         icon={
           data.today_appointments > 0 ? (
             <MdOutlineBookmarkAdded
@@ -178,32 +178,44 @@ const AdminDashboardView: React.FC<{
         }
       />
 
+      <StatCard
+        className="col-span-4"
+        icon={
+          <MdPeopleOutline size={25} className={`text-${themeColor}-500`} />
+        }
+        label={
+          <>
+            {employeeList.length}{" "}
+            <span className="text-gray-500 dark:text-gray-300">آرایشگر</span>
+          </>
+        }
+      />
+
       {/* Income numbers */}
-      <div className="p-4 bg-white dark:bg-gray-700 rounded-xl shadow-sm col-span-full grid grid-cols-12 gap-2 relative overflow-hidden">
-        <div className="absolute top-2 left-0 opacity-50">
+      <div className="relative col-span-full grid grid-cols-12 gap-2 overflow-hidden rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-700">
+        <div className="absolute left-0 top-2 opacity-50">
           <GrLineChart size={25} className={`text-${themeColor}-500`} />
         </div>
-        <span className="text-gray-800 font-semibold text-lg col-span-full dark:text-gray-100">
+        <span className="col-span-full text-lg font-semibold text-gray-800 dark:text-gray-100">
           درآمد
         </span>
-        <span className="text-gray-700 font-medium text-base col-span-4 dark:text-gray-300">
-          ماه:{" "}
-          <span className="text-gray-500 dark:text-gray-200">
-            {formatMoney(data.income?.month ?? 0)}
+        {(
+          [
+            ["ماه", data.income?.month],
+            ["هفته", data.income?.week],
+            ["امروز", data.income?.today],
+          ] as const
+        ).map(([label, value]) => (
+          <span
+            key={label}
+            className="col-span-4 text-base font-medium text-gray-700 dark:text-gray-300"
+          >
+            {label}:{" "}
+            <span className="text-gray-500 dark:text-gray-200">
+              {formatMoney(value ?? 0)}
+            </span>
           </span>
-        </span>
-        <span className="text-gray-700 font-medium text-base col-span-4 dark:text-gray-300">
-          هفته:{" "}
-          <span className="text-gray-500 dark:text-gray-200">
-            {formatMoney(data.income?.week ?? 0)}
-          </span>
-        </span>
-        <span className="text-gray-700 font-medium text-base col-span-4 dark:text-gray-300">
-          امروز:{" "}
-          <span className="text-gray-500 dark:text-gray-200">
-            {formatMoney(data.income?.today ?? 0)}
-          </span>
-        </span>
+        ))}
       </div>
 
       {/* Recent appointments */}
@@ -211,7 +223,7 @@ const AdminDashboardView: React.FC<{
         action={
           <Link
             to="/appointments-list"
-            className={`text-sm font-medium text-${themeColor}-500 hover:opacity-70 transition-opacity`}
+            className={`text-sm font-medium text-${themeColor}-500 hover:opacity-70`}
           >
             همه رزروها
           </Link>
@@ -220,10 +232,10 @@ const AdminDashboardView: React.FC<{
         رزروهای اخیر
       </SectionTitle>
 
-      {data.total_appointments < 1 && (
+      {(data.total_appointments ?? 0) < 1 && (
         <div className="col-span-full py-6 text-center">
           <p className="text-base font-medium text-gray-500 dark:text-gray-400">
-            هیچ رزروی یافت نشد!
+            هنوز رزروی برای سالن شما ثبت نشده است.
           </p>
         </div>
       )}
@@ -232,12 +244,12 @@ const AdminDashboardView: React.FC<{
         <Link
           key={appointment.id}
           to={`/view-appointment/${appointment.id}`}
-          className="hover:opacity-70 transition-opacity p-4 bg-white dark:bg-gray-700 rounded-xl shadow-sm col-span-full"
+          className="col-span-full rounded-2xl bg-white p-4 shadow-sm transition hover:opacity-80 dark:bg-gray-700"
         >
-          <h4 className="text-base text-gray-700 dark:text-gray-300 font-semibold flex items-center justify-between gap-2">
+          <h4 className="flex items-center justify-between gap-2 text-base font-semibold text-gray-700 dark:text-gray-300">
             <span>{appointment.service?.name ?? "سرویس"}</span>
             <span
-              className={`${statusColor(appointment.status)} text-sm font-medium shrink-0`}
+              className={`${statusColor(appointment.status)} shrink-0 text-sm font-medium`}
             >
               {appointment.get_status}
             </span>
@@ -250,43 +262,83 @@ const AdminDashboardView: React.FC<{
         </Link>
       ))}
 
-      {/* New users */}
-      {matchedUsers.length > 0 && (
-        <>
-          <SectionTitle
-            action={
-              <Link
-                to="/users"
-                className={`text-sm font-medium text-${themeColor}-500 hover:opacity-70 transition-opacity`}
-              >
-                همه کاربران
-              </Link>
-            }
+      {/* Employees — NOT all platform users */}
+      <SectionTitle
+        action={
+          <Link
+            to="/manage-employees"
+            className={`inline-flex items-center gap-1 text-sm font-medium text-${themeColor}-500 hover:opacity-70`}
           >
-            کاربران جدید
-          </SectionTitle>
+            مدیریت آرایشگران
+            <HiArrowLeft size={14} />
+          </Link>
+        }
+      >
+        آرایشگران سالن
+      </SectionTitle>
 
-          {matchedUsers.slice(0, 4).map((user) => (
-            <Link
-              key={user.id}
-              to={`/user-profile-detail/${user.id}`}
-              className="flex flex-col gap-2 p-4 bg-white dark:bg-gray-700 rounded-xl shadow-sm col-span-full hover:opacity-70 transition"
-            >
-              <div className="flex flex-row items-center justify-between">
-                <h4 className="text-base font-semibold text-gray-700 dark:text-gray-200">
-                  {user.first_name} {user.last_name}
-                </h4>
-                <span className={`text-${themeColor}-500 text-sm font-medium`}>
-                  {user.is_owner ? "مدیر" : "کاربر"}
-                </span>
-              </div>
-              <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">
-                {user.phone_number}
-              </span>
-            </Link>
-          ))}
-        </>
+      {employeesLoading && (
+        <div className="col-span-full py-4 text-center text-sm text-gray-500">
+          در حال بارگذاری آرایشگران...
+        </div>
       )}
+
+      {!employeesLoading && employeeList.length === 0 && (
+        <div className="col-span-full rounded-2xl border border-dashed border-gray-200 bg-white px-4 py-8 text-center dark:border-gray-600 dark:bg-gray-800">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            هنوز آرایشگری اضافه نکرده‌اید.
+          </p>
+          <Link
+            to="/manage-employees"
+            className={`mt-3 inline-block text-sm font-semibold text-${themeColor}-600`}
+          >
+            افزودن آرایشگر
+          </Link>
+        </div>
+      )}
+
+      {employeeList.slice(0, 6).map((emp) => (
+        <div
+          key={emp.id}
+          className="col-span-full flex items-center justify-between gap-3 rounded-2xl bg-white p-4 shadow-sm dark:bg-gray-700 sm:col-span-6"
+        >
+          <div className="min-w-0">
+            <h4 className="truncate text-base font-semibold text-gray-800 dark:text-gray-100">
+              {getEmployeeDisplayName(emp.user)}
+            </h4>
+            <p className="mt-0.5 truncate text-sm text-gray-500 dark:text-gray-400">
+              {emp.skill?.trim() || "بدون مهارت ثبت‌شده"}
+            </p>
+            <p className="mt-0.5 text-xs text-gray-400" dir="ltr">
+              {getEmployeePhone(emp.user)}
+            </p>
+          </div>
+          <Link
+            to="/manage-employees"
+            className={`shrink-0 text-xs font-medium text-${themeColor}-600`}
+          >
+            جزئیات
+          </Link>
+        </div>
+      ))}
+
+      {/* Quick actions */}
+      <div className="col-span-full mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {[
+          { to: "/manage-services", label: "خدمات" },
+          { to: "/manage-employees", label: "آرایشگران" },
+          { to: "/available-times", label: "زمان‌ها" },
+          { to: "/appointments-list", label: "رزروها" },
+        ].map((item) => (
+          <Link
+            key={item.to}
+            to={item.to}
+            className={`rounded-xl bg-${themeColor}-50 py-3 text-center text-sm font-medium text-${themeColor}-700 transition hover:opacity-80 dark:bg-gray-800 dark:text-${themeColor}-300`}
+          >
+            {item.label}
+          </Link>
+        ))}
+      </div>
     </>
   );
 };
@@ -339,9 +391,7 @@ const UserDashboardView: React.FC<{
             <MdOutlineEventAvailable size={22} />
             <span className="text-sm font-medium">نوبت بعدی شما</span>
           </div>
-          <h4 className="text-xl font-bold">
-            {next.service?.name ?? "سرویس"}
-          </h4>
+          <h4 className="text-xl font-bold">{next.service?.name ?? "سرویس"}</h4>
           <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-white/90">
             {next.employee_name && <span>{next.employee_name}</span>}
             <span
@@ -368,9 +418,7 @@ const UserDashboardView: React.FC<{
       {/* Total bookings */}
       <StatCard
         className="col-span-full"
-        icon={
-          <LuNotebookText size={25} className={`text-${themeColor}-500`} />
-        }
+        icon={<LuNotebookText size={25} className={`text-${themeColor}-500`} />}
         label={
           <>
             مجموع رزروها:{" "}
@@ -429,6 +477,63 @@ const UserDashboardView: React.FC<{
 };
 
 /* -------------------------------------------------------------------------- */
+/* Owner fallback when API still returns type: "user"                          */
+/* -------------------------------------------------------------------------- */
+
+const OwnerLimitedDashboard: React.FC<{ themeColor: string }> = ({
+  themeColor,
+}) => (
+  <div className="col-span-full space-y-4">
+    <div
+      className={`rounded-2xl border border-${themeColor}-100 bg-gradient-to-l from-${themeColor}-50 to-white p-5 shadow-sm dark:border-gray-600 dark:from-gray-800 dark:to-gray-700`}
+    >
+      <div className="flex items-start gap-3">
+        <div
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-${themeColor}-100 text-${themeColor}-600 dark:bg-${themeColor}-900/40`}
+        >
+          <span className="text-lg animate-spin duration-1000 delay-1000">
+            <GiSandsOfTime />
+          </span>
+        </div>
+        <div>
+          <p className="font-semibold text-gray-800 dark:text-white">
+            گزارش‌های کامل در حال آماده‌سازی است
+          </p>
+          <p className="mt-1.5 text-sm leading-6 text-gray-600 dark:text-gray-300">
+            پنل مدیریت سالن شما فعال است. آمار درآمد و خلاصه رزروها به‌زودی در
+            همین صفحه نمایش داده می‌شود. فعلاً از میانبرهای زیر کسب‌وکارتان را
+            مدیریت کنید.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      {[
+        { to: "/manage-employees", label: "آرایشگران" },
+        { to: "/manage-services", label: "خدمات" },
+        { to: "/available-times", label: "زمان‌ها" },
+        { to: "/appointments-list", label: "رزروها" },
+      ].map((item) => (
+        <Link
+          key={item.to}
+          to={item.to}
+          className={`rounded-xl bg-white p-4 text-center text-sm font-medium text-gray-700 shadow-sm transition hover:shadow-md dark:bg-gray-800 dark:text-gray-200 hover:text-${themeColor}-600`}
+        >
+          {item.label}
+        </Link>
+      ))}
+      <Link
+        to="/user-profile"
+        className={`col-span-2 rounded-xl border border-dashed border-${themeColor}-200 bg-white p-4 text-center text-sm font-medium text-${themeColor}-600 shadow-sm dark:border-gray-600 dark:bg-gray-800 sm:col-span-4`}
+      >
+        پروفایل و کد آرایشگاه
+      </Link>
+    </div>
+  </div>
+);
+
+/* -------------------------------------------------------------------------- */
 /* Page                                                                       */
 /* -------------------------------------------------------------------------- */
 
@@ -441,11 +546,23 @@ const Dashboard: React.FC = () => {
     isFetching,
   } = useGetDashboardToday();
   const { themeColor } = useThemeColor();
-  const { role, isLoading: aclLoading } = useAcl();
+  const {
+    role,
+    isLoading: aclLoading,
+    isBusinessOwner,
+    isOwner,
+    isSuperuser,
+  } = useAcl();
+
+  // Optional extra signals if ACL not fully updated yet:
+  // import { useUserType } from "../../context/UserTypeContext";
+  // import { useBusinessMe } from "../../hooks/business/useBusinessMe";
+  // const { userType } = useUserType();
+  // const { isSuccess: hasBusiness } = useBusinessMe();
 
   if (isPending || aclLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[50vh]">
+      <div className="flex min-h-[50vh] items-center justify-center">
         <Dots />
       </div>
     );
@@ -453,10 +570,8 @@ const Dashboard: React.FC = () => {
 
   if (isError) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[40vh] gap-3 text-center px-4">
-        <p className="text-red-500 font-medium">
-          خطا در دریافت داشبورد
-        </p>
+      <div className="flex min-h-[40vh] flex-col items-center justify-center gap-3 px-4 text-center">
+        <p className="font-medium text-red-500">خطا در دریافت داشبورد</p>
         <p className="text-sm text-gray-500 dark:text-gray-400">
           {(error as Error)?.message ?? "لطفاً دوباره تلاش کنید."}
         </p>
@@ -464,19 +579,28 @@ const Dashboard: React.FC = () => {
     );
   }
 
-  // Prefer API type; fall back to ACL role if type is missing
-  const showAdmin =
-    isAdminDashboard(dashboardData) ||
-    (!dashboardData?.type && role === "admin");
+  /**
+   * Client-side owner detection.
+   * Do NOT rely only on dashboardData.type — backend often returns "user"
+   * while the account already has a business / owner flow.
+   */
+  const isOwnerClient =
+    isBusinessOwner || isOwner || isSuperuser || role === "admin";
+  // || userType === "owner"
+  // || hasBusiness
 
-  const showUser =
-    isUserDashboard(dashboardData) ||
-    (!dashboardData?.type && role !== "admin");
+  const apiIsAdmin = isAdminDashboard(dashboardData);
+  const apiIsUser = isUserDashboard(dashboardData);
+
+  // Owner never sees customer dashboard
+  const showAdminFull = isOwnerClient && apiIsAdmin;
+  const showAdminLimited = isOwnerClient && !apiIsAdmin;
+  const showUser = !isOwnerClient && apiIsUser;
 
   return (
     <div className="relative">
       {isFetching && !isPending && (
-        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-l from-transparent via-current to-transparent opacity-40 animate-pulse" />
+        <div className="absolute left-0 right-0 top-0 h-0.5 animate-pulse bg-gradient-to-l from-transparent via-current to-transparent opacity-40" />
       )}
 
       <motion.div
@@ -486,19 +610,26 @@ const Dashboard: React.FC = () => {
         transition={{ duration: 0.4 }}
       >
         <h3 className="primary-title col-span-full mt-4 dark:text-white">
-          {showAdmin ? "گزارشات کسب‌وکار" : "داشبورد من"}
+          {isOwnerClient ? "گزارشات کسب‌وکار" : "داشبورد من"}
         </h3>
 
-        {showAdmin && isAdminDashboard(dashboardData) && (
-          <AdminDashboardView data={dashboardData} themeColor={themeColor} />
+        {showAdminFull && (
+          <AdminDashboardView
+            data={dashboardData as AdminDashboardResponse}
+            themeColor={themeColor}
+          />
         )}
 
-        {showUser && isUserDashboard(dashboardData) && (
-          <UserDashboardView data={dashboardData} themeColor={themeColor} />
+        {showAdminLimited && <OwnerLimitedDashboard themeColor={themeColor} />}
+
+        {showUser && (
+          <UserDashboardView
+            data={dashboardData as UserDashboardResponse}
+            themeColor={themeColor}
+          />
         )}
 
-        {/* Fallback if API returns unexpected shape */}
-        {!showAdmin && !showUser && (
+        {!showAdminFull && !showAdminLimited && !showUser && (
           <div className="col-span-full py-10 text-center text-gray-500">
             داده‌ای برای نمایش وجود ندارد.
           </div>

@@ -144,7 +144,7 @@ const HomePage: React.FC = () => {
               type="button"
               onClick={() => {
                 clearJoinedBusiness();
-                navigate("/random-code-input");
+                navigate("/join-salon");
               }}
               className="rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
             >

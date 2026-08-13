@@ -1,4 +1,3 @@
-/** Extract business id whether API returns object, nested id, or number */
 export function getEntityBusinessId(entity: unknown): number | null {
   if (!entity || typeof entity !== "object") return null;
   const e = entity as Record<string, unknown>;
@@ -14,11 +13,25 @@ export function getEntityBusinessId(entity: unknown): number | null {
   return null;
 }
 
+/**
+ * Filter by business id.
+ * If items have NO business field at all, return them unchanged
+ * (API may already be scoped / omit business on list payloads).
+ */
 export function filterByBusinessId<T>(
   items: T[] | undefined,
   businessId: number | null | undefined,
 ): T[] {
   if (!items?.length) return [];
   if (!businessId) return [];
+
+  const anyHasBusiness = items.some(
+    (item) => getEntityBusinessId(item) != null,
+  );
+
+  if (!anyHasBusiness) {
+    return items;
+  }
+
   return items.filter((item) => getEntityBusinessId(item) === businessId);
 }

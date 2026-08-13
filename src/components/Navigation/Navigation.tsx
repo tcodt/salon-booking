@@ -1,116 +1,151 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaRegUser } from "react-icons/fa";
 import { GrHomeRounded } from "react-icons/gr";
 import { LuNotebookText } from "react-icons/lu";
-import { MdTimer } from "react-icons/md";
+import { MdOutlineDesignServices, MdPeopleOutline } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router";
 import { useThemeColor } from "../../context/ThemeColor";
+import { useAcl } from "../../context/AclContext";
+import { useUserType } from "../../context/UserTypeContext";
+import { useBusinessMe } from "../../hooks/business/useBusinessMe";
+
+type Tab = {
+  id: string;
+  label: string;
+  path: string;
+  icon: React.ReactNode;
+  match: (path: string) => boolean;
+  customerOnly?: boolean;
+  ownerOnly?: boolean;
+};
 
 const Navigation: React.FC = () => {
-  const [value, setValue] = useState<number>(1);
-  const [isVisible, setIsVisible] = useState<boolean>(true);
-  const [lastScrollY, setLastScrollY] = useState<number>(0);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
   const { themeColor } = useThemeColor();
+  const { role, isBusinessOwner } = useAcl();
+  const { userType } = useUserType();
+  const { isSuccess: hasBusiness } = useBusinessMe();
+
+  const isOwner =
+    isBusinessOwner || role === "admin" || userType === "owner" || hasBusiness;
+
+  const tabs: Tab[] = useMemo(
+    () => [
+      {
+        id: "dashboard",
+        label: "داشبورد",
+        path: "/dashboard",
+        icon: <FaRegUser size={20} />,
+        match: (p) => p.startsWith("/dashboard"),
+      },
+      {
+        id: "home",
+        label: "خانه",
+        path: "/home",
+        icon: <GrHomeRounded size={20} />,
+        match: (p) => p === "/home" || p === "/",
+        customerOnly: true,
+      },
+      {
+        id: "reserve",
+        label: "رزرو",
+        path: "/reserve",
+        icon: <LuNotebookText size={20} />,
+        match: (p) => p.startsWith("/reserve"),
+        customerOnly: true, // ← owners never see this
+      },
+      {
+        id: "services",
+        label: "خدمات",
+        path: "/manage-services",
+        icon: <MdOutlineDesignServices size={22} />,
+        match: (p) => p.startsWith("/manage-services"),
+        ownerOnly: true,
+      },
+      {
+        id: "employees",
+        label: "آرایشگران",
+        path: "/manage-employees",
+        icon: <MdPeopleOutline size={22} />,
+        match: (p) => p.startsWith("/manage-employees"),
+        ownerOnly: true,
+      },
+      {
+        id: "appointments",
+        label: "رزروها",
+        path: "/appointments-list",
+        icon: <LuNotebookText size={20} />,
+        match: (p) => p.startsWith("/appointments"),
+        ownerOnly: true,
+      },
+    ],
+    [],
+  );
+
+  const visibleTabs = tabs.filter((t) => {
+    if (t.customerOnly && isOwner) return false;
+    if (t.ownerOnly && !isOwner) return false;
+    return true;
+  });
 
   useEffect(() => {
-    switch (location.pathname) {
-      case "/dashboard":
-      case "/dashboard/user-profile":
-        setValue(0);
-        break;
-      case "/home":
-        setValue(1);
-        break;
-      case "/reserve":
-        setValue(2);
-        break;
-      case "/working-time":
-        setValue(3);
-        break;
-      default:
-        setValue(1);
-    }
-  }, [location.pathname]);
-
-  useEffect(() => {
-    const mainPageForScroll = document.getElementById("mainPageForScroll"); // Select the main element
-    if (!mainPageForScroll) return;
-
-    const handleScroll = () => {
-      const currentScrollY = mainPageForScroll.scrollTop; // Use scrollTop for the main element
-      if (currentScrollY > lastScrollY) {
-        setIsVisible(false); // Hide navigation on scroll down
-      } else {
-        setIsVisible(true); // Show navigation on scroll up
-      }
-      setLastScrollY(currentScrollY);
+    const el = document.getElementById("mainPageForScroll");
+    if (!el) return;
+    const onScroll = () => {
+      const y = el.scrollTop;
+      setIsVisible(y < lastScrollY || y < 24);
+      setLastScrollY(y);
     };
-
-    mainPageForScroll.addEventListener("scroll", handleScroll);
-    return () => {
-      mainPageForScroll.removeEventListener("scroll", handleScroll);
-    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
   }, [lastScrollY]);
 
   return (
-    <div
-      className={`fixed bottom-0 left-2 right-2 z-50 bg-${themeColor}-500 dark:bg-${themeColor}-800 dark:border-gray-500 px-3 py-1 transition-transform duration-300 rounded-t-3xl shadow-xl shadow-white ${
-        isVisible ? "translate-y-0" : "translate-y-full"
+    <nav
+      id="mobile-nav"
+      className={`fixed bottom-0 left-0 right-0 z-50 px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] transition-transform duration-300 ${
+        isVisible ? "translate-y-0" : "translate-y-[120%]"
       }`}
     >
-      <div className="flex justify-around py-2">
-        <button
-          onClick={() => {
-            setValue(0);
-            navigate("/dashboard");
-          }}
-          className={`flex flex-col items-center ${
-            value === 0 ? "text-black" : "text-white dark:text-white"
-          }`}
-        >
-          <FaRegUser size={20} />
-          <span className="text-sm">داشبورد</span>
-        </button>
-        <button
-          onClick={() => {
-            setValue(3);
-            navigate("/working-time");
-          }}
-          className={`flex flex-col items-center ${
-            value === 3 ? "text-black" : "text-white dark:text-white"
-          }`}
-        >
-          <MdTimer size={20} />
-          <span className="text-sm">ساعات کاری</span>
-        </button>
-        <button
-          onClick={() => {
-            setValue(1);
-            navigate("/home");
-          }}
-          className={`flex flex-col items-center ${
-            value === 1 ? "text-black" : "text-white dark:text-white"
-          }`}
-        >
-          <GrHomeRounded size={20} />
-          <span className="text-sm">خانه</span>
-        </button>
-        <button
-          onClick={() => {
-            setValue(2);
-            navigate("/reserve");
-          }}
-          className={`flex flex-col items-center ${
-            value === 2 ? "text-black" : "text-white dark:text-white"
-          }`}
-        >
-          <LuNotebookText size={20} />
-          <span className="text-sm">رزرو</span>
-        </button>
+      <div className="mx-auto flex max-w-lg justify-around gap-1 rounded-2xl border border-white/20 bg-white/90 px-1 py-1.5 shadow-[0_-8px_30px_rgba(0,0,0,0.12)] backdrop-blur-xl dark:border-gray-600/50 dark:bg-gray-900/90">
+        {visibleTabs.map((tab) => {
+          const active = tab.match(location.pathname);
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => navigate(tab.path)}
+              className={`relative flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-xl px-1 py-2 transition-all ${
+                active
+                  ? `text-${themeColor}-600 dark:text-${themeColor}-400`
+                  : "text-gray-400 dark:text-gray-500"
+              }`}
+            >
+              {active && (
+                <span
+                  className={`absolute inset-x-2 top-0 h-0.5 rounded-full bg-${themeColor}-500`}
+                />
+              )}
+              <span
+                className={`flex h-9 w-9 items-center justify-center rounded-xl ${
+                  active
+                    ? `bg-${themeColor}-50 dark:bg-${themeColor}-900/40`
+                    : ""
+                }`}
+              >
+                {tab.icon}
+              </span>
+              <span className="truncate text-[10px] font-medium">
+                {tab.label}
+              </span>
+            </button>
+          );
+        })}
       </div>
-    </div>
+    </nav>
   );
 };
 

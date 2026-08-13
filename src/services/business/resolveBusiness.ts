@@ -1,47 +1,88 @@
+import { isAxiosError } from "axios";
 import api from "../../utils/api";
 import { BusinessMeResponse } from "../../types/business";
 
+function pickBusiness(
+  data: unknown,
+  fallbackCode: string,
+): BusinessMeResponse | null {
+  if (!data || typeof data !== "object") return null;
+  const d = data as Record<string, unknown>;
+
+  // Some APIs nest under .business
+  const raw =
+    d.business && typeof d.business === "object"
+      ? (d.business as Record<string, unknown>)
+      : d;
+
+  const id = typeof raw.id === "number" ? raw.id : null;
+  if (id == null || id <= 0) return null;
+
+  return {
+    ...(raw as unknown as BusinessMeResponse),
+    id,
+    name: String(raw.name ?? "").trim() || `سالن ${fallbackCode}`,
+    random_code: String(raw.random_code ?? fallbackCode),
+  };
+}
+
 /**
- * Resolve joins the customer to a business.
- * POST often returns empty body (Swagger: no response body),
- * so we fall back to GET /business/customer/business/{code}/.
+ * Join customer to salon by code.
+ * Requires JWT (Swagger: مشتری باید لاگین باشد).
  */
 export const resolveBusiness = async (
   randomCode: string,
 ): Promise<BusinessMeResponse> => {
   const code = randomCode.trim();
-
-  // 1) Join / resolve session on backend
-  const resolveRes = await api.post(`/business/resolve/${code}/`);
-  const resolveData = resolveRes.data;
-
-  // If POST already returned a full business object
-  if (resolveData && typeof resolveData === "object" && resolveData.name) {
-    return resolveData as BusinessMeResponse;
+  if (!code) {
+    throw Object.assign(new Error("کد خالی است"), {
+      response: { status: 400, data: { detail: "کد را وارد کنید" } },
+    });
   }
 
-  // 2) Fetch business details by code
+  const encoded = encodeURIComponent(code);
+
+  // 1) POST resolve (creates the join on backend)
   try {
-    const detailRes = await api.get(`/business/customer/business/${code}/`);
-    if (detailRes.data && typeof detailRes.data === "object") {
-      return {
-        ...detailRes.data,
-        random_code: detailRes.data.random_code || code,
-      } as BusinessMeResponse;
+    const resolveRes = await api.post(`/business/resolve/${encoded}/`);
+    const fromPost = pickBusiness(resolveRes.data, code);
+    if (fromPost) return fromPost;
+  } catch (err) {
+    if (isAxiosError(err)) {
+      const status = err.response?.status;
+      // Real client errors → bubble up for toast
+      if (
+        status === 400 ||
+        status === 404 ||
+        status === 401 ||
+        status === 403
+      ) {
+        throw err;
+      }
+      // 5xx / network: still try GET detail below
+      console.warn("resolve POST failed, trying GET detail", status);
+    } else {
+      throw err;
     }
-  } catch {
-    // ignore — fall through to minimal object
   }
 
-  // 3) Minimal safe payload so UI never reads undefined.name
-  return {
-    id: resolveData?.id ?? 0,
-    name: resolveData?.name || `سالن ${code}`,
-    slug: resolveData?.slug || "",
-    random_code: code,
-    business_type: resolveData?.business_type || "salon",
-    address: resolveData?.address || "",
-    phone_number: resolveData?.phone_number || "",
-    is_active: resolveData?.is_active ?? true,
-  };
+  // 2) GET business by code (detail)
+  try {
+    const detailRes = await api.get(`/business/customer/business/${encoded}/`);
+    const fromGet = pickBusiness(detailRes.data, code);
+    if (fromGet) return fromGet;
+
+    // 200 with empty / unusable body
+    throw Object.assign(new Error("empty business payload"), {
+      response: {
+        status: 404,
+        data: { detail: "آرایشگاهی با این کد یافت نشد." },
+      },
+    });
+  } catch (err) {
+    if (isAxiosError(err) || (err as { response?: unknown })?.response) {
+      throw err;
+    }
+    throw err;
+  }
 };

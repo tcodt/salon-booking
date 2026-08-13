@@ -34,20 +34,23 @@ export const BusinessStatusGuard: React.FC<BusinessStatusGuardProps> = ({
 
   // Normal users skip owner business gate entirely
   if (!isOwnerFlow) {
-    // Optional: force code join if they have no joined business yet
     const joined = localStorage.getItem("joinedBusiness");
-    const onboardingPaths = [
+    const allowedWithoutJoin = [
+      "/join-salon",
       "/role-authentication",
       "/random-code-input",
       "/create-business",
+      "/logout",
     ];
+
     if (
+      userType === "customer" &&
       !joined &&
-      !onboardingPaths.includes(location.pathname) &&
-      userType === "customer"
+      !allowedWithoutJoin.includes(location.pathname)
     ) {
-      return <Navigate to="/random-code-input" replace />;
+      return <Navigate to="/join-salon" replace />;
     }
+
     return <>{children}</>;
   }
 
