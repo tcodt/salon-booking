@@ -41,6 +41,8 @@ const BUSINESS_TYPE_LABELS: Record<string, string> = {
   spa: "اسپا",
   clinic: "کلینیک",
   gym: "باشگاه ورزشی",
+  male_salon: "آرایشگاه مردانه",
+  female_salon: "سالن زیبایی زنانه",
 };
 
 export const WaitingRoom: React.FC<WaitingRoomProps> = ({
@@ -69,22 +71,14 @@ export const WaitingRoom: React.FC<WaitingRoomProps> = ({
     if (isLoading) return "loading";
     if (error) return "error";
     if (!businessData) return "pending";
-    if (businessData.is_active) return "approved";
 
-    const status = (businessData as Record<string, unknown>)?.status;
-    if (status === "rejected") return "rejected";
-    if (status === "reviewing") return "reviewing";
+    // BusinessResponse uses is_active flag
+    if (businessData.is_active === true) return "approved";
 
+    // If there's no explicit status field, we can infer from is_active
+    // You might want to add additional logic here based on your backend
     return "pending";
   }, [isLoading, error, businessData]);
-
-  // const onCancel = () => {
-  //   navigate("/role-authentication");
-  // };
-
-  // const onEdit = () => {
-  //   navigate("/create-business");
-  // };
 
   // Handle waiting timer progress
   useEffect(() => {
@@ -134,7 +128,7 @@ export const WaitingRoom: React.FC<WaitingRoomProps> = ({
   return (
     <AnimatePresence>
       <motion.div
-        className="bg-gradient-to-br from-primary-green-50 via-emerald-50 to-teal-50 flex items-center justify-center"
+        className="bg-gradient-to-br from-primary-green-50 via-emerald-50 to-teal-50 flex items-center justify-center min-h-screen p-4"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
@@ -146,7 +140,7 @@ export const WaitingRoom: React.FC<WaitingRoomProps> = ({
     [scrollbar-width:none]
     [&::-webkit-scrollbar]:hidden"
         >
-          <div className="bg-white shadow-2xl">
+          <div className="bg-white shadow-2xl rounded-3xl overflow-hidden">
             {/* Header - Fixed height, no scroll */}
             <div className="bg-gradient-to-r from-primary-green-600 via-primary-green-500 to-emerald-600 p-6 sm:p-8 text-white text-center">
               <div className="flex justify-center mb-4">
@@ -288,42 +282,7 @@ export const WaitingRoom: React.FC<WaitingRoomProps> = ({
 
               {/* Actions */}
               <div className="flex flex-col sm:flex-row gap-3" dir="rtl">
-                {(currentStatus === "pending" ||
-                  currentStatus === "reviewing") && (
-                  <>
-                    {/* <button className="flex-1 bg-gradient-to-r from-primary-green-500 to-emerald-500 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-shadow text-sm sm:text-base">
-                      مشاهده وضعیت
-                    </button>
-                    <button
-                      onClick={onEdit}
-                      className="flex-1 bg-gradient-to-r from-primary-green-500 to-emerald-500 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-shadow text-sm sm:text-base"
-                    >
-                      ویرایش
-                    </button>
-                    <button
-                      onClick={onCancel}
-                      className="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-colors text-sm sm:text-base"
-                    >
-                      لغو درخواست
-                    </button> */}
-                  </>
-                )}
-                {/* {currentStatus === "approved" && (
-                  <button
-                    onClick={onNavigateToDashboard}
-                    className="w-full bg-gradient-to-r from-primary-green-500 to-emerald-500 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-shadow text-sm sm:text-base"
-                  >
-                    ورود به پنل مدیریت کسب‌وکار
-                  </button>
-                )}
-                {currentStatus === "rejected" && (
-                  <button
-                    onClick={onRetry}
-                    className="w-full bg-gradient-to-r from-primary-green-500 to-emerald-500 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-shadow text-sm sm:text-base"
-                  >
-                    ثبت مجدد درخواست
-                  </button>
-                )} */}
+                {/* Actions can be uncommented when needed */}
               </div>
             </div>
           </div>

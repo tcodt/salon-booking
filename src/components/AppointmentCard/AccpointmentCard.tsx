@@ -14,7 +14,7 @@ interface AppointmentCardProps {
     get_status?: string;
     employee_name?: string;
     employee?: {
-      user?: { first_name?: string; last_name?: string };
+      user?: string | { first_name?: string; last_name?: string }; // 👈 Allow both types
       skill?: string;
     };
   };
@@ -28,7 +28,8 @@ const statusStyles: Record<
   confirmed: {
     dot: "bg-green-500",
     text: "text-green-600 dark:text-green-400",
-    badge: "bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+    badge:
+      "bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300",
     label: "تأیید شده",
   },
   canceled: {
@@ -46,7 +47,8 @@ const statusStyles: Record<
   pending: {
     dot: "bg-amber-500",
     text: "text-amber-600 dark:text-amber-400",
-    badge: "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
+    badge:
+      "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
     label: "در انتظار",
   },
 };
@@ -60,11 +62,18 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
 
   const style = statusStyles[appointment.status] || statusStyles.pending;
   const serviceName = appointment.service?.name || "خدمت";
+
+  // 👇 Fix: properly handle both string and object types for employee.user
   const employeeName =
     appointment.employee_name ||
-    [appointment.employee?.user?.first_name, appointment.employee?.user?.last_name]
-      .filter(Boolean)
-      .join(" ") ||
+    (typeof appointment.employee?.user === "string"
+      ? appointment.employee.user
+      : [
+          appointment.employee?.user?.first_name,
+          appointment.employee?.user?.last_name,
+        ]
+          .filter(Boolean)
+          .join(" ")) ||
     "—";
 
   const canCancel =
@@ -96,7 +105,9 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
             <FaUser className="shrink-0 text-xs" />
             <span className="truncate">{employeeName}</span>
             {appointment.employee?.skill && (
-              <span className="text-gray-400">· {appointment.employee.skill}</span>
+              <span className="text-gray-400">
+                · {appointment.employee.skill}
+              </span>
             )}
           </p>
 
@@ -108,7 +119,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
               {appointment.service?.price && (
                 <span className="font-medium text-gray-700 dark:text-gray-200">
                   {new Intl.NumberFormat("fa-IR").format(
-                    Number(appointment.service.price)
+                    Number(appointment.service.price),
                   )}{" "}
                   تومان
                 </span>
