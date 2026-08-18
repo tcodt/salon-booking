@@ -27,6 +27,7 @@ import {
   getEmployeeIsOwner,
   getEmployeeIsStaff,
   getEmployeeUserId,
+  getEmployeeImage,
 } from "../../types/employees";
 import { useAuth } from "../../context/AuthContext";
 
@@ -305,71 +306,146 @@ const ManageEmployees: React.FC = () => {
           />
         </div>
       </div>
-      {employees?.length === 0 ? (
-        <p className="text-gray-600">آرایشگری یافت نشد.</p>
+      {!employees?.length ? (
+        <div className="rounded-2xl border border-dashed border-gray-200 bg-white px-4 py-14 text-center dark:border-gray-600 dark:bg-gray-800">
+          <div
+            className={`mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-${themeColor}-50 text-${themeColor}-600 dark:bg-${themeColor}-900/30`}
+          >
+            <FaUser size={22} />
+          </div>
+          <p className="font-semibold text-gray-800 dark:text-white">
+            هنوز آرایشگری ثبت نشده
+          </p>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            از منوی بالا، آرایشگر جدید اضافه کنید.
+          </p>
+          <button
+            type="button"
+            onClick={() => setIsAddOpen(true)}
+            className={`mt-4 rounded-xl bg-${themeColor}-600 px-4 py-2.5 text-sm font-semibold text-white`}
+          >
+            افزودن آرایشگر
+          </button>
+        </div>
       ) : (
-        employees?.map((employee: GetEmployeesItem) => {
-          return (
-            <motion.div
-              key={employee.id}
-              className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 mb-4"
-              initial={{ opacity: 0, scale: 0.6 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="flex items-center gap-4 mb-4">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center bg-gray-100 border border-gray-300 text-gray-500">
-                  <FaUser size={24} />
-                </div>
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-800 dark:text-white">
-                    {getEmployeeDisplayName(employee.user)}
-                  </h2>
-                  <p className="text-gray-600 dark:text-gray-300 text-sm">
-                    {employee.skill?.trim() || "بدون مهارت"}
-                  </p>
-                </div>
-              </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {employees.map((employee) => {
+            const name = getEmployeeDisplayName(employee.user);
+            const phone = getEmployeePhone(employee.user);
+            const active = getEmployeeIsActive(employee.user);
+            const owner = getEmployeeIsOwner(employee.user);
+            const staff = getEmployeeIsStaff(employee.user);
+            const self = isSelf(employee);
+            const skill = employee.skill?.trim() || "بدون مهارت ثبت‌شده";
+            const image = getEmployeeImage(employee.user);
 
-              <table className="table-auto w-full text-sm text-gray-600 dark:text-gray-300">
-                <tbody>
-                  <tr>
-                    <td className="font-medium py-2">شماره تلفن:</td>
-                    <td className="py-2 text-end">
-                      {getEmployeePhone(employee.user)}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="font-medium py-2">وضعیت:</td>
-                    <td className="py-2 text-end">
+            const roleLabel = owner ? "مالک" : staff ? "آرایشگر" : "کاربر";
+
+            return (
+              <motion.article
+                key={employee.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
+              >
+                <div
+                  className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-l from-${themeColor}-400 to-${themeColor}-600`}
+                />
+
+                <div className="flex items-start gap-3">
+                  <div
+                    className={`flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-${themeColor}-50 text-${themeColor}-600 ring-1 ring-${themeColor}-100 dark:bg-${themeColor}-900/30 dark:ring-${themeColor}-800`}
+                  >
+                    {image ? (
+                      <img
+                        src={
+                          image.startsWith("http")
+                            ? image
+                            : `https://queuingprojectapi.pythonanywhere.com${image}`
+                        }
+                        alt={name}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <FaUser size={22} />
+                    )}
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <h3 className="truncate text-base font-bold text-gray-900 dark:text-white">
+                          {name}
+                          {self && (
+                            <span className="mr-1 text-xs font-medium text-gray-400">
+                              (شما)
+                            </span>
+                          )}
+                        </h3>
+                        <p className="mt-0.5 line-clamp-1 text-sm text-gray-500 dark:text-gray-400">
+                          {skill}
+                        </p>
+                      </div>
+
                       <span
-                        className={`px-2 py-1 rounded text-xs ${
-                          getEmployeeIsActive(employee.user)
-                            ? "bg-green-100 text-green-500 dark:bg-green-500 dark:text-white"
-                            : "bg-red-100 text-red-500 dark:bg-red-500 dark:text-white"
+                        className={`shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
+                          active
+                            ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
+                            : "bg-rose-50 text-rose-600 dark:bg-rose-900/40 dark:text-rose-300"
                         }`}
                       >
-                        {getEmployeeIsActive(employee.user)
-                          ? "فعال"
-                          : "غیرفعال"}
+                        {active ? "فعال" : "غیرفعال"}
                       </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="font-medium py-2">نقش:</td>
-                    <td className="py-2 text-end">
-                      {getEmployeeIsOwner(employee.user)
-                        ? "مالک"
-                        : getEmployeeIsStaff(employee.user)
-                          ? "آرایشگر"
-                          : "کاربر"}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </motion.div>
-          );
-        })
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <span
+                        className={`rounded-full bg-${themeColor}-50 px-2.5 py-0.5 text-[11px] font-semibold text-${themeColor}-700 dark:bg-${themeColor}-900/40 dark:text-${themeColor}-300`}
+                      >
+                        {roleLabel}
+                      </span>
+                      <span
+                        className="rounded-full bg-gray-50 px-2.5 py-0.5 text-[11px] text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                        dir="ltr"
+                      >
+                        {phone}
+                      </span>
+                    </div>
+
+                    <div className="mt-4 flex items-center gap-2 border-t border-gray-50 pt-3 dark:border-gray-700">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsUpdateOpen(true);
+                          handleUpdateEmp(
+                            employee.id,
+                            employee.skill,
+                            getEmployeeFirstName(employee.user),
+                            getEmployeeUserId(employee.user) ?? 0,
+                          );
+                        }}
+                        className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-${themeColor}-50 py-2 text-xs font-semibold text-${themeColor}-700 transition hover:bg-${themeColor}-100 dark:bg-${themeColor}-900/30 dark:text-${themeColor}-300`}
+                      >
+                        <FaPencil size={12} />
+                        ویرایش
+                      </button>
+                      {!self && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveEmployee(employee)}
+                          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-rose-50 py-2 text-xs font-semibold text-rose-600 transition hover:bg-rose-100 dark:bg-rose-900/30 dark:text-rose-300"
+                        >
+                          <FaRegTrashAlt size={12} />
+                          حذف
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </motion.article>
+            );
+          })}
+        </div>
       )}
     </section>
   );

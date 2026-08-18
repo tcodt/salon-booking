@@ -27,37 +27,37 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
   const image = getEmployeeImage(employee.user);
   const skill = employee.skill?.trim();
 
+  const src =
+    image &&
+    (image.startsWith("http")
+      ? image
+      : `https://queuingprojectapi.pythonanywhere.com${image}`);
+
   return (
-    <div
-      className={`relative flex items-center gap-4 rounded-e-xl border-s-2 border-s-${themeColor}-500 bg-slate-100 p-2 shadow-md dark:bg-gray-700`}
-    >
-      <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border border-gray-300 bg-gray-100 text-gray-500">
-        {image ? (
-          <img src={image} alt={name} className="h-full w-full object-cover" />
+    <div className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-white p-3 shadow-sm dark:border-gray-600 dark:bg-gray-700">
+      <div
+        className={`flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-${themeColor}-50 text-${themeColor}-600`}
+      >
+        {src ? (
+          <img src={src} alt={name} className="h-full w-full object-cover" />
         ) : (
-          <FaUser size={20} />
+          <FaUser size={18} />
         )}
       </div>
 
       <div className="min-w-0 flex-1">
-        <h4 className="truncate text-base font-medium text-gray-800 dark:text-white">
+        <h4 className="truncate text-sm font-bold text-gray-900 dark:text-white">
           {name}
         </h4>
-        {skill ? (
-          <span className="block truncate text-sm text-gray-500 dark:text-gray-300">
-            {skill}
-          </span>
-        ) : (
-          <span className="block text-sm text-gray-400">
-            بدون مهارت ثبت‌شده
-          </span>
-        )}
+        <p className="truncate text-xs text-gray-500 dark:text-gray-300">
+          {skill || "بدون مهارت ثبت‌شده"}
+        </p>
       </div>
 
       <button
         type="button"
-        className={`absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-${themeColor}-100 p-1.5 text-lg text-${themeColor}-500 transition hover:text-${themeColor}-600`}
         onClick={onAction}
+        className={`flex h-9 w-9 items-center justify-center rounded-full bg-${themeColor}-100 text-${themeColor}-600 transition hover:bg-${themeColor}-200`}
         aria-label="عملیات"
       >
         {actionIcon}

@@ -12,7 +12,6 @@ import { LoginType } from "../../types/login";
 import { useThemeColor } from "../../context/ThemeColor";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../context/AuthContext";
-import { useUserType } from "../../context/UserTypeContext";
 
 const Login: React.FC = () => {
   const {
@@ -28,7 +27,6 @@ const Login: React.FC = () => {
   const { themeColor } = useThemeColor();
   const queryClient = useQueryClient();
   const { login: loginContext } = useAuth();
-  const { setUserType } = useUserType();
 
   const toggle = useCallback(() => {
     setIsVisible((prev) => !prev);
@@ -39,14 +37,19 @@ const Login: React.FC = () => {
 
     loginMutation.mutate(data, {
       onSuccess: async (res) => {
+        const savedType = localStorage.getItem("userType");
+        const joined = localStorage.getItem("joinedBusiness");
         toast.success("ورود موفقیت‌آمیز بود!", { id: toastId });
         queryClient.setQueryData(["userProfile"], res.user);
         loginContext({ access: res.access, refresh: res.refresh }, res.user);
-        if (res.user?.is_owner) {
-          setUserType("owner");
-          navigate("/dashboard");
+        if (!savedType) {
+          navigate("/role-authentication", { replace: true });
+        } else if (savedType === "owner") {
+          navigate("/dashboard", { replace: true }); // guard may send to create-business only for owners
+        } else if (savedType === "customer") {
+          navigate(joined ? "/home" : "/join-salon", { replace: true });
         } else {
-          navigate("/home"); // or role-authentication if first time
+          navigate("/role-authentication", { replace: true });
         }
       },
       onError: (error) => {

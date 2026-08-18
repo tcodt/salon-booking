@@ -1,15 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import { businessMe } from "../../services/business/businessMe";
 import { useAuth } from "../../context/AuthContext";
+import { useUserType } from "../../context/UserTypeContext";
+import { businessMe } from "../../services/business/businessMe";
 
 export const useBusinessMe = () => {
   const { isAuthenticated } = useAuth();
+  const { userType } = useUserType();
 
   return useQuery({
     queryKey: ["business-me"],
     queryFn: businessMe,
-    enabled: isAuthenticated,
+    // Only owners need this endpoint
+    enabled: isAuthenticated && userType === "owner",
     retry: false,
-    // 404 for pure customers is expected
   });
 };

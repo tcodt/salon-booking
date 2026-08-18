@@ -3,50 +3,46 @@ import { Navigate, useLocation } from "react-router";
 import { useAuth } from "../../context/AuthContext";
 import { useUserType } from "../../context/UserTypeContext";
 import { useBusinessMe } from "../../hooks/business/useBusinessMe";
+import { useJoinedBusiness } from "../../context/JoinedBusinessContext";
 
-interface BusinessStatusGuardProps {
-  children: React.ReactNode;
-}
-
-export const BusinessStatusGuard: React.FC<BusinessStatusGuardProps> = ({
+export const BusinessStatusGuard: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { isAuthenticated } = useAuth();
   const { userType, isReady } = useUserType();
+  const { hasJoinedBusiness, isReady: joinReady } = useJoinedBusiness();
   const location = useLocation();
   const isOwnerFlow = userType === "owner";
 
-  // Customers (or unknown type) never need business-me checks
-  const { data: businessData, isLoading, error, isFetched } = useBusinessMe();
+  const {
+    data: businessData,
+    isLoading,
+    isError,
+    isFetched,
+    error,
+  } = useBusinessMe();
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Wait for persisted role
-  if (!isReady) {
+  if (!isReady || !joinReady) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-primary-green-500 border-t-transparent rounded-full animate-spin" />
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary-green-500 border-t-transparent" />
       </div>
     );
   }
 
-  // Normal users skip owner business gate entirely
+  // ---------- CUSTOMER (and unknown role) ----------
+  // Never use /business/me/ for customers. 404 is normal.
   if (!isOwnerFlow) {
-    const joined = localStorage.getItem("joinedBusiness");
-    const allowedWithoutJoin = [
-      "/join-salon",
-      "/role-authentication",
-      "/random-code-input",
-      "/create-business",
-      "/logout",
-    ];
+    const openWithoutSalon = ["/join-salon", "/logout", "/user-profile"];
 
     if (
       userType === "customer" &&
-      !joined &&
-      !allowedWithoutJoin.includes(location.pathname)
+      !hasJoinedBusiness &&
+      !openWithoutSalon.includes(location.pathname)
     ) {
       return <Navigate to="/join-salon" replace />;
     }
@@ -54,20 +50,25 @@ export const BusinessStatusGuard: React.FC<BusinessStatusGuardProps> = ({
     return <>{children}</>;
   }
 
-  // ---- Owner flow ----
+  // ---------- OWNER ONLY ----------
   if (isLoading || !isFetched) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-primary-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary-green-500 border-t-transparent" />
           <p className="text-gray-600">درحال بررسی کسب و کار...</p>
         </div>
       </div>
     );
   }
 
-  // No business yet → create flow
-  if (error || !businessData) {
+  const errorStatus = (
+    error as unknown as { response?: { status?: number } } | null
+  )?.response?.status;
+
+  const noBusiness = isError || !businessData || errorStatus === 404;
+
+  if (noBusiness) {
     if (
       location.pathname === "/create-business" ||
       location.pathname === "/role-authentication"
@@ -77,18 +78,8 @@ export const BusinessStatusGuard: React.FC<BusinessStatusGuardProps> = ({
     return <Navigate to="/create-business" replace />;
   }
 
-  // Pending activation
   if (!businessData.is_active && location.pathname !== "/waiting-room") {
     return <Navigate to="/waiting-room" replace />;
-  }
-
-  // Already active but still on waiting room → dashboard
-  if (businessData.is_active && location.pathname === "/waiting-room") {
-    // Allow rendering waiting room so user can see congratulations once;
-    // WaitingRoom itself has the CTA to dashboard.
-    // If you prefer auto-redirect, use:
-    // return <Navigate to="/dashboard" replace />;
-    return <>{children}</>;
   }
 
   return <>{children}</>;

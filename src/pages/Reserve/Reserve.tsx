@@ -12,27 +12,57 @@ import { useThemeColor } from "../../context/ThemeColor";
 import { useJoinedBusiness } from "../../context/JoinedBusinessContext";
 import { useUserType } from "../../context/UserTypeContext";
 import { useGetServices } from "../../hooks/services/useGetServices";
-import { useGetEmployees } from "../../hooks/employees/useGetEmployees";
-import { useGetSlots } from "../../hooks/slots/useGetSlots";
+import { useGetAvailableTimes } from "../../hooks/slots/useGetAvailableTimes";
 import { useAddAppointment } from "../../hooks/appointments/useAddAppointment";
-import { filterByBusinessId } from "../../utils/filterByJoinedBusiness";
-import { getEmployeeLabel } from "../../types/employees";
+import {
+  getEmployeeDisplayName,
+  getEmployeeLabel,
+  GetEmployeesItem,
+} from "../../types/employees";
 
-function getSlotServiceId(slot: {
-  service?: number | { id?: number };
-  service_id?: number;
-}): number | null {
-  if (typeof slot.service_id === "number") return slot.service_id;
-  if (typeof slot.service === "number") return slot.service;
-  if (slot.service && typeof slot.service === "object") {
-    return typeof slot.service.id === "number" ? slot.service.id : null;
-  }
-  return null;
+function todayISO() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+/** Build employee list from selected service.employee (customer path) */
+function employeesFromService(
+  service: {
+    employee?: unknown;
+  } | null,
+): GetEmployeesItem[] {
+  if (!service?.employee) return [];
+
+  const raw = service.employee;
+  const list = Array.isArray(raw) ? raw : [raw];
+
+  return list
+    .map((emp, index) => {
+      if (!emp || typeof emp !== "object") return null;
+      const e = emp as Record<string, unknown>;
+      const id =
+        typeof e.id === "number"
+          ? e.id
+          : typeof e.employee_id === "number"
+            ? e.employee_id
+            : index + 1;
+
+      return {
+        id,
+        skill: typeof e.skill === "string" ? e.skill : "",
+        user: (e.user as GetEmployeesItem["user"]) ?? "آرایشگر",
+      } satisfies GetEmployeesItem;
+    })
+    .filter(Boolean) as GetEmployeesItem[];
 }
 
 const Reserve: React.FC = () => {
   const [serviceId, setServiceId] = useState<number | null>(null);
   const [employeeId, setEmployeeId] = useState<number | null>(null);
+  const [selectedDate, setSelectedDate] = useState(todayISO());
   const [selectedSlotId, setSelectedSlotId] = useState<number | null>(null);
 
   const navigate = useNavigate();
@@ -43,81 +73,63 @@ const Reserve: React.FC = () => {
   const isCustomer = userType !== "owner";
 
   const {
-    data: servicesData = [],
+    data: services = [],
     isLoading: servicesLoading,
     isError: servicesError,
   } = useGetServices();
-  const { data: employeesData = [], isLoading: employeesLoading } =
-    useGetEmployees();
-  const { data: slots = [], isPending: slotsLoading } = useGetSlots();
+
+  const {
+    data: availableSlots = [],
+    isLoading: slotsLoading,
+    isError: slotsError,
+  } = useGetAvailableTimes(selectedDate, serviceId);
+
   const addAppointmentMutation = useAddAppointment();
 
-  const businessId = joinedBusiness?.id ?? null;
+  const selectedService = useMemo(
+    () => services.find((s) => s.id === serviceId) ?? null,
+    [services, serviceId],
+  );
 
-  const scopedServices = useMemo(() => {
-    if (!isCustomer) return servicesData;
-    return filterByBusinessId(servicesData, businessId);
-  }, [servicesData, businessId, isCustomer]);
+  const employees = useMemo(() => {
+    const fromService = employeesFromService(selectedService);
+    if (fromService.length) return fromService;
 
-  /** Prefer employees linked to selected service; else scoped staff list */
-  const scopedEmployees = useMemo(() => {
-    if (serviceId) {
-      const selected = scopedServices.find((s) => s.id === serviceId);
-      if (selected?.employee) {
-        const emp = selected.employee;
-        const empId =
-          typeof emp === "object" && emp && "id" in emp
-            ? (emp as { id: number }).id
-            : null;
-        if (empId != null) {
-          const fromList = employeesData.find((e) => e.id === empId);
-          if (fromList) return [fromList];
-          // Build minimal item from nested service.employee
-          return [
-            {
-              id: empId,
-              skill:
-                typeof emp === "object" && "skill" in emp
-                  ? String((emp as { skill?: string }).skill || "")
-                  : "",
-              user:
-                typeof emp === "object" && "user" in emp
-                  ? (emp as { user: unknown }).user
-                  : typeof emp === "object" && "user" in (emp as object)
-                    ? (emp as { user: unknown }).user
-                    : "آرایشگر",
-            },
-          ] as typeof employeesData;
-        }
+    // Fallback: unique employees mentioned on slots
+    const map = new Map<number, GetEmployeesItem>();
+    availableSlots.forEach((slot) => {
+      if (typeof slot.employee_id === "number") {
+        map.set(slot.employee_id, {
+          id: slot.employee_id,
+          skill: "",
+          user: slot.employee_name || `کارمند ${slot.employee_id}`,
+        });
       }
-    }
+    });
+    return Array.from(map.values());
+  }, [selectedService, availableSlots]);
 
-    if (!isCustomer) return employeesData;
-    const filtered = filterByBusinessId(employeesData, businessId);
-    // Fallback: all employees returned by API (already owner-scoped or empty)
-    return filtered.length ? filtered : employeesData;
-  }, [serviceId, scopedServices, employeesData, businessId, isCustomer]);
-
-  // When service changes, reset employee if not in new list
+  // Auto-select single employee
   useEffect(() => {
-    setSelectedSlotId(null);
-    if (
+    if (employees.length === 1) {
+      setEmployeeId(employees[0].id);
+    } else if (
       employeeId &&
-      scopedEmployees.length &&
-      !scopedEmployees.some((e) => e.id === employeeId)
+      employees.length &&
+      !employees.some((e) => e.id === employeeId)
     ) {
       setEmployeeId(null);
     }
-  }, [serviceId, scopedEmployees, employeeId]);
+  }, [employees, employeeId]);
 
-  const availableSlots = useMemo(() => {
-    if (!serviceId) return [];
-    return slots.filter((slot) => {
-      if (!slot.is_available) return false;
-      const sid = getSlotServiceId(slot);
-      return sid === serviceId;
-    });
-  }, [slots, serviceId]);
+  // Reset slot when date/service changes
+  useEffect(() => {
+    setSelectedSlotId(null);
+  }, [serviceId, selectedDate]);
+
+  const freeSlots = useMemo(() => {
+    return availableSlots.filter((s) => s.is_available !== false);
+  }, [availableSlots]);
 
   if (!isReady) {
     return (
@@ -131,17 +143,17 @@ const Reserve: React.FC = () => {
     return (
       <div className="mx-auto max-w-md space-y-4 py-12 text-center">
         <div
-          className={`mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-${themeColor}-50 text-${themeColor}-600 dark:bg-gray-800`}
+          className={`mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-${themeColor}-50 text-${themeColor}-600`}
         >
           <LuStore size={28} />
         </div>
         <h2 className="text-lg font-bold text-gray-800 dark:text-white">
           ابتدا به یک سالن متصل شوید
         </h2>
-        <p className="text-sm leading-6 text-gray-500 dark:text-gray-400">
-          برای مشاهده خدمات و رزرو نوبت، کد اختصاصی سالن را وارد کنید.
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          برای رزرو، کد سالن را وارد کنید.
         </p>
-        <Button type="button" onClick={() => navigate("/random-code-input")}>
+        <Button type="button" onClick={() => navigate("/join-salon")}>
           ورود کد کسب‌وکار
         </Button>
       </div>
@@ -164,13 +176,13 @@ const Reserve: React.FC = () => {
         onSuccess: () => {
           toast.success("رزرو شما با موفقیت ثبت شد");
           queryClient.invalidateQueries({ queryKey: ["appointments"] });
-          queryClient.invalidateQueries({ queryKey: ["slots"] });
+          queryClient.invalidateQueries({ queryKey: ["available-times"] });
           navigate("/appointments-list");
         },
         onError: (error: unknown) => {
           const ax = error as AxiosError<Record<string, unknown>>;
           const data = ax.response?.data;
-          let message = "ثبت رزرو ناموفق بود. دوباره تلاش کنید.";
+          let message = "ثبت رزرو ناموفق بود.";
           if (data && typeof data === "object") {
             if (typeof data.detail === "string") message = data.detail;
             else {
@@ -180,7 +192,6 @@ const Reserve: React.FC = () => {
               if (first?.[0]) message = String(first[0]);
             }
           }
-          console.error("Reserve error", ax.response?.status, data);
           toast.error(message);
         },
       },
@@ -194,26 +205,23 @@ const Reserve: React.FC = () => {
     !addAppointmentMutation.isPending;
 
   return (
-    <div className="mx-auto max-w-lg space-y-6 pb-8">
+    <div className="mx-auto max-w-lg space-y-6 pb-10">
       <PageTitle title="رزرو نوبت" />
 
-      {/* Joined salon chip */}
       {joinedBusiness && (
         <div
           className={`flex items-center justify-between gap-3 rounded-2xl bg-${themeColor}-50 px-4 py-3 dark:bg-gray-800`}
         >
           <div className="min-w-0">
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              سالن انتخاب‌شده
-            </p>
+            <p className="text-xs text-gray-500">سالن انتخاب‌شده</p>
             <p className="truncate font-semibold text-gray-800 dark:text-white">
               {joinedBusiness.name}
             </p>
           </div>
           <button
             type="button"
-            onClick={() => navigate("/random-code-input")}
-            className={`shrink-0 text-xs font-semibold text-${themeColor}-600`}
+            onClick={() => navigate("/join-salon")}
+            className={`text-xs font-semibold text-${themeColor}-600`}
           >
             تغییر سالن
           </button>
@@ -238,7 +246,7 @@ const Reserve: React.FC = () => {
             }}
           >
             <option value="">انتخاب سرویس</option>
-            {scopedServices.map((s) => (
+            {services.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.name}
                 {s.price
@@ -255,9 +263,10 @@ const Reserve: React.FC = () => {
           {servicesError && (
             <p className="mt-1 text-xs text-red-500">خطا در دریافت خدمات</p>
           )}
-          {!servicesLoading && !scopedServices.length && (
+          {!servicesLoading && !services.length && (
             <p className="mt-2 text-sm text-gray-500">
-              سرویسی برای این سالن یافت نشد.
+              خدماتی برای این سالن یافت نشد. اگر پکیج/خدمات در پنل مالک ثبت شده
+              باشد، اینجا نمایش داده می‌شود.
             </p>
           )}
         </div>
@@ -270,7 +279,7 @@ const Reserve: React.FC = () => {
           <select
             className="primary-input"
             value={employeeId ?? ""}
-            disabled={employeesLoading || !serviceId}
+            disabled={!serviceId || !employees.length}
             onChange={(e) => {
               const v = Number(e.target.value);
               setEmployeeId(Number.isFinite(v) && v > 0 ? v : null);
@@ -280,22 +289,31 @@ const Reserve: React.FC = () => {
             <option value="">
               {!serviceId ? "ابتدا سرویس را انتخاب کنید" : "انتخاب آرایشگر"}
             </option>
-            {scopedEmployees.map((emp) => (
+            {employees.map((emp) => (
               <option key={emp.id} value={emp.id}>
                 {getEmployeeLabel(emp)}
               </option>
             ))}
           </select>
-          {employeesLoading && (
-            <div className="mt-2">
-              <Dots />
-            </div>
-          )}
-          {serviceId && !employeesLoading && !scopedEmployees.length && (
+          {serviceId && !employees.length && (
             <p className="mt-2 text-sm text-gray-500">
-              آرایشگری برای این سرویس ثبت نشده است.
+              آرایشگری روی این سرویس ثبت نشده است.
             </p>
           )}
+        </div>
+
+        {/* Date */}
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-200">
+            تاریخ
+          </label>
+          <input
+            type="date"
+            className="primary-input"
+            value={selectedDate}
+            min={todayISO()}
+            onChange={(e) => setSelectedDate(e.target.value)}
+          />
         </div>
       </div>
 
@@ -318,14 +336,23 @@ const Reserve: React.FC = () => {
           </div>
         )}
 
-        {serviceId && !slotsLoading && availableSlots.length === 0 && (
-          <p className="rounded-xl bg-gray-50 py-6 text-center text-sm text-gray-500 dark:bg-gray-800/50">
-            در حال حاضر زمانی برای این سرویس آزاد نیست
+        {serviceId && slotsError && (
+          <p className="rounded-xl bg-rose-50 py-4 text-center text-sm text-rose-600">
+            خطا در دریافت زمان‌های آزاد
           </p>
         )}
 
+        {serviceId &&
+          !slotsLoading &&
+          !slotsError &&
+          freeSlots.length === 0 && (
+            <p className="rounded-xl bg-gray-50 py-6 text-center text-sm text-gray-500 dark:bg-gray-800/50">
+              برای این تاریخ زمانی آزاد نیست
+            </p>
+          )}
+
         <div className="flex flex-col gap-2">
-          {availableSlots.map((slot) => {
+          {freeSlots.map((slot) => {
             const selected = selectedSlotId === slot.id;
             return (
               <button
@@ -334,24 +361,29 @@ const Reserve: React.FC = () => {
                 onClick={() => setSelectedSlotId(slot.id)}
                 className={`rounded-2xl border bg-white p-4 text-right shadow-sm transition dark:bg-gray-800 ${
                   selected
-                    ? `border-${themeColor}-500 ring-2 ring-${themeColor}-200 dark:ring-${themeColor}-900`
-                    : "border-transparent hover:border-gray-200 dark:hover:border-gray-600"
+                    ? `border-${themeColor}-500 ring-2 ring-${themeColor}-200`
+                    : "border-transparent hover:border-gray-200"
                 }`}
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-sm text-gray-600 dark:text-gray-300">
                     شروع:{" "}
                     <span className="font-medium text-gray-800 dark:text-white">
-                      {slot.start_time}
+                      {slot.start_time ?? "—"}
                     </span>
                   </span>
                   <span className="text-sm text-gray-600 dark:text-gray-300">
                     تاریخ:{" "}
                     <span className="font-medium text-gray-800 dark:text-white">
-                      {slot.date}
+                      {slot.date ?? selectedDate}
                     </span>
                   </span>
                 </div>
+                {slot.employee_name && (
+                  <p className="mt-1 text-xs text-gray-400">
+                    {getEmployeeDisplayName(slot.employee_name)}
+                  </p>
+                )}
                 <div className="mt-3 flex items-center gap-2">
                   <span
                     className={`h-4 w-4 rounded-full border-2 border-${themeColor}-500 ${

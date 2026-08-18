@@ -96,53 +96,57 @@ const ManageServices: React.FC = () => {
       time.minute,
     ).padStart(2, "0")}:00`;
 
-    const payload: PostServicesData = {
-      ...data,
+    const values: PostServicesData = {
+      name: data.name,
+      description: data.description ?? "",
+      price: String(data.price),
+      duration,
       business_id: myBusinessId,
       employee_id: Number(data.employee_id),
-      duration,
     };
-
-    // const formattedDuration = `${String(time.hour).padStart(2, "0")}:${String(
-    //   time.minute,
-    // ).padStart(2, "0")}:00`;
-
-    // const finalData: PostServicesData = {
-    //   ...data,
-    //   duration: formattedDuration,
-    // };
 
     const toastId = toast.loading(
       serviceIdToEdit ? "در حال بروزرسانی سرویس..." : "در حال افزودن سرویس...",
     );
 
-    const mutationFunc = serviceIdToEdit
-      ? updateServiceMutation
-      : addServiceMutation;
+    if (serviceIdToEdit) {
+      updateServiceMutation.mutate(
+        { id: serviceIdToEdit, values },
+        {
+          onSuccess: () => {
+            toast.success("سرویس با موفقیت بروزرسانی شد!", { id: toastId });
+            reset();
+            setIsAddOpen(false);
+            setServiceToEdit(null);
+            setServiceIdToEdit(null);
+            setTime({ hour: 0, minute: 0 });
+            queryClient.invalidateQueries({ queryKey: ["services"] });
+          },
+          onError: (error) => {
+            toast.error("خطا در بروزرسانی سرویس", { id: toastId });
+            console.error(error);
+          },
+        },
+      );
+      return;
+    }
 
-    // const mutationPayload = serviceIdToEdit
-    //   ? { id: serviceIdToEdit, values: finalData }
-    //   : finalData;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mutationFunc.mutate(payload as any, {
+    addServiceMutation.mutate(values, {
       onSuccess: () => {
-        toast.success(
-          serviceIdToEdit
-            ? "سرویس با موفقیت بروزرسانی شد!"
-            : "سرویس با موفقیت افزوده شد!",
-          { id: toastId },
-        );
+        toast.success("سرویس با موفقیت افزوده شد!", { id: toastId });
         reset();
         setIsAddOpen(false);
         setServiceToEdit(null);
         setServiceIdToEdit(null);
+        setTime({ hour: 0, minute: 0 });
         queryClient.invalidateQueries({ queryKey: ["services"] });
       },
       onError: (error) => {
-        const axiosError = error as AxiosError;
-        toast.error("خطایی رخ داده است!", { id: toastId });
-        console.error(axiosError);
+        const ax = error as AxiosError<{ detail?: string }>;
+        toast.error(ax.response?.data?.detail || "خطا در افزودن سرویس", {
+          id: toastId,
+        });
+        console.error(ax.response?.status, ax.response?.data);
       },
     });
   };
